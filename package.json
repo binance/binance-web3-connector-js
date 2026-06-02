@@ -1,0 +1,29 @@
+{
+    "name": "binance-web3-connector-js",
+    "description": "Official collection of auto-generated TypeScript connectors for Binance Web3 APIs.",
+    "scripts": {
+        "docs:clean": "rm -rf docs",
+        "docs:build": "npm run docs:clean && npx typedoc --options typedoc.config.cjs"
+    },
+    "keywords": [
+        "Binance",
+        "API",
+        "Connector",
+        "Web3"
+    ],
+    "author": "Binance",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/binance/binance-web3-connector-js.git"
+    },
+    "bugs": {
+        "url": "https://github.com/binance/binance-web3-connector-js/issues"
+    },
+    "homepage": "https://github.com/binance/binance-web3-connector-js#readme",
+    "devDependencies": {
+        "typedoc": "^0.28.5",
+        "typedoc-plugin-markdown": "^4.0.0",
+        "typedoc-plugin-pages": "^1.0.0"
+    }
+}
