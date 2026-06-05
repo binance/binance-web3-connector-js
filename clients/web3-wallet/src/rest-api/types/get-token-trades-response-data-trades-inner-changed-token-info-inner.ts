@@ -20,7 +20,7 @@
  */
 export interface GetTokenTradesResponseDataTradesInnerChangedTokenInfoInner {
     /**
-     * Token amount.
+     * Token amount traded.
      * @type {string}
      * @memberof GetTokenTradesResponseDataTradesInnerChangedTokenInfoInner
      */

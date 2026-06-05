@@ -119,7 +119,7 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
          * @param {string} tokenContractAddress Token contract address.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {GetHoldersRankingTagFilterEnum} [tagFilter] Tag filter, single selection only. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler. Returns only addresses with the selected tag; returns all when omitted.
+         * @param {GetHoldersRankingTagFilterEnum} [tagFilter] Address tag filter, single selection only. Returns all holder addresses (by holding amount descending) when omitted; returns addresses matching the specified tag when provided. Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler.
          *
          * @throws {RequiredError}
          */
@@ -187,36 +187,36 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
          * @param {string} [marketCapMax] Maximum market cap filter, denominated in USD.
          * @param {string} [liquidityMin] Minimum liquidity filter, denominated in USD.
          * @param {string} [liquidityMax] Maximum liquidity filter, denominated in USD.
-         * @param {string} [devHoldingPercentMin] Minimum developer holding percentage filter.
-         * @param {string} [devHoldingPercentMax] Maximum developer holding percentage filter.
+         * @param {string} [devHoldingPercentMin] Minimum developer holding percentage filter. "5" means 5%.
+         * @param {string} [devHoldingPercentMax] Maximum developer holding percentage filter. "5" means 5%.
          * @param {string} [inflowUsdMin] Minimum net inflow filter, denominated in USD.
          * @param {string} [inflowUsdMax] Maximum net inflow filter, denominated in USD.
          * @param {string} [holdersMin] Minimum holder count.
          * @param {string} [holdersMax] Maximum holder count.
          * @param {string} [bnHolderCountMin] Minimum Binance MPC wallet holders.
          * @param {string} [bnHolderCountMax] Maximum Binance MPC wallet holders.
-         * @param {string} [top10HoldingPercentMin] Minimum top-10 holding percentage.
-         * @param {string} [top10HoldingPercentMax] Maximum top-10 holding percentage.
-         * @param {string} [sniperHoldingPercentMin] Minimum sniper holding percentage.
-         * @param {string} [sniperHoldingPercentMax] Maximum sniper holding percentage.
-         * @param {string} [smartMoneyHoldingPercentMin] Minimum smart-money holding percentage.
-         * @param {string} [smartMoneyHoldingPercentMax] Maximum smart-money holding percentage.
-         * @param {string} [kolHoldingPercentMin] Minimum KOL holding percentage.
-         * @param {string} [kolHoldingPercentMax] Maximum KOL holding percentage.
-         * @param {string} [proHoldingPercentMin] Minimum pro-trader holding percentage.
-         * @param {string} [proHoldingPercentMax] Maximum pro-trader holding percentage.
-         * @param {string} [freshWalletHoldingPercentMin] Minimum fresh-wallet holding percentage.
-         * @param {string} [freshWalletHoldingPercentMax] Maximum fresh-wallet holding percentage.
-         * @param {string} [insiderHoldingPercentMin] Minimum insider holding percentage.
-         * @param {string} [insiderHoldingPercentMax] Maximum insider holding percentage.
-         * @param {string} [bundlerHoldingPercentMin] Minimum bundler holding percentage.
-         * @param {string} [bundlerHoldingPercentMax] Maximum bundler holding percentage.
+         * @param {string} [top10HoldingPercentMin] Minimum top-10 holding percentage. "5" means 5%.
+         * @param {string} [top10HoldingPercentMax] Maximum top-10 holding percentage. "5" means 5%.
+         * @param {string} [sniperHoldingPercentMin] Minimum sniper holding percentage. "5" means 5%.
+         * @param {string} [sniperHoldingPercentMax] Maximum sniper holding percentage. "5" means 5%.
+         * @param {string} [smartMoneyHoldingPercentMin] Minimum smart-money holding percentage. "5" means 5%.
+         * @param {string} [smartMoneyHoldingPercentMax] Maximum smart-money holding percentage. "5" means 5%.
+         * @param {string} [kolHoldingPercentMin] Minimum KOL holding percentage. "5" means 5%.
+         * @param {string} [kolHoldingPercentMax] Maximum KOL holding percentage. "5" means 5%.
+         * @param {string} [proHoldingPercentMin] Minimum pro-trader holding percentage. "5" means 5%.
+         * @param {string} [proHoldingPercentMax] Maximum pro-trader holding percentage. "5" means 5%.
+         * @param {string} [freshWalletHoldingPercentMin] Minimum fresh-wallet holding percentage. "5" means 5%.
+         * @param {string} [freshWalletHoldingPercentMax] Maximum fresh-wallet holding percentage. "5" means 5%.
+         * @param {string} [insiderHoldingPercentMin] Minimum insider holding percentage. "5" means 5%.
+         * @param {string} [insiderHoldingPercentMax] Maximum insider holding percentage. "5" means 5%.
+         * @param {string} [bundlerHoldingPercentMin] Minimum bundler holding percentage. "5" means 5%.
+         * @param {string} [bundlerHoldingPercentMax] Maximum bundler holding percentage. "5" means 5%.
          * @param {string} [devCreatedTokenCountMin] Minimum developer-created token count.
          * @param {string} [devCreatedTokenCountMax] Maximum developer-created token count.
          * @param {string} [devMigratedTokenCountMin] Minimum developer-migrated token count.
          * @param {string} [devMigratedTokenCountMax] Maximum developer-migrated token count.
-         * @param {string} [devMigratedTokenPercentMin] Minimum developer-migrated token percentage.
-         * @param {string} [devMigratedTokenPercentMax] Maximum developer-migrated token percentage.
+         * @param {string} [devMigratedTokenPercentMin] Minimum developer-migrated token percentage. "5" means 5%.
+         * @param {string} [devMigratedTokenPercentMax] Maximum developer-migrated token percentage. "5" means 5%.
          * @param {boolean} [isDevSoldAll] When set to true, returns only tokens where the developer has sold all holdings. Not filtered when omitted or false.
          * @param {boolean} [isDevBurned] When set to true, returns only tokens where the developer has burned tokens. Not filtered when omitted or false.
          * @param {boolean} [isMint] When set to true, excludes tokens with minting capability. Default false.
@@ -224,7 +224,7 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
          * @param {boolean} [isHideWashTradingTokens] When set to true, excludes tokens with wash trading behavior. Default true.
          * @param {boolean} [isHideDevWashTradingTokens] When set to true, excludes tokens where the developer has wash trading behavior. Default true.
          * @param {boolean} [isHideInternalWashTradingTokens] When set to true, excludes tokens where insiders have wash trading behavior. Default true.
-         * @param {number} [pageId] Pagination identifier. Omit on the first request; pass back the previous response's `page` value to fetch the next page.
+         * @param {number} [pageId] Pagination identifier. Do not pass on the first request; pass the page value from the previous response to get the next page.
          * @param {number} [size] Page size. Maximum 100. Defaults to 100.
          *
          * @throws {RequiredError}
@@ -514,7 +514,7 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
             };
         },
         /**
-         * Return advanced metrics for a token: creation info, developer and holder distribution, smart money / KOL / sniper / bundler / fresh wallet holding percentages, and token tags.
+         * Return comprehensive metrics for a token, including creator and launch info, holding percentages by address type (smart money, KOL, sniper, bundler, fresh wallet, etc.), and token tags.
          *
          * @summary Get Token Advanced Info
          * @param {string} binanceChainId Unique chain identifier.
@@ -661,9 +661,9 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
          * @param {string} tokenContractAddress Token contract address.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {string} [cursor] Pagination cursor. Do not pass on the first request; pass the cursor value from the previous response to get the next page. If tagFilter is set, this parameter is ineffective and only 100 records are returned by default.
-         * @param {number} [limit] Number of results per page, maximum 500, defaults to 100. If tagFilter is set, this parameter is ineffective and only 100 records are returned by default.
-         * @param {GetTokenTradesTagFilterEnum} [tagFilter] Optional tag filter. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundle, 7=Whale Holder. Supports single selection or omitting. When selected, returns up to 100 recent trades for addresses with the selected tag.
+         * @param {string} [cursor] Pagination cursor. Do not pass on the first request; pass the cursor value from the previous response to get the next page.
+         * @param {number} [limit] Number of results per page, maximum 500, defaults to 100.
+         * @param {GetTokenTradesTagFilterEnum} [tagFilter] Address tag filter, single selection only. Returns all trades with pagination when omitted; returns only the latest 100 trades for the specified tag's addresses when provided (cursor and limit are ignored). Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder.
          * @param {string} [walletAddressFilter] Filter by specific wallet addresses. Separate multiple addresses with commas. Up to 2 addresses.
          *
          * @throws {RequiredError}
@@ -821,7 +821,7 @@ const MarketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
          * @param {string} tokenContractAddress Token contract address.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {GetTopTradersTagFilterEnum} [tagFilter] Tag filter, single selection only. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder. Returns only top profit-making addresses with the selected tag; returns all when omitted.
+         * @param {GetTopTradersTagFilterEnum} [tagFilter] Address tag filter, single selection only. Returns all top profit addresses (by realized PnL descending) when omitted; returns addresses matching the specified tag when provided. Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder.
          *
          * @throws {RequiredError}
          */
@@ -977,7 +977,7 @@ export interface MarketApiInterface {
         requestParameters?: GetSupportedChainsRequest
     ): Promise<RestApiResponse<GetSupportedChainsResponse>>;
     /**
-     * Return advanced metrics for a token: creation info, developer and holder distribution, smart money / KOL / sniper / bundler / fresh wallet holding percentages, and token tags.
+     * Return comprehensive metrics for a token, including creator and launch info, holding percentages by address type (smart money, KOL, sniper, bundler, fresh wallet, etc.), and token tags.
      *
      * @summary Get Token Advanced Info
      * @param {GetTokenAdvancedInfoRequest} requestParameters Request parameters.
@@ -1170,7 +1170,7 @@ export interface GetHoldersRankingRequest {
     readonly nonce?: string;
 
     /**
-     * Tag filter, single selection only. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler. Returns only addresses with the selected tag; returns all when omitted.
+     * Address tag filter, single selection only. Returns all holder addresses (by holding amount descending) when omitted; returns addresses matching the specified tag when provided. Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler.
      * @type {1 | 2 | 3 | 4 | 5 | 6}
      * @memberof MarketApiGetHoldersRanking
      */
@@ -1288,14 +1288,14 @@ export interface GetHotTokenListRequest {
     readonly liquidityMax?: string;
 
     /**
-     * Minimum developer holding percentage filter.
+     * Minimum developer holding percentage filter. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly devHoldingPercentMin?: string;
 
     /**
-     * Maximum developer holding percentage filter.
+     * Maximum developer holding percentage filter. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
@@ -1344,112 +1344,112 @@ export interface GetHotTokenListRequest {
     readonly bnHolderCountMax?: string;
 
     /**
-     * Minimum top-10 holding percentage.
+     * Minimum top-10 holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly top10HoldingPercentMin?: string;
 
     /**
-     * Maximum top-10 holding percentage.
+     * Maximum top-10 holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly top10HoldingPercentMax?: string;
 
     /**
-     * Minimum sniper holding percentage.
+     * Minimum sniper holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly sniperHoldingPercentMin?: string;
 
     /**
-     * Maximum sniper holding percentage.
+     * Maximum sniper holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly sniperHoldingPercentMax?: string;
 
     /**
-     * Minimum smart-money holding percentage.
+     * Minimum smart-money holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly smartMoneyHoldingPercentMin?: string;
 
     /**
-     * Maximum smart-money holding percentage.
+     * Maximum smart-money holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly smartMoneyHoldingPercentMax?: string;
 
     /**
-     * Minimum KOL holding percentage.
+     * Minimum KOL holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly kolHoldingPercentMin?: string;
 
     /**
-     * Maximum KOL holding percentage.
+     * Maximum KOL holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly kolHoldingPercentMax?: string;
 
     /**
-     * Minimum pro-trader holding percentage.
+     * Minimum pro-trader holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly proHoldingPercentMin?: string;
 
     /**
-     * Maximum pro-trader holding percentage.
+     * Maximum pro-trader holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly proHoldingPercentMax?: string;
 
     /**
-     * Minimum fresh-wallet holding percentage.
+     * Minimum fresh-wallet holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly freshWalletHoldingPercentMin?: string;
 
     /**
-     * Maximum fresh-wallet holding percentage.
+     * Maximum fresh-wallet holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly freshWalletHoldingPercentMax?: string;
 
     /**
-     * Minimum insider holding percentage.
+     * Minimum insider holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly insiderHoldingPercentMin?: string;
 
     /**
-     * Maximum insider holding percentage.
+     * Maximum insider holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly insiderHoldingPercentMax?: string;
 
     /**
-     * Minimum bundler holding percentage.
+     * Minimum bundler holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly bundlerHoldingPercentMin?: string;
 
     /**
-     * Maximum bundler holding percentage.
+     * Maximum bundler holding percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
@@ -1484,14 +1484,14 @@ export interface GetHotTokenListRequest {
     readonly devMigratedTokenCountMax?: string;
 
     /**
-     * Minimum developer-migrated token percentage.
+     * Minimum developer-migrated token percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
     readonly devMigratedTokenPercentMin?: string;
 
     /**
-     * Maximum developer-migrated token percentage.
+     * Maximum developer-migrated token percentage. "5" means 5%.
      * @type {string}
      * @memberof MarketApiGetHotTokenList
      */
@@ -1547,7 +1547,7 @@ export interface GetHotTokenListRequest {
     readonly isHideInternalWashTradingTokens?: boolean;
 
     /**
-     * Pagination identifier. Omit on the first request; pass back the previous response's `page` value to fetch the next page.
+     * Pagination identifier. Do not pass on the first request; pass the page value from the previous response to get the next page.
      * @type {number}
      * @memberof MarketApiGetHotTokenList
      */
@@ -1703,21 +1703,21 @@ export interface GetTokenTradesRequest {
     readonly nonce?: string;
 
     /**
-     * Pagination cursor. Do not pass on the first request; pass the cursor value from the previous response to get the next page. If tagFilter is set, this parameter is ineffective and only 100 records are returned by default.
+     * Pagination cursor. Do not pass on the first request; pass the cursor value from the previous response to get the next page.
      * @type {string}
      * @memberof MarketApiGetTokenTrades
      */
     readonly cursor?: string;
 
     /**
-     * Number of results per page, maximum 500, defaults to 100. If tagFilter is set, this parameter is ineffective and only 100 records are returned by default.
+     * Number of results per page, maximum 500, defaults to 100.
      * @type {number}
      * @memberof MarketApiGetTokenTrades
      */
     readonly limit?: number;
 
     /**
-     * Optional tag filter. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundle, 7=Whale Holder. Supports single selection or omitting. When selected, returns up to 100 recent trades for addresses with the selected tag.
+     * Address tag filter, single selection only. Returns all trades with pagination when omitted; returns only the latest 100 trades for the specified tag's addresses when provided (cursor and limit are ignored). Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder.
      * @type {1 | 2 | 3 | 4 | 5 | 6 | 7}
      * @memberof MarketApiGetTokenTrades
      */
@@ -1819,7 +1819,7 @@ export interface GetTopTradersRequest {
     readonly nonce?: string;
 
     /**
-     * Tag filter, single selection only. 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder. Returns only top profit-making addresses with the selected tag; returns all when omitted.
+     * Address tag filter, single selection only. Returns all top profit addresses (by realized PnL descending) when omitted; returns addresses matching the specified tag when provided. Mapping: 1=KOL, 2=Developer, 3=Smart Money, 4=Insider, 5=Sniper, 6=Bundler, 7=Whale Holder.
      * @type {1 | 2 | 3 | 4 | 5 | 6 | 7}
      * @memberof MarketApiGetTopTraders
      */
@@ -2051,7 +2051,7 @@ export class MarketApi implements MarketApiInterface {
     }
 
     /**
-     * Return advanced metrics for a token: creation info, developer and holder distribution, smart money / KOL / sniper / bundler / fresh wallet holding percentages, and token tags.
+     * Return comprehensive metrics for a token, including creator and launch info, holding percentages by address type (smart money, KOL, sniper, bundler, fresh wallet, etc.), and token tags.
      *
      * @summary Get Token Advanced Info
      * @param {GetTokenAdvancedInfoRequest} requestParameters Request parameters.

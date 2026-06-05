@@ -50,25 +50,25 @@ export interface GetTokenTradingInfoResponseDataInner {
      */
     marketCap?: string;
     /**
-     * 5-minute price change percentage.
+     * 5-minute price change percentage. \"0.12\" means a 0.12% increase.
      * @type {string}
      * @memberof GetTokenTradingInfoResponseDataInner
      */
     priceChange5M?: string;
     /**
-     * 1-hour price change percentage.
+     * 1-hour price change percentage. \"1.05\" means a 1.05% increase.
      * @type {string}
      * @memberof GetTokenTradingInfoResponseDataInner
      */
     priceChange1H?: string;
     /**
-     * 4-hour price change percentage.
+     * 4-hour price change percentage. \"2.30\" means a 2.30% increase.
      * @type {string}
      * @memberof GetTokenTradingInfoResponseDataInner
      */
     priceChange4H?: string;
     /**
-     * 24-hour price change percentage.
+     * 24-hour price change percentage. \"-0.85\" means a 0.85% decrease.
      * @type {string}
      * @memberof GetTokenTradingInfoResponseDataInner
      */

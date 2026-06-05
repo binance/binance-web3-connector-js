@@ -49,7 +49,7 @@ export interface GetTokenTradesResponseDataTradesInner {
      */
     userAddress?: string;
     /**
-     * DEX protocol name.
+     * Name of the DEX protocol where the trade was executed.
      * @type {string}
      * @memberof GetTokenTradesResponseDataTradesInner
      */

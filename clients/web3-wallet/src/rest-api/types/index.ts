@@ -54,7 +54,6 @@ export * from './get-token-balances-by-address-response-data-inner';
 export * from './get-token-balances-by-address-response-data-inner-token-assets-inner';
 export * from './get-token-basic-info-response';
 export * from './get-token-basic-info-response-data';
-export * from './get-token-basic-info-response-data-tag-list';
 export * from './get-token-price-response';
 export * from './get-token-price-response-data-inner';
 export * from './get-token-trades-response';

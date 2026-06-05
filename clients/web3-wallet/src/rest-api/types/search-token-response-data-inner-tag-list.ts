@@ -14,7 +14,7 @@
  */
 
 /**
- * Tag info.
+ *
  * @export
  * @interface SearchTokenResponseDataInnerTagList
  */

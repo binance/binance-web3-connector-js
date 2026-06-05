@@ -222,7 +222,7 @@ export class RestAPI {
     }
 
     /**
-     * Return advanced metrics for a token: creation info, developer and holder distribution, smart money / KOL / sniper / bundler / fresh wallet holding percentages, and token tags.
+     * Return comprehensive metrics for a token, including creator and launch info, holding percentages by address type (smart money, KOL, sniper, bundler, fresh wallet, etc.), and token tags.
      *
      * @summary Get Token Advanced Info
      * @param {GetTokenAdvancedInfoRequest} requestParameters Request parameters.

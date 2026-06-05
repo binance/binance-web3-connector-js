@@ -73,7 +73,7 @@ export interface GetTopTradersResponseDataInner {
      */
     maxHoldAmount?: string;
     /**
-     * Last trade time, Unix millisecond timestamp.
+     * Time of the holder\'s last trade of this token, Unix millisecond timestamp.
      * @type {number | bigint}
      * @memberof GetTopTradersResponseDataInner
      */

@@ -16,10 +16,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetTokenBasicInfoResponseDataTagList } from './get-token-basic-info-response-data-tag-list';
+import type { SearchTokenResponseDataInnerTagList } from './search-token-response-data-inner-tag-list';
 
 /**
- * Token basic info.
+ *
  * @export
  * @interface GetTokenBasicInfoResponseData
  */
@@ -74,8 +74,8 @@ export interface GetTokenBasicInfoResponseData {
     createTime?: number | bigint;
     /**
      *
-     * @type {GetTokenBasicInfoResponseDataTagList}
+     * @type {SearchTokenResponseDataInnerTagList}
      * @memberof GetTokenBasicInfoResponseData
      */
-    tagList?: GetTokenBasicInfoResponseDataTagList;
+    tagList?: SearchTokenResponseDataInnerTagList;
 }

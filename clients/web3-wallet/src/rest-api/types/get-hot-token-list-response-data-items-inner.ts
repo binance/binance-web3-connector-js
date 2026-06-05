@@ -110,12 +110,6 @@ export interface GetHotTokenListResponseDataItemsInner {
      */
     inflowUsd?: string;
     /**
-     * Risk level. 0=undefined, 1=low, 2=medium, 3=mid-high, 4=high, 5=very high.
-     * @type {string}
-     * @memberof GetHotTokenListResponseDataItemsInner
-     */
-    riskLevel?: string;
-    /**
      * Developer holding percentage. \"5.23\" means 5.23%.
      * @type {string}
      * @memberof GetHotTokenListResponseDataItemsInner

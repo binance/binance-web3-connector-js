@@ -32,11 +32,11 @@ export interface GetCandlesResponse {
      */
     msg?: string;
     /**
-     * Candlestick data list. Each record contains 6 values in order: timestamp, open, high, low, close, volume.
-     * @type {Array<Array<string>>}
+     * Candlestick data list. Each record contains 7 values in order: open, high, low, close, volume, timestamp (ms), tradeCount.
+     * @type {Array<Array<number>>}
      * @memberof GetCandlesResponse
      */
-    data?: Array<Array<string>>;
+    data?: Array<Array<number>>;
     /**
      *
      * @type {number | bigint}
