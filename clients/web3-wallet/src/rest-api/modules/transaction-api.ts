@@ -1,7 +1,7 @@
 /**
- * Binance Web3 Wallet REST API
+ * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the OnchainOS platform.
+ * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -10,7 +10,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-
 import {
     ConfigurationRestAPI,
     TimeUnit,
@@ -38,7 +37,7 @@ import type {
 const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRestAPI) {
     return {
         /**
-         * Broadcast a client-signed transaction to the chain via the OnchainOS relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
+         * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
          * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
          *
          * @summary Broadcast Transactions
@@ -387,7 +386,7 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
  */
 export interface TransactionApiInterface {
     /**
-     * Broadcast a client-signed transaction to the chain via the OnchainOS relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
+     * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
      * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
      *
      * @summary Broadcast Transactions
@@ -720,7 +719,7 @@ export class TransactionApi implements TransactionApiInterface {
     }
 
     /**
-     * Broadcast a client-signed transaction to the chain via the OnchainOS relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
+     * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
      * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
      *
      * @summary Broadcast Transactions

@@ -2,9 +2,9 @@
 /* eslint-disable */
 
 /**
- * Binance Web3 Wallet REST API
+ * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the OnchainOS platform.
+ * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -16,7 +16,7 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetTokenBasicInfoResponseData } from './get-token-basic-info-response-data';
+import type { TokenBasicInfo } from './token-basic-info';
 
 /**
  *
@@ -38,10 +38,10 @@ export interface GetTokenBasicInfoResponse {
     msg?: string;
     /**
      *
-     * @type {GetTokenBasicInfoResponseData}
+     * @type {TokenBasicInfo}
      * @memberof GetTokenBasicInfoResponse
      */
-    data?: GetTokenBasicInfoResponseData;
+    data?: TokenBasicInfo;
     /**
      *
      * @type {number | bigint}

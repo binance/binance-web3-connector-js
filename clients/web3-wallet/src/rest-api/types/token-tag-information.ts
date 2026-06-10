@@ -16,13 +16,13 @@
 /**
  *
  * @export
- * @interface GetGasLimitResponseData
+ * @interface TokenTagInformation
  */
-export interface GetGasLimitResponseData {
+export interface TokenTagInformation {
     /**
-     * Estimated gas limit (EVM) or compute-unit ceiling (Solana), as an integer string.
-     * @type {string}
-     * @memberof GetGasLimitResponseData
+     * True indicates the token is listed on major centralized exchanges or widely recognized by the community.
+     * @type {boolean}
+     * @memberof TokenTagInformation
      */
-    gasLimit?: string;
+    isRecognized?: boolean | null;
 }

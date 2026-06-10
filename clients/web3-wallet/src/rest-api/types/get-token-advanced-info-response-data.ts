@@ -1,9 +1,9 @@
 /* tslint:disable */
 
 /**
- * Binance Web3 Wallet REST API
+ * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the OnchainOS platform.
+ * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -152,7 +152,7 @@ export interface GetTokenAdvancedInfoResponseData {
      */
     bnTraderCount7D?: number | bigint;
     /**
-     * Token tags.
+     * Token tags. Returns tags matched by the token. Possible values:  - `alpha` — Binance Alpha - `tge` — Binance TGE - `communityRecognized` — Highly recognized by community - `devSellAll` — Developer sold entire holding - `devSell` — Developer sold partial holding - `devBuy` — Developer bought tokens - `smartMoneyBuy` — Smart money buying - `smartMoneySell` — Smart money selling - `devRemoveLiquidity` — Developer removed liquidity - `devAddLiquidity` — Developer added liquidity - `devBurnToken` — Developer burned tokens - `dexScreenerPaid` — DexScreener paid - `volumeSurge` — Volume surge - `volumePlunge` — Volume plunge - `lowLiquidity` — Low liquidity - `washTrading` — Wash trading detected - `devWashTrading` — Developer wash trading detected - `insiderWashTrading` — Insider wash trading detected
      * @type {Array<string>}
      * @memberof GetTokenAdvancedInfoResponseData
      */

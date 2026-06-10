@@ -2,9 +2,9 @@
 /* eslint-disable */
 
 /**
- * Binance Web3 Wallet REST API
+ * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the OnchainOS platform.
+ * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -16,7 +16,7 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { SearchTokenResponseDataInnerTagList } from './search-token-response-data-inner-tag-list';
+import type { TagInfo } from './tag-info';
 
 /**
  *
@@ -98,8 +98,8 @@ export interface SearchTokenResponseDataInner {
     price?: string;
     /**
      *
-     * @type {SearchTokenResponseDataInnerTagList}
+     * @type {TagInfo}
      * @memberof SearchTokenResponseDataInner
      */
-    tagList?: SearchTokenResponseDataInnerTagList;
+    tagList?: TagInfo;
 }

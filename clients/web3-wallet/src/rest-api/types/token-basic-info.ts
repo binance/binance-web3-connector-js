@@ -2,9 +2,9 @@
 /* eslint-disable */
 
 /**
- * Binance Web3 Wallet REST API
+ * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the OnchainOS platform.
+ * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -16,66 +16,66 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { SearchTokenResponseDataInnerTagList } from './search-token-response-data-inner-tag-list';
+import type { TokenTagInformation } from './token-tag-information';
 
 /**
  *
  * @export
- * @interface GetTokenBasicInfoResponseData
+ * @interface TokenBasicInfo
  */
-export interface GetTokenBasicInfoResponseData {
+export interface TokenBasicInfo {
     /**
      * Unique identifier of the chain.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     binanceChainId?: string;
     /**
      * Token contract address.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     tokenContractAddress?: string;
     /**
      * Token full name.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     tokenName?: string;
     /**
      * Token symbol.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     tokenSymbol?: string;
     /**
      * Token logo link. Null when no logo is available.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     tokenLogoUrl?: string | null;
     /**
      * Token decimals.
      * @type {number}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     decimals?: number;
     /**
      * Token creator wallet address.
      * @type {string}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     creatorAddress?: string;
     /**
      * Token creation time, Unix millisecond timestamp.
      * @type {number | bigint}
-     * @memberof GetTokenBasicInfoResponseData
+     * @memberof TokenBasicInfo
      */
     createTime?: number | bigint;
     /**
      *
-     * @type {SearchTokenResponseDataInnerTagList}
-     * @memberof GetTokenBasicInfoResponseData
+     * @type {TokenTagInformation}
+     * @memberof TokenBasicInfo
      */
-    tagList?: SearchTokenResponseDataInnerTagList;
+    tagList?: TokenTagInformation;
 }
