@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.0 - 2026-06-16
+
+### Changed (2)
+
+- Modified `BuildSwapTransactionApproveTransactionEnum` enum values:
+  - `true` → `TRUE`
+  - `false` → `FALSE` 
+- Modified `BuildSwapTransactionAutoSlippageEnum` enum values:
+  - `true` → `TRUE`
+  - `false` → `FALSE`
+
 ## 2.0.0 - 2026-06-05
 
 ### Changed (2)

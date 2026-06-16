@@ -968,8 +968,8 @@ export class TradingApi implements TradingApiInterface {
 }
 
 export enum BuildSwapTransactionApproveTransactionEnum {
-    true = 'true',
-    false = 'false',
+    TRUE = 'true',
+    FALSE = 'false',
 }
 
 export enum BuildSwapTransactionGasLevelEnum {
@@ -979,6 +979,6 @@ export enum BuildSwapTransactionGasLevelEnum {
 }
 
 export enum BuildSwapTransactionAutoSlippageEnum {
-    true = 'true',
-    false = 'false',
+    TRUE = 'true',
+    FALSE = 'false',
 }
