@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.0.0 - 2026-06-17
+
+### Changed (1)
+
+- Modified parameter `slippagePercent`:
+  - required: `true` → `false`
+  - affected methods:
+    - `buildSwapTransaction()` (`GET /api/v1/dex/aggregator/swap`)
+
 ## 4.0.0 - 2026-06-16
 
 ### Changed (2)

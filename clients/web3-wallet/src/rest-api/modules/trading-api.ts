@@ -39,17 +39,28 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} amount Sell-token amount in the token's smallest unit (positive integer string, no decimals).
          * @param {string} fromTokenAddress Sell-token contract address.
          * @param {string} toTokenAddress Buy-token contract address.
-         * @param {string} slippagePercent Maximum slippage as a percentage. EVM range 0–100; Solana range 0 to less than 100. "0.5" means 0.5%.
          * @param {string} userWalletAddress User wallet address (transaction sender).
          * @param {string} quoteId quoteId returned from `/quote` for the route to execute. TTL ~30s; expired entries return `QUOTE_EXPIRED` (40401).
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {string} [slippagePercent] Maximum slippage tolerance as a percentage string. Required unless `autoSlippage=true`.
+         *
+         **Range by chain:**
+         * - EVM chains (BSC, Ethereum, Base, etc.): `0` to `100` (inclusive)
+         * - Solana (`CT_501`): `0` to less than `100` (i.e. `< 100`)
+         *
+         **Range by vendor:**
+         * - 1inch, PancakeSwap: `0` to `50` (values above 50 are rejected)
+         * - LiFi, LiquidMesh: `0` to `100` (EVM) or `0` to `< 100` (Solana)
+         * - Jupiter (Solana): slippage is set at the `/quote` stage; this field is ignored at swap time
+         *
+         * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
          * @param {BuildSwapTransactionApproveTransactionEnum} [approveTransaction] When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
          * @param {string} [approveAmount] Override approve amount (smallest unit, positive integer string). Defaults to the swap amount.
          * @param {string} [gasLimit] Gas limit override (positive integer string). EVM only.
          * @param {BuildSwapTransactionGasLevelEnum} [gasLevel] Gas price tier. Defaults to "average".
          * @param {string} [priceImpactProtectionPercent] Maximum allowed price impact percentage (0–100). Defaults to 90; set to 100 to disable.
-         * @param {BuildSwapTransactionAutoSlippageEnum} [autoSlippage] When "true", slippage is auto-derived from market data and overrides `slippagePercent`. Defaults to false.
+         * @param {BuildSwapTransactionAutoSlippageEnum} [autoSlippage] When `"true"`, slippage is auto-derived from market data and overrides `slippagePercent`. Either `slippagePercent` or `autoSlippage=true` must be provided — omitting both returns a parameter error. Defaults to `"false"`.
          * @param {string} [maxAutoSlippagePercent] Cap on auto-derived slippage (only applies when `autoSlippage=true`).
          * @param {string} [computeUnitLimit] Solana only — maximum compute units the transaction may consume (analogous to EVM gasLimit). Applies only when `binanceChainId=CT_501`.
          * @param {string} [computeUnitPrice] Solana only — priority fee per compute unit (micro-lamports), analogous to EVM gasPrice. When omitted, the platform computes a value dynamically. Applies only when `binanceChainId=CT_501`.
@@ -62,11 +73,11 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             amount: string,
             fromTokenAddress: string,
             toTokenAddress: string,
-            slippagePercent: string,
             userWalletAddress: string,
             quoteId: string,
             recvWindow?: number | bigint,
             nonce?: string,
+            slippagePercent?: string,
             approveTransaction?: BuildSwapTransactionApproveTransactionEnum,
             approveAmount?: string,
             gasLimit?: string,
@@ -86,8 +97,6 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             assertParamExists('buildSwapTransaction', 'fromTokenAddress', fromTokenAddress);
             // verify required parameter 'toTokenAddress' is not null or undefined
             assertParamExists('buildSwapTransaction', 'toTokenAddress', toTokenAddress);
-            // verify required parameter 'slippagePercent' is not null or undefined
-            assertParamExists('buildSwapTransaction', 'slippagePercent', slippagePercent);
             // verify required parameter 'userWalletAddress' is not null or undefined
             assertParamExists('buildSwapTransaction', 'userWalletAddress', userWalletAddress);
             // verify required parameter 'quoteId' is not null or undefined
@@ -517,13 +526,6 @@ export interface BuildSwapTransactionRequest {
     readonly toTokenAddress: string;
 
     /**
-     * Maximum slippage as a percentage. EVM range 0–100; Solana range 0 to less than 100. "0.5" means 0.5%.
-     * @type {string}
-     * @memberof TradingApiBuildSwapTransaction
-     */
-    readonly slippagePercent: string;
-
-    /**
      * User wallet address (transaction sender).
      * @type {string}
      * @memberof TradingApiBuildSwapTransaction
@@ -550,6 +552,24 @@ export interface BuildSwapTransactionRequest {
      * @memberof TradingApiBuildSwapTransaction
      */
     readonly nonce?: string;
+
+    /**
+     * Maximum slippage tolerance as a percentage string. Required unless `autoSlippage=true`.
+     *
+     **Range by chain:**
+     * - EVM chains (BSC, Ethereum, Base, etc.): `0` to `100` (inclusive)
+     * - Solana (`CT_501`): `0` to less than `100` (i.e. `< 100`)
+     *
+     **Range by vendor:**
+     * - 1inch, PancakeSwap: `0` to `50` (values above 50 are rejected)
+     * - LiFi, LiquidMesh: `0` to `100` (EVM) or `0` to `< 100` (Solana)
+     * - Jupiter (Solana): slippage is set at the `/quote` stage; this field is ignored at swap time
+     *
+     * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
+     * @type {string}
+     * @memberof TradingApiBuildSwapTransaction
+     */
+    readonly slippagePercent?: string;
 
     /**
      * When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
@@ -587,7 +607,7 @@ export interface BuildSwapTransactionRequest {
     readonly priceImpactProtectionPercent?: string;
 
     /**
-     * When "true", slippage is auto-derived from market data and overrides `slippagePercent`. Defaults to false.
+     * When `"true"`, slippage is auto-derived from market data and overrides `slippagePercent`. Either `slippagePercent` or `autoSlippage=true` must be provided — omitting both returns a parameter error. Defaults to `"false"`.
      * @type {'true' | 'false'}
      * @memberof TradingApiBuildSwapTransaction
      */
@@ -803,11 +823,11 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.amount,
             requestParameters?.fromTokenAddress,
             requestParameters?.toTokenAddress,
-            requestParameters?.slippagePercent,
             requestParameters?.userWalletAddress,
             requestParameters?.quoteId,
             requestParameters?.recvWindow,
             requestParameters?.nonce,
+            requestParameters?.slippagePercent,
             requestParameters?.approveTransaction,
             requestParameters?.approveAmount,
             requestParameters?.gasLimit,

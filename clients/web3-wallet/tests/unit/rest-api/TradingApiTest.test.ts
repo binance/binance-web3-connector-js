@@ -57,7 +57,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -150,11 +149,11 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
+                slippagePercent: '0.5',
                 approveTransaction: BuildSwapTransactionApproveTransactionEnum.TRUE,
                 approveAmount: '1000000',
                 gasLimit: '200000',
@@ -255,7 +254,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -273,7 +271,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -291,7 +288,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -309,7 +305,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -321,31 +316,12 @@ describe('TradingApi', () => {
             );
         });
 
-        it('should throw RequiredError when slippagePercent is missing', async () => {
-            const _params: BuildSwapTransactionRequest = {
-                binanceChainId: '56',
-                amount: '1000000',
-                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
-                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
-                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
-            };
-            const params = Object.assign({ ..._params });
-            delete params?.slippagePercent;
-
-            await expect(client.buildSwapTransaction(params)).rejects.toThrow(
-                'Required parameter slippagePercent was null or undefined when calling buildSwapTransaction.'
-            );
-        });
-
         it('should throw RequiredError when userWalletAddress is missing', async () => {
             const _params: BuildSwapTransactionRequest = {
                 binanceChainId: '56',
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -363,7 +339,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
@@ -381,7 +356,6 @@ describe('TradingApi', () => {
                 amount: '1000000',
                 fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                slippagePercent: '0.5',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
                 quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
             };
