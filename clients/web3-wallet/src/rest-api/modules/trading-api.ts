@@ -23,7 +23,9 @@ import type {
     GetAggregatedQuoteResponse,
     GetAggregatorSupportedChainsResponse,
     GetErc20ApproveTransactionResponse,
+    GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    SubmitRfqOrderResponse,
 } from '../types';
 
 /**
@@ -52,7 +54,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          **Range by vendor:**
          * - 1inch, PancakeSwap: `0` to `50` (values above 50 are rejected)
          * - LiFi, LiquidMesh: `0` to `100` (EVM) or `0` to `< 100` (Solana)
-         * - Jupiter (Solana): slippage is set at the `/quote` stage; this field is ignored at swap time
+         * - Jupiter (Solana): `0` to less than `100`; the value is converted to basis points (`slippageBps = ceil(slippagePercent × 100)`) and applied to the on-chain swap
          *
          * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
          * @param {BuildSwapTransactionApproveTransactionEnum} [approveTransaction] When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
@@ -191,6 +193,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} toTokenAddress Buy-token contract address. Must differ from `fromTokenAddress`.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {string} [userWalletAddress] User wallet address. Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock). This address is used as the receiver in the RFQ order and must match the wallet that signs `rfq.typedDataToSign` in the subsequent `/swap` call.
          *
          * @throws {RequiredError}
          */
@@ -200,7 +203,8 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             fromTokenAddress: string,
             toTokenAddress: string,
             recvWindow?: number | bigint,
-            nonce?: string
+            nonce?: string,
+            userWalletAddress?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('getAggregatedQuote', 'binanceChainId', binanceChainId);
@@ -226,6 +230,9 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (toTokenAddress !== undefined && toTokenAddress !== null) {
                 localVarQueryParameter['toTokenAddress'] = toTokenAddress;
+            }
+            if (userWalletAddress !== undefined && userWalletAddress !== null) {
+                localVarQueryParameter['userWalletAddress'] = userWalletAddress;
             }
 
             if (recvWindow !== undefined && recvWindow !== null) {
@@ -299,6 +306,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} approveAmount Approval amount in the token's smallest unit (positive integer string). Example "1000000" = 1 USDT (decimals=6).
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {string} [vendor] Required for equity / RWA tokens (Ondo, BStock). Pass the `vendorName` from the `/quote` response. When specified, the backend returns approve calldata targeting the vendor-specific contract address instead of the default DEX router.
          *
          * @throws {RequiredError}
          */
@@ -307,7 +315,8 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             tokenContractAddress: string,
             approveAmount: string,
             recvWindow?: number | bigint,
-            nonce?: string
+            nonce?: string,
+            vendor?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('getErc20ApproveTransaction', 'binanceChainId', binanceChainId);
@@ -333,6 +342,9 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             if (approveAmount !== undefined && approveAmount !== null) {
                 localVarQueryParameter['approveAmount'] = approveAmount;
             }
+            if (vendor !== undefined && vendor !== null) {
+                localVarQueryParameter['vendor'] = vendor;
+            }
 
             if (recvWindow !== undefined && recvWindow !== null) {
                 localVarHeaderParameter['recvWindow'] = recvWindow;
@@ -346,6 +358,54 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
 
             return {
                 endpoint: '/api/v1/dex/aggregator/approve-transaction',
+                method: 'GET',
+                queryParams: localVarQueryParameter,
+                bodyParams: localVarBodyParameter,
+                headerParams: localVarHeaderParameter,
+                timeUnit: _timeUnit,
+            };
+        },
+        /**
+         * Query the settlement status of an RFQ order by its platform `orderId` (returned by `POST /order/submit`). Poll this endpoint until `status` reaches a terminal state: `FILLED` (settled on-chain) or `FAILED` (settlement failed).
+         *
+         * @summary Get RFQ Order Status
+         * @param {string} orderId Platform order ID returned by `POST /order/submit`.
+         * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
+         * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         *
+         * @throws {RequiredError}
+         */
+        getRfqOrderStatus: async (
+            orderId: string,
+            recvWindow?: number | bigint,
+            nonce?: string
+        ): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('getRfqOrderStatus', 'orderId', orderId);
+
+            const localVarQueryParameter: Record<string, unknown> = {};
+            const localVarBodyParameter: Record<string, unknown> = {};
+            const localVarHeaderParameter: Record<string, unknown> = {};
+
+            if (recvWindow !== undefined && recvWindow !== null) {
+                localVarHeaderParameter['recvWindow'] = recvWindow;
+            }
+            if (nonce !== undefined && nonce !== null) {
+                localVarHeaderParameter['nonce'] = nonce;
+            }
+
+            if (orderId !== undefined && orderId !== null) {
+                localVarBodyParameter['orderId'] = orderId;
+            }
+
+            let _timeUnit: TimeUnit | undefined;
+            if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
+
+            return {
+                endpoint: '/api/v1/dex/aggregator/order/{orderId}'.replace(
+                    `{${'orderId'}}`,
+                    encodeURIComponent(String(orderId))
+                ),
                 method: 'GET',
                 queryParams: localVarQueryParameter,
                 bodyParams: localVarBodyParameter,
@@ -413,6 +473,85 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
                 timeUnit: _timeUnit,
             };
         },
+        /**
+         * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
+         *
+         **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
+         *
+         **Idempotency**: Submitting with the same `requestId` within 30 minutes returns the original result without re-calling the vendor. Use a new UUID for each distinct order; reuse the same UUID when retrying.
+         *
+         * @summary Submit RFQ Order
+         * @param {string} requestId Idempotency key (UUID v4). Within 30 minutes, re-submitting with the same `requestId` returns the original result without re-calling the vendor. Generate a new UUID for each new order; reuse the same UUID when retrying the same attempt.
+         * @param {string} userSignature EIP-712 signature of `rfq.typedDataToSign` from the `/swap` response. Must be a hex string with `0x` prefix (132 chars = `0x` + 65 bytes). The signing wallet must match `userWalletAddress` used in `/quote`. The backend automatically corrects Ethereum `v` values `00`/`01` to `1b`/`1c`.
+         * @param {SubmitRfqOrderVendorEnum} vendor RFQ vendor name — must match `rfq.vendor` from the `/swap` response. The backend validates this against `quoteId` to prevent misrouted submissions.
+         * @param {string} quoteId `rfq.orderId` from the `/swap` response. The backend uses this to look up the vendor and chain context required to forward the signed order.
+         * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
+         * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {string} [signingScheme] Signing scheme from `rfq.signingScheme` in the `/swap` response. Optional — when omitted the backend infers the default per vendor.
+         *
+         * @throws {RequiredError}
+         */
+        submitRfqOrder: async (
+            requestId: string,
+            userSignature: string,
+            vendor: SubmitRfqOrderVendorEnum,
+            quoteId: string,
+            recvWindow?: number | bigint,
+            nonce?: string,
+            signingScheme?: string
+        ): Promise<RequestArgs> => {
+            // verify required parameter 'requestId' is not null or undefined
+            assertParamExists('submitRfqOrder', 'requestId', requestId);
+            // verify required parameter 'userSignature' is not null or undefined
+            assertParamExists('submitRfqOrder', 'userSignature', userSignature);
+            // verify required parameter 'vendor' is not null or undefined
+            assertParamExists('submitRfqOrder', 'vendor', vendor);
+            // verify required parameter 'quoteId' is not null or undefined
+            assertParamExists('submitRfqOrder', 'quoteId', quoteId);
+
+            const localVarQueryParameter: Record<string, unknown> = {};
+            const localVarBodyParameter: Record<string, unknown> = {};
+            const localVarHeaderParameter: Record<string, unknown> = {};
+
+            if (recvWindow !== undefined && recvWindow !== null) {
+                localVarHeaderParameter['recvWindow'] = recvWindow;
+            }
+            if (nonce !== undefined && nonce !== null) {
+                localVarHeaderParameter['nonce'] = nonce;
+            }
+
+            if (requestId !== undefined && requestId !== null) {
+                localVarBodyParameter['requestId'] = requestId;
+            }
+
+            if (userSignature !== undefined && userSignature !== null) {
+                localVarBodyParameter['userSignature'] = userSignature;
+            }
+
+            if (vendor !== undefined && vendor !== null) {
+                localVarBodyParameter['vendor'] = vendor;
+            }
+
+            if (quoteId !== undefined && quoteId !== null) {
+                localVarBodyParameter['quoteId'] = quoteId;
+            }
+
+            if (signingScheme !== undefined && signingScheme !== null) {
+                localVarBodyParameter['signingScheme'] = signingScheme;
+            }
+
+            let _timeUnit: TimeUnit | undefined;
+            if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
+
+            return {
+                endpoint: '/api/v1/dex/aggregator/order/submit',
+                method: 'POST',
+                queryParams: localVarQueryParameter,
+                bodyParams: localVarBodyParameter,
+                headerParams: localVarHeaderParameter,
+                timeUnit: _timeUnit,
+            };
+        },
     };
 };
 
@@ -471,6 +610,18 @@ export interface TradingApiInterface {
         requestParameters: GetErc20ApproveTransactionRequest
     ): Promise<RestApiResponse<GetErc20ApproveTransactionResponse>>;
     /**
+     * Query the settlement status of an RFQ order by its platform `orderId` (returned by `POST /order/submit`). Poll this endpoint until `status` reaches a terminal state: `FILLED` (settled on-chain) or `FAILED` (settlement failed).
+     *
+     * @summary Get RFQ Order Status
+     * @param {GetRfqOrderStatusRequest} requestParameters Request parameters.
+     *
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApiInterface
+     */
+    getRfqOrderStatus(
+        requestParameters: GetRfqOrderStatusRequest
+    ): Promise<RestApiResponse<GetRfqOrderStatusResponse>>;
+    /**
      * Look up the on-chain status of a DEX swap by `binanceChainId` + `txHash`.
      * Response semantics:
      * - Transaction not found: `data` is `null` (not HTTP 404).
@@ -490,6 +641,22 @@ export interface TradingApiInterface {
     getTransactionStatus(
         requestParameters: GetTransactionStatusRequest
     ): Promise<RestApiResponse<GetTransactionStatusResponse>>;
+    /**
+     * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
+     *
+     **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
+     *
+     **Idempotency**: Submitting with the same `requestId` within 30 minutes returns the original result without re-calling the vendor. Use a new UUID for each distinct order; reuse the same UUID when retrying.
+     *
+     * @summary Submit RFQ Order
+     * @param {SubmitRfqOrderRequest} requestParameters Request parameters.
+     *
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApiInterface
+     */
+    submitRfqOrder(
+        requestParameters: SubmitRfqOrderRequest
+    ): Promise<RestApiResponse<SubmitRfqOrderResponse>>;
 }
 
 /**
@@ -563,7 +730,7 @@ export interface BuildSwapTransactionRequest {
      **Range by vendor:**
      * - 1inch, PancakeSwap: `0` to `50` (values above 50 are rejected)
      * - LiFi, LiquidMesh: `0` to `100` (EVM) or `0` to `< 100` (Solana)
-     * - Jupiter (Solana): slippage is set at the `/quote` stage; this field is ignored at swap time
+     * - Jupiter (Solana): `0` to less than `100`; the value is converted to basis points (`slippageBps = ceil(slippagePercent × 100)`) and applied to the on-chain swap
      *
      * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
      * @type {string}
@@ -688,6 +855,13 @@ export interface GetAggregatedQuoteRequest {
      * @memberof TradingApiGetAggregatedQuote
      */
     readonly nonce?: string;
+
+    /**
+     * User wallet address. Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock). This address is used as the receiver in the RFQ order and must match the wallet that signs `rfq.typedDataToSign` in the subsequent `/swap` call.
+     * @type {string}
+     * @memberof TradingApiGetAggregatedQuote
+     */
+    readonly userWalletAddress?: string;
 }
 
 /**
@@ -756,6 +930,40 @@ export interface GetErc20ApproveTransactionRequest {
      * @memberof TradingApiGetErc20ApproveTransaction
      */
     readonly nonce?: string;
+
+    /**
+     * Required for equity / RWA tokens (Ondo, BStock). Pass the `vendorName` from the `/quote` response. When specified, the backend returns approve calldata targeting the vendor-specific contract address instead of the default DEX router.
+     * @type {string}
+     * @memberof TradingApiGetErc20ApproveTransaction
+     */
+    readonly vendor?: string;
+}
+
+/**
+ * Request parameters for getRfqOrderStatus operation in TradingApi.
+ * @interface GetRfqOrderStatusRequest
+ */
+export interface GetRfqOrderStatusRequest {
+    /**
+     * Platform order ID returned by `POST /order/submit`.
+     * @type {string}
+     * @memberof TradingApiGetRfqOrderStatus
+     */
+    readonly orderId: string;
+
+    /**
+     * Allowed time deviation in milliseconds (default: 5000, max: 60000).
+     * @type {number | bigint}
+     * @memberof TradingApiGetRfqOrderStatus
+     */
+    readonly recvWindow?: number | bigint;
+
+    /**
+     * Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+     * @type {string}
+     * @memberof TradingApiGetRfqOrderStatus
+     */
+    readonly nonce?: string;
 }
 
 /**
@@ -790,6 +998,61 @@ export interface GetTransactionStatusRequest {
      * @memberof TradingApiGetTransactionStatus
      */
     readonly nonce?: string;
+}
+
+/**
+ * Request parameters for submitRfqOrder operation in TradingApi.
+ * @interface SubmitRfqOrderRequest
+ */
+export interface SubmitRfqOrderRequest {
+    /**
+     * Idempotency key (UUID v4). Within 30 minutes, re-submitting with the same `requestId` returns the original result without re-calling the vendor. Generate a new UUID for each new order; reuse the same UUID when retrying the same attempt.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly requestId: string;
+
+    /**
+     * EIP-712 signature of `rfq.typedDataToSign` from the `/swap` response. Must be a hex string with `0x` prefix (132 chars = `0x` + 65 bytes). The signing wallet must match `userWalletAddress` used in `/quote`. The backend automatically corrects Ethereum `v` values `00`/`01` to `1b`/`1c`.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly userSignature: string;
+
+    /**
+     * RFQ vendor name — must match `rfq.vendor` from the `/swap` response. The backend validates this against `quoteId` to prevent misrouted submissions.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly vendor: SubmitRfqOrderVendorEnum;
+
+    /**
+     * `rfq.orderId` from the `/swap` response. The backend uses this to look up the vendor and chain context required to forward the signed order.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly quoteId: string;
+
+    /**
+     * Allowed time deviation in milliseconds (default: 5000, max: 60000).
+     * @type {number | bigint}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly recvWindow?: number | bigint;
+
+    /**
+     * Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly nonce?: string;
+
+    /**
+     * Signing scheme from `rfq.signingScheme` in the `/swap` response. Optional — when omitted the backend infers the default per vendor.
+     * @type {string}
+     * @memberof TradingApiSubmitRfqOrder
+     */
+    readonly signingScheme?: string;
 }
 
 /**
@@ -870,7 +1133,8 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.fromTokenAddress,
             requestParameters?.toTokenAddress,
             requestParameters?.recvWindow,
-            requestParameters?.nonce
+            requestParameters?.nonce,
+            requestParameters?.userWalletAddress
         );
         return sendRequest<GetAggregatedQuoteResponse>(
             this.configuration,
@@ -933,9 +1197,40 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.tokenContractAddress,
             requestParameters?.approveAmount,
             requestParameters?.recvWindow,
-            requestParameters?.nonce
+            requestParameters?.nonce,
+            requestParameters?.vendor
         );
         return sendRequest<GetErc20ApproveTransactionResponse>(
+            this.configuration,
+            localVarAxiosArgs.endpoint,
+            localVarAxiosArgs.method,
+            localVarAxiosArgs.queryParams,
+            localVarAxiosArgs.bodyParams,
+            localVarAxiosArgs.headerParams,
+            localVarAxiosArgs?.timeUnit,
+            { isSigned: true }
+        );
+    }
+
+    /**
+     * Query the settlement status of an RFQ order by its platform `orderId` (returned by `POST /order/submit`). Poll this endpoint until `status` reaches a terminal state: `FILLED` (settled on-chain) or `FAILED` (settlement failed).
+     *
+     * @summary Get RFQ Order Status
+     * @param {GetRfqOrderStatusRequest} requestParameters Request parameters.
+     * @returns {Promise<RestApiResponse<GetRfqOrderStatusResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApi
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#get-rfq-order-status Binance API Documentation}
+     */
+    public async getRfqOrderStatus(
+        requestParameters: GetRfqOrderStatusRequest
+    ): Promise<RestApiResponse<GetRfqOrderStatusResponse>> {
+        const localVarAxiosArgs = await this.localVarAxiosParamCreator.getRfqOrderStatus(
+            requestParameters?.orderId,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce
+        );
+        return sendRequest<GetRfqOrderStatusResponse>(
             this.configuration,
             localVarAxiosArgs.endpoint,
             localVarAxiosArgs.method,
@@ -985,6 +1280,44 @@ export class TradingApi implements TradingApiInterface {
             { isSigned: true }
         );
     }
+
+    /**
+     * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
+     *
+     **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
+     *
+     **Idempotency**: Submitting with the same `requestId` within 30 minutes returns the original result without re-calling the vendor. Use a new UUID for each distinct order; reuse the same UUID when retrying.
+     *
+     * @summary Submit RFQ Order
+     * @param {SubmitRfqOrderRequest} requestParameters Request parameters.
+     * @returns {Promise<RestApiResponse<SubmitRfqOrderResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApi
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#submit-rfq-order Binance API Documentation}
+     */
+    public async submitRfqOrder(
+        requestParameters: SubmitRfqOrderRequest
+    ): Promise<RestApiResponse<SubmitRfqOrderResponse>> {
+        const localVarAxiosArgs = await this.localVarAxiosParamCreator.submitRfqOrder(
+            requestParameters?.requestId,
+            requestParameters?.userSignature,
+            requestParameters?.vendor,
+            requestParameters?.quoteId,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce,
+            requestParameters?.signingScheme
+        );
+        return sendRequest<SubmitRfqOrderResponse>(
+            this.configuration,
+            localVarAxiosArgs.endpoint,
+            localVarAxiosArgs.method,
+            localVarAxiosArgs.queryParams,
+            localVarAxiosArgs.bodyParams,
+            localVarAxiosArgs.headerParams,
+            localVarAxiosArgs?.timeUnit,
+            { isSigned: true }
+        );
+    }
 }
 
 export enum BuildSwapTransactionApproveTransactionEnum {
@@ -1001,4 +1334,10 @@ export enum BuildSwapTransactionGasLevelEnum {
 export enum BuildSwapTransactionAutoSlippageEnum {
     TRUE = 'true',
     FALSE = 'false',
+}
+
+export enum SubmitRfqOrderVendorEnum {
+    InchFusion = 'InchFusion',
+    CowSwap = 'CowSwap',
+    PcsXRfq = 'PcsXRfq',
 }

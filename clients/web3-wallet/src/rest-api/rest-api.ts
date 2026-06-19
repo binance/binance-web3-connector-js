@@ -36,7 +36,9 @@ import type {
     GetAggregatedQuoteRequest,
     GetAggregatorSupportedChainsRequest,
     GetErc20ApproveTransactionRequest,
+    GetRfqOrderStatusRequest,
     GetTransactionStatusRequest,
+    SubmitRfqOrderRequest,
 } from './modules/trading-api';
 import type {
     BroadcastTransactionsRequest,
@@ -73,7 +75,9 @@ import type {
     GetAggregatedQuoteResponse,
     GetAggregatorSupportedChainsResponse,
     GetErc20ApproveTransactionResponse,
+    GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    SubmitRfqOrderResponse,
 } from './types';
 import type {
     BroadcastTransactionsResponse,
@@ -415,6 +419,22 @@ export class RestAPI {
     }
 
     /**
+     * Query the settlement status of an RFQ order by its platform `orderId` (returned by `POST /order/submit`). Poll this endpoint until `status` reaches a terminal state: `FILLED` (settled on-chain) or `FAILED` (settlement failed).
+     *
+     * @summary Get RFQ Order Status
+     * @param {GetRfqOrderStatusRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRfqOrderStatusResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#get-rfq-order-status Binance API Documentation}
+     */
+    getRfqOrderStatus(
+        requestParameters: GetRfqOrderStatusRequest
+    ): Promise<RestApiResponse<GetRfqOrderStatusResponse>> {
+        return this.tradingApi.getRfqOrderStatus(requestParameters);
+    }
+
+    /**
      * Look up the on-chain status of a DEX swap by `binanceChainId` + `txHash`.
      * Response semantics:
      * - Transaction not found: `data` is `null` (not HTTP 404).
@@ -436,6 +456,26 @@ export class RestAPI {
         requestParameters: GetTransactionStatusRequest
     ): Promise<RestApiResponse<GetTransactionStatusResponse>> {
         return this.tradingApi.getTransactionStatus(requestParameters);
+    }
+
+    /**
+     * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
+     *
+     **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
+     *
+     **Idempotency**: Submitting with the same `requestId` within 30 minutes returns the original result without re-calling the vendor. Use a new UUID for each distinct order; reuse the same UUID when retrying.
+     *
+     * @summary Submit RFQ Order
+     * @param {SubmitRfqOrderRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<SubmitRfqOrderResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#submit-rfq-order Binance API Documentation}
+     */
+    submitRfqOrder(
+        requestParameters: SubmitRfqOrderRequest
+    ): Promise<RestApiResponse<SubmitRfqOrderResponse>> {
+        return this.tradingApi.submitRfqOrder(requestParameters);
     }
 
     /**

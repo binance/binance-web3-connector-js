@@ -102,4 +102,22 @@ export interface GetAggregatedQuoteResponseDataInner {
      * @memberof GetAggregatedQuoteResponseDataInner
      */
     dexRouterList?: Array<GetAggregatedQuoteResponseDataInnerDexRouterListInner>;
+    /**
+     * Execution mode for this route. `SWAP` = standard on-chain swap (sign the `tx` object from `/swap` and broadcast). `RFQ` = signed order flow (sign `rfq.typedDataToSign` from `/swap` with EIP-712, submit via `POST /order/submit`, poll `GET /order/{orderId}`). Equity / RWA tokens always return `RFQ`.
+     * @type {string}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    executionMode?: string;
+    /**
+     * The spender contract address the backend will encode into the approve calldata for this route. To obtain that calldata, call `/approve-transaction` with `vendor=<vendorName>` (the string name, e.g. `\"PcsXRfq\"`) — the backend resolves the spender address internally from the vendor name. This field is provided for informational purposes only (e.g. to call ERC-20 `approve()` directly without going through `/approve-transaction`). Null when no approval is needed (e.g. native-token swap or already approved).
+     * @type {string}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    approveTarget?: string | null;
+    /**
+     * Whether this route has the highest `toTokenAmount` among all routes returned in this response. At most one route per response has `isBest=true`.
+     * @type {boolean}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    isBest?: boolean;
 }

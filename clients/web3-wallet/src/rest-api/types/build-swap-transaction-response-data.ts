@@ -16,6 +16,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
+import type { BuildSwapTransactionResponseDataRfq } from './build-swap-transaction-response-data-rfq';
+// May contain unused imports in some cases
+// @ts-ignore
 import type { BuildSwapTransactionResponseDataRouterResult } from './build-swap-transaction-response-data-router-result';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -39,4 +42,16 @@ export interface BuildSwapTransactionResponseData {
      * @memberof BuildSwapTransactionResponseData
      */
     tx?: BuildSwapTransactionResponseDataTx;
+    /**
+     * Execution mode for this swap. `SWAP` = sign the `tx` object and broadcast to the chain. `RFQ` = sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`), then submit via `POST /order/submit` and poll `GET /order/{orderId}` for settlement status. Equity / RWA tokens always return `RFQ`.
+     * @type {string}
+     * @memberof BuildSwapTransactionResponseData
+     */
+    executionMode?: string;
+    /**
+     *
+     * @type {BuildSwapTransactionResponseDataRfq}
+     * @memberof BuildSwapTransactionResponseData
+     */
+    rfq?: BuildSwapTransactionResponseDataRfq | null;
 }

@@ -20,20 +20,25 @@ import {
     BuildSwapTransactionApproveTransactionEnum,
     BuildSwapTransactionGasLevelEnum,
     BuildSwapTransactionAutoSlippageEnum,
+    SubmitRfqOrderVendorEnum,
 } from '../../../src/rest-api';
 import {
     BuildSwapTransactionRequest,
     GetAggregatedQuoteRequest,
     GetAggregatorSupportedChainsRequest,
     GetErc20ApproveTransactionRequest,
+    GetRfqOrderStatusRequest,
     GetTransactionStatusRequest,
+    SubmitRfqOrderRequest,
 } from '../../../src/rest-api';
 import type {
     BuildSwapTransactionResponse,
     GetAggregatedQuoteResponse,
     GetAggregatorSupportedChainsResponse,
     GetErc20ApproveTransactionResponse,
+    GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    SubmitRfqOrderResponse,
 } from '../../../src/rest-api/types';
 
 describe('TradingApi', () => {
@@ -122,6 +127,12 @@ describe('TradingApi', () => {
                             signatureData: ['0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f'],
                             computeUnitPrice: '1000',
                             computeUnitLimit: '1400000',
+                        },
+                        executionMode: 'SWAP',
+                        rfq: {
+                            vendor: 'PcsXRfq',
+                            orderId: 'oc-o-abc123def456',
+                            signingScheme: 'EIP712',
                         },
                     },
                     timestamp: 1748601600000,
@@ -227,6 +238,12 @@ describe('TradingApi', () => {
                             signatureData: ['0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f'],
                             computeUnitPrice: '1000',
                             computeUnitLimit: '1400000',
+                        },
+                        executionMode: 'SWAP',
+                        rfq: {
+                            vendor: 'PcsXRfq',
+                            orderId: 'oc-o-abc123def456',
+                            signingScheme: 'EIP712',
                         },
                     },
                     timestamp: 1748601600000,
@@ -432,6 +449,9 @@ describe('TradingApi', () => {
                                     toTokenIndex: '1',
                                 },
                             ],
+                            executionMode: 'SWAP',
+                            approveTarget: '0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f',
+                            isBest: true,
                         },
                     ],
                     timestamp: 1748601600000,
@@ -461,6 +481,7 @@ describe('TradingApi', () => {
                 toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
             };
 
             mockResponse = JSONParse(
@@ -511,6 +532,9 @@ describe('TradingApi', () => {
                                     toTokenIndex: '1',
                                 },
                             ],
+                            executionMode: 'SWAP',
+                            approveTarget: '0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f',
+                            isBest: true,
                         },
                     ],
                     timestamp: 1748601600000,
@@ -750,6 +774,7 @@ describe('TradingApi', () => {
                 approveAmount: '1000000',
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
+                vendor: 'PcsXRfq',
             };
 
             mockResponse = JSONParse(
@@ -847,6 +872,115 @@ describe('TradingApi', () => {
             await expect(client.getErc20ApproveTransaction(params)).rejects.toThrow(
                 'ResponseError'
             );
+            spy.mockRestore();
+        });
+    });
+
+    describe('getRfqOrderStatus()', () => {
+        it('should execute getRfqOrderStatus() successfully with required parameters only', async () => {
+            const params: GetRfqOrderStatusRequest = {
+                orderId: 'oc-o-abc123def456',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        orderId: 'oc-o-abc123def456',
+                        status: 'FILLED',
+                        txHash: '0xabc123def4567890abc123def4567890abc123def4567890abc123def4567890',
+                        fromAmount: '1000000',
+                        toAmount: '998500000000000000',
+                        filledAt: 1748601700000,
+                        createdAt: 1748601600000,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getRfqOrderStatus').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetRfqOrderStatusResponse>)
+            );
+            const response = await client.getRfqOrderStatus(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getRfqOrderStatus() successfully with optional parameters', async () => {
+            const params: GetRfqOrderStatusRequest = {
+                orderId: 'oc-o-abc123def456',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        orderId: 'oc-o-abc123def456',
+                        status: 'FILLED',
+                        txHash: '0xabc123def4567890abc123def4567890abc123def4567890abc123def4567890',
+                        fromAmount: '1000000',
+                        toAmount: '998500000000000000',
+                        filledAt: 1748601700000,
+                        createdAt: 1748601600000,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getRfqOrderStatus').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetRfqOrderStatusResponse>)
+            );
+            const response = await client.getRfqOrderStatus(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when orderId is missing', async () => {
+            const _params: GetRfqOrderStatusRequest = {
+                orderId: 'oc-o-abc123def456',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.orderId;
+
+            await expect(client.getRfqOrderStatus(params)).rejects.toThrow(
+                'Required parameter orderId was null or undefined when calling getRfqOrderStatus.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetRfqOrderStatusRequest = {
+                orderId: 'oc-o-abc123def456',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'getRfqOrderStatus').mockRejectedValueOnce(mockError);
+            await expect(client.getRfqOrderStatus(params)).rejects.toThrow('ResponseError');
             spy.mockRestore();
         });
     });
@@ -1017,6 +1151,165 @@ describe('TradingApi', () => {
             mockError.response = { status: 400, data: errorResponse };
             const spy = jest.spyOn(client, 'getTransactionStatus').mockRejectedValueOnce(mockError);
             await expect(client.getTransactionStatus(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('submitRfqOrder()', () => {
+        it('should execute submitRfqOrder() successfully with required parameters only', async () => {
+            const params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        orderId: 'oc-o-abc123def456',
+                        status: 'PENDING_VENDOR',
+                        createdAt: 1748601600000,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'submitRfqOrder').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<SubmitRfqOrderResponse>)
+            );
+            const response = await client.submitRfqOrder(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute submitRfqOrder() successfully with optional parameters', async () => {
+            const params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                signingScheme: 'signingScheme_example',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        orderId: 'oc-o-abc123def456',
+                        status: 'PENDING_VENDOR',
+                        createdAt: 1748601600000,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'submitRfqOrder').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<SubmitRfqOrderResponse>)
+            );
+            const response = await client.submitRfqOrder(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when requestId is missing', async () => {
+            const _params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.requestId;
+
+            await expect(client.submitRfqOrder(params)).rejects.toThrow(
+                'Required parameter requestId was null or undefined when calling submitRfqOrder.'
+            );
+        });
+
+        it('should throw RequiredError when userSignature is missing', async () => {
+            const _params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.userSignature;
+
+            await expect(client.submitRfqOrder(params)).rejects.toThrow(
+                'Required parameter userSignature was null or undefined when calling submitRfqOrder.'
+            );
+        });
+
+        it('should throw RequiredError when vendor is missing', async () => {
+            const _params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.vendor;
+
+            await expect(client.submitRfqOrder(params)).rejects.toThrow(
+                'Required parameter vendor was null or undefined when calling submitRfqOrder.'
+            );
+        });
+
+        it('should throw RequiredError when quoteId is missing', async () => {
+            const _params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.quoteId;
+
+            await expect(client.submitRfqOrder(params)).rejects.toThrow(
+                'Required parameter quoteId was null or undefined when calling submitRfqOrder.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: SubmitRfqOrderRequest = {
+                requestId: 'requestId_example',
+                userSignature: 'userSignature_example',
+                vendor: SubmitRfqOrderVendorEnum.InchFusion,
+                quoteId: 'quoteId_example',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'submitRfqOrder').mockRejectedValueOnce(mockError);
+            await expect(client.submitRfqOrder(params)).rejects.toThrow('ResponseError');
             spy.mockRestore();
         });
     });
