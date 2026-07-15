@@ -42,5 +42,5 @@ export interface SimulateTransactionsRequestEvmTx {
      * @type {string}
      * @memberof SimulateTransactionsRequestEvmTx
      */
-    data?: string;
+    data: string;
 }

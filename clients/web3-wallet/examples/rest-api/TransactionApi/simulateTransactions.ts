@@ -1,4 +1,4 @@
-import { Web3Wallet, WEB3_WALLET_REST_API_PROD_URL } from '../../../src';
+import { Web3Wallet, Web3WalletRestAPI, WEB3_WALLET_REST_API_PROD_URL } from '../../../src';
 
 const configurationRestAPI = {
     apiKey: process.env.API_KEY ?? '',
@@ -11,6 +11,8 @@ async function simulateTransactions() {
     try {
         const response = await client.restAPI.simulateTransactions({
             binanceChainId: 'binanceChainId_example',
+            evmTx: {} as Web3WalletRestAPI.SimulateTransactionsRequestEvmTx,
+            solTx: {} as Web3WalletRestAPI.SimulateTransactionsRequestSolTx,
         });
 
         const rateLimits = response.rateLimits!;

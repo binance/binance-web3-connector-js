@@ -14,7 +14,7 @@
  */
 
 /**
- * RFQ order payload. Present only when `executionMode=RFQ`. Contains the EIP-712 typed data to sign, the target vendor, and the signing scheme.
+ * RFQ order payload. Present only when `executionMode=RFQ`. Contains the EIP-712 typed data to sign, the target vendor, the signing scheme, and (when requested) the approve transaction data.
  * @export
  * @interface BuildSwapTransactionResponseDataRfq
  */
@@ -26,21 +26,27 @@ export interface BuildSwapTransactionResponseDataRfq {
      */
     vendor?: string;
     /**
-     * Pre-created platform order ID. Pass this as `quoteId` in `POST /order/submit` to associate the signed order with this quote.
+     * Transaction type for this RFQ order. Currently always `EIP712` (all three RFQ vendors use EIP-712 typed-data signing); reserved for future signing schemes.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataRfq
      */
-    orderId?: string;
+    txType?: string;
     /**
-     * EIP-712 typed data for `eth_signTypedData_v4`. Contains `types`, `domain`, and `message`. Sign with the wallet that matches `userWalletAddress` from `/quote`.
-     * @type {object}
+     * EIP-712 typed data payload for `eth_signTypedData_v4`, serialized as a hex string (or JSON-encoded string). Sign with the wallet that matches `userWalletAddress` from `/quote`. Pass the resulting signature as `userSignature` in `POST /order/submit`.
+     * @type {string}
      * @memberof BuildSwapTransactionResponseDataRfq
      */
-    typedDataToSign?: object;
+    typedDataToSign?: string;
     /**
      * Signing scheme required by this vendor. Pass this as `signingScheme` in `POST /order/submit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataRfq
      */
     signingScheme?: string;
+    /**
+     * Approve transaction data, present only when `approveTransaction=true` was passed and the from-token is an EVM ERC-20. Each element is a JSON string containing `approveContract` (the spender address, resolved per vendor: InchFusion→router, PcsXRfq→Permit2, CowSwap→VaultRelayer) and `approveTxCalldata` (the ERC-20 `approve()` calldata). Empty list otherwise.
+     * @type {Array<string>}
+     * @memberof BuildSwapTransactionResponseDataRfq
+     */
+    signatureData?: Array<string>;
 }

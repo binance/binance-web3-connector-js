@@ -30,5 +30,5 @@ export interface SimulateTransactionsRequestSolTx {
      * @type {string}
      * @memberof SimulateTransactionsRequestSolTx
      */
-    address: string;
+    address?: string;
 }

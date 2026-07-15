@@ -181,23 +181,27 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
          * Provide either `evmTx` for EVM chains or `solTx` for Solana, matching the value of `binanceChainId`.
          *
          * @summary Get Gas Limit
-         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+         * @param {GetGasLimitRequestEvmTx} evmTx
+         * @param {GetGasLimitRequestSolTx} solTx
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {GetGasLimitRequestEvmTx} [evmTx]
-         * @param {GetGasLimitRequestSolTx} [solTx]
          *
          * @throws {RequiredError}
          */
         getGasLimit: async (
             binanceChainId: string,
+            evmTx: GetGasLimitRequestEvmTx,
+            solTx: GetGasLimitRequestSolTx,
             recvWindow?: number | bigint,
-            nonce?: string,
-            evmTx?: GetGasLimitRequestEvmTx,
-            solTx?: GetGasLimitRequestSolTx
+            nonce?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('getGasLimit', 'binanceChainId', binanceChainId);
+            // verify required parameter 'evmTx' is not null or undefined
+            assertParamExists('getGasLimit', 'evmTx', evmTx);
+            // verify required parameter 'solTx' is not null or undefined
+            assertParamExists('getGasLimit', 'solTx', solTx);
 
             const localVarQueryParameter: Record<string, unknown> = {};
             const localVarBodyParameter: Record<string, unknown> = {};
@@ -324,23 +328,27 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
          * Provide either `evmTx` (EVM chains) or `solTx` (Solana) matching `binanceChainId`.
          *
          * @summary Simulate Transactions
-         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+         * @param {SimulateTransactionsRequestEvmTx} evmTx
+         * @param {SimulateTransactionsRequestSolTx} solTx
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {SimulateTransactionsRequestEvmTx} [evmTx]
-         * @param {SimulateTransactionsRequestSolTx} [solTx]
          *
          * @throws {RequiredError}
          */
         simulateTransactions: async (
             binanceChainId: string,
+            evmTx: SimulateTransactionsRequestEvmTx,
+            solTx: SimulateTransactionsRequestSolTx,
             recvWindow?: number | bigint,
-            nonce?: string,
-            evmTx?: SimulateTransactionsRequestEvmTx,
-            solTx?: SimulateTransactionsRequestSolTx
+            nonce?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('simulateTransactions', 'binanceChainId', binanceChainId);
+            // verify required parameter 'evmTx' is not null or undefined
+            assertParamExists('simulateTransactions', 'evmTx', evmTx);
+            // verify required parameter 'solTx' is not null or undefined
+            assertParamExists('simulateTransactions', 'solTx', solTx);
 
             const localVarQueryParameter: Record<string, unknown> = {};
             const localVarBodyParameter: Record<string, unknown> = {};
@@ -582,11 +590,25 @@ export interface GetBroadcastOrdersRequest {
  */
 export interface GetGasLimitRequest {
     /**
-     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
      * @type {string}
      * @memberof TransactionApiGetGasLimit
      */
     readonly binanceChainId: string;
+
+    /**
+     *
+     * @type {GetGasLimitRequestEvmTx}
+     * @memberof TransactionApiGetGasLimit
+     */
+    readonly evmTx: GetGasLimitRequestEvmTx;
+
+    /**
+     *
+     * @type {GetGasLimitRequestSolTx}
+     * @memberof TransactionApiGetGasLimit
+     */
+    readonly solTx: GetGasLimitRequestSolTx;
 
     /**
      * Allowed time deviation in milliseconds (default: 5000, max: 60000).
@@ -601,20 +623,6 @@ export interface GetGasLimitRequest {
      * @memberof TransactionApiGetGasLimit
      */
     readonly nonce?: string;
-
-    /**
-     *
-     * @type {GetGasLimitRequestEvmTx}
-     * @memberof TransactionApiGetGasLimit
-     */
-    readonly evmTx?: GetGasLimitRequestEvmTx;
-
-    /**
-     *
-     * @type {GetGasLimitRequestSolTx}
-     * @memberof TransactionApiGetGasLimit
-     */
-    readonly solTx?: GetGasLimitRequestSolTx;
 }
 
 /**
@@ -670,11 +678,25 @@ export interface GetTransactionSupportedChainsRequest {
  */
 export interface SimulateTransactionsRequest {
     /**
-     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
      * @type {string}
      * @memberof TransactionApiSimulateTransactions
      */
     readonly binanceChainId: string;
+
+    /**
+     *
+     * @type {SimulateTransactionsRequestEvmTx}
+     * @memberof TransactionApiSimulateTransactions
+     */
+    readonly evmTx: SimulateTransactionsRequestEvmTx;
+
+    /**
+     *
+     * @type {SimulateTransactionsRequestSolTx}
+     * @memberof TransactionApiSimulateTransactions
+     */
+    readonly solTx: SimulateTransactionsRequestSolTx;
 
     /**
      * Allowed time deviation in milliseconds (default: 5000, max: 60000).
@@ -689,20 +711,6 @@ export interface SimulateTransactionsRequest {
      * @memberof TransactionApiSimulateTransactions
      */
     readonly nonce?: string;
-
-    /**
-     *
-     * @type {SimulateTransactionsRequestEvmTx}
-     * @memberof TransactionApiSimulateTransactions
-     */
-    readonly evmTx?: SimulateTransactionsRequestEvmTx;
-
-    /**
-     *
-     * @type {SimulateTransactionsRequestSolTx}
-     * @memberof TransactionApiSimulateTransactions
-     */
-    readonly solTx?: SimulateTransactionsRequestSolTx;
 }
 
 /**
@@ -803,10 +811,10 @@ export class TransactionApi implements TransactionApiInterface {
     ): Promise<RestApiResponse<GetGasLimitResponse>> {
         const localVarAxiosArgs = await this.localVarAxiosParamCreator.getGasLimit(
             requestParameters?.binanceChainId,
-            requestParameters?.recvWindow,
-            requestParameters?.nonce,
             requestParameters?.evmTx,
-            requestParameters?.solTx
+            requestParameters?.solTx,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce
         );
         return sendRequest<GetGasLimitResponse>(
             this.configuration,
@@ -900,10 +908,10 @@ export class TransactionApi implements TransactionApiInterface {
     ): Promise<RestApiResponse<SimulateTransactionsResponse>> {
         const localVarAxiosArgs = await this.localVarAxiosParamCreator.simulateTransactions(
             requestParameters?.binanceChainId,
-            requestParameters?.recvWindow,
-            requestParameters?.nonce,
             requestParameters?.evmTx,
-            requestParameters?.solTx
+            requestParameters?.solTx,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce
         );
         return sendRequest<SimulateTransactionsResponse>(
             this.configuration,

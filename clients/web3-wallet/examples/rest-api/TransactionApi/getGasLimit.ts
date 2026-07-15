@@ -1,4 +1,4 @@
-import { Web3Wallet, WEB3_WALLET_REST_API_PROD_URL } from '../../../src';
+import { Web3Wallet, Web3WalletRestAPI, WEB3_WALLET_REST_API_PROD_URL } from '../../../src';
 
 const configurationRestAPI = {
     apiKey: process.env.API_KEY ?? '',
@@ -11,6 +11,8 @@ async function getGasLimit() {
     try {
         const response = await client.restAPI.getGasLimit({
             binanceChainId: 'binanceChainId_example',
+            evmTx: {} as Web3WalletRestAPI.GetGasLimitRequestEvmTx,
+            solTx: {} as Web3WalletRestAPI.GetGasLimitRequestSolTx,
         });
 
         const rateLimits = response.rateLimits!;

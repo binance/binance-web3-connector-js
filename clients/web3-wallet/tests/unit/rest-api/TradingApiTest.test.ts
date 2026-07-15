@@ -17,12 +17,16 @@ import { ConfigurationRestAPI, type RestApiResponse } from '@binance/common';
 
 import {
     TradingApi,
+    BuildSolanaSwapInstructionsBinanceChainIdEnum,
+    BuildSolanaSwapInstructionsAutoSlippageEnum,
+    BuildSolanaSwapInstructionsGasLevelEnum,
     BuildSwapTransactionApproveTransactionEnum,
     BuildSwapTransactionGasLevelEnum,
     BuildSwapTransactionAutoSlippageEnum,
     SubmitRfqOrderVendorEnum,
 } from '../../../src/rest-api';
 import {
+    BuildSolanaSwapInstructionsRequest,
     BuildSwapTransactionRequest,
     GetAggregatedQuoteRequest,
     GetAggregatorSupportedChainsRequest,
@@ -32,6 +36,7 @@ import {
     SubmitRfqOrderRequest,
 } from '../../../src/rest-api';
 import type {
+    BuildSolanaSwapInstructionsResponse,
     BuildSwapTransactionResponse,
     GetAggregatedQuoteResponse,
     GetAggregatorSupportedChainsResponse,
@@ -53,6 +58,360 @@ describe('TradingApi', () => {
             basePath: '',
         });
         client = new TradingApi(config);
+    });
+
+    describe('buildSolanaSwapInstructions()', () => {
+        it('should execute buildSolanaSwapInstructions() successfully with required parameters only', async () => {
+            const params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        addressLookupTableAccount: ['AcL1Vo8oy1ULiavEcjSUcwfBSForXMudbWLPYz2gTW4D'],
+                        instructionLists: [
+                            {
+                                programId: 'ComputeBudget111111111111111111111111111111',
+                                data: 'AgY6BAA=',
+                                accounts: [
+                                    {
+                                        pubkey: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                                        isSigner: false,
+                                        isWritable: true,
+                                    },
+                                ],
+                            },
+                        ],
+                        routerResult: {
+                            binanceChainId: 'CT_501',
+                            vendorName: 'Jupiter',
+                            fromTokenAmount: '12000000',
+                            toTokenAmount: '607402',
+                            tradeFee: '0.12',
+                            estimateGasFee: '1400000',
+                            router: 'So11...112--EPjF...DT1v',
+                            priceImpactPercent: '-0.01',
+                            dexRouterList: [
+                                {
+                                    dexProtocol: { dexName: 'Raydium', percent: '100' },
+                                    fromToken: {
+                                        tokenContractAddress:
+                                            'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                                        tokenSymbol: 'USDC',
+                                    },
+                                    fromTokenIndex: '0',
+                                    toToken: {
+                                        tokenContractAddress:
+                                            'So11111111111111111111111111111111111111112',
+                                        tokenSymbol: 'WSOL',
+                                    },
+                                    toTokenIndex: '1',
+                                },
+                            ],
+                            fromToken: {
+                                tokenContractAddress:
+                                    'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                                tokenSymbol: 'USDC',
+                                decimal: '6',
+                            },
+                            toToken: {
+                                tokenContractAddress: 'So11111111111111111111111111111111111111112',
+                                tokenSymbol: 'WSOL',
+                                decimal: '9',
+                            },
+                        },
+                        tx: {
+                            from: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                            to: 'proVF4pMXVaYqmy4NjniPh4pqKNfMmsihgd4wdkCX3u',
+                            minReceiveAmount: '604365',
+                            slippagePercent: '0.5',
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'buildSolanaSwapInstructions').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<BuildSolanaSwapInstructionsResponse>)
+            );
+            const response = await client.buildSolanaSwapInstructions(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute buildSolanaSwapInstructions() successfully with optional parameters', async () => {
+            const params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                priceImpactProtectionPercent: '90',
+                autoSlippage: BuildSolanaSwapInstructionsAutoSlippageEnum.TRUE,
+                maxAutoSlippagePercent: '3',
+                computeUnitLimit: '1400000',
+                computeUnitPrice: '1000',
+                gasLevel: BuildSolanaSwapInstructionsGasLevelEnum.slow,
+                tips: '0.001',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        addressLookupTableAccount: ['AcL1Vo8oy1ULiavEcjSUcwfBSForXMudbWLPYz2gTW4D'],
+                        instructionLists: [
+                            {
+                                programId: 'ComputeBudget111111111111111111111111111111',
+                                data: 'AgY6BAA=',
+                                accounts: [
+                                    {
+                                        pubkey: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                                        isSigner: false,
+                                        isWritable: true,
+                                    },
+                                ],
+                            },
+                        ],
+                        routerResult: {
+                            binanceChainId: 'CT_501',
+                            vendorName: 'Jupiter',
+                            fromTokenAmount: '12000000',
+                            toTokenAmount: '607402',
+                            tradeFee: '0.12',
+                            estimateGasFee: '1400000',
+                            router: 'So11...112--EPjF...DT1v',
+                            priceImpactPercent: '-0.01',
+                            dexRouterList: [
+                                {
+                                    dexProtocol: { dexName: 'Raydium', percent: '100' },
+                                    fromToken: {
+                                        tokenContractAddress:
+                                            'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                                        tokenSymbol: 'USDC',
+                                    },
+                                    fromTokenIndex: '0',
+                                    toToken: {
+                                        tokenContractAddress:
+                                            'So11111111111111111111111111111111111111112',
+                                        tokenSymbol: 'WSOL',
+                                    },
+                                    toTokenIndex: '1',
+                                },
+                            ],
+                            fromToken: {
+                                tokenContractAddress:
+                                    'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                                tokenSymbol: 'USDC',
+                                decimal: '6',
+                            },
+                            toToken: {
+                                tokenContractAddress: 'So11111111111111111111111111111111111111112',
+                                tokenSymbol: 'WSOL',
+                                decimal: '9',
+                            },
+                        },
+                        tx: {
+                            from: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                            to: 'proVF4pMXVaYqmy4NjniPh4pqKNfMmsihgd4wdkCX3u',
+                            minReceiveAmount: '604365',
+                            slippagePercent: '0.5',
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'buildSolanaSwapInstructions').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<BuildSolanaSwapInstructionsResponse>)
+            );
+            const response = await client.buildSolanaSwapInstructions(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when amount is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.amount;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter amount was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when fromTokenAddress is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.fromTokenAddress;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter fromTokenAddress was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when toTokenAddress is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.toTokenAddress;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter toTokenAddress was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when slippagePercent is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.slippagePercent;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter slippagePercent was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when userWalletAddress is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.userWalletAddress;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter userWalletAddress was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw RequiredError when quoteId is missing', async () => {
+            const _params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.quoteId;
+
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'Required parameter quoteId was null or undefined when calling buildSolanaSwapInstructions.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: BuildSolanaSwapInstructionsRequest = {
+                binanceChainId: BuildSolanaSwapInstructionsBinanceChainIdEnum.CT_501,
+                amount: '12000000',
+                fromTokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                toTokenAddress: 'So11111111111111111111111111111111111111112',
+                slippagePercent: '0.5',
+                userWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                quoteId: 'a1b2c3d4e5f64a8b9c0d1e2f3a4b5c6d',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'buildSolanaSwapInstructions')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.buildSolanaSwapInstructions(params)).rejects.toThrow(
+                'ResponseError'
+            );
+            spy.mockRestore();
+        });
     });
 
     describe('buildSwapTransaction()', () => {
@@ -131,8 +490,12 @@ describe('TradingApi', () => {
                         executionMode: 'SWAP',
                         rfq: {
                             vendor: 'PcsXRfq',
-                            orderId: 'oc-o-abc123def456',
+                            txType: 'EIP712',
+                            typedDataToSign: '0x1901...',
                             signingScheme: 'EIP712',
+                            signatureData: [
+                                '{"approveContract":"0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f","approveTxCalldata":"0x095ea7b3..."}',
+                            ],
                         },
                     },
                     timestamp: 1748601600000,
@@ -242,8 +605,12 @@ describe('TradingApi', () => {
                         executionMode: 'SWAP',
                         rfq: {
                             vendor: 'PcsXRfq',
-                            orderId: 'oc-o-abc123def456',
+                            txType: 'EIP712',
+                            typedDataToSign: '0x1901...',
                             signingScheme: 'EIP712',
+                            signatureData: [
+                                '{"approveContract":"0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f","approveTxCalldata":"0x095ea7b3..."}',
+                            ],
                         },
                     },
                     timestamp: 1748601600000,

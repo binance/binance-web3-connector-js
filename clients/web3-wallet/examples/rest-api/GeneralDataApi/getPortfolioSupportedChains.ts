@@ -7,18 +7,18 @@ const configurationRestAPI = {
 };
 const client = new Web3Wallet({ configurationRestAPI });
 
-async function getHotTokenList() {
+async function getPortfolioSupportedChains() {
     try {
-        const response = await client.restAPI.getHotTokenList();
+        const response = await client.restAPI.getPortfolioSupportedChains();
 
         const rateLimits = response.rateLimits!;
-        console.log('getHotTokenList() rate limits:', rateLimits);
+        console.log('getPortfolioSupportedChains() rate limits:', rateLimits);
 
         const data = await response.data();
-        console.log('getHotTokenList() response:', data);
+        console.log('getPortfolioSupportedChains() response:', data);
     } catch (error) {
-        console.error('getHotTokenList() error:', error);
+        console.error('getPortfolioSupportedChains() error:', error);
     }
 }
 
-getHotTokenList();
+getPortfolioSupportedChains();

@@ -1,5 +1,19 @@
 # Changelog
 
+## 7.0.0 - 2026-07-15
+
+### Added (9)
+
+- `getAddressTrackerTrades()` (`GET /api/v1/dex/market/address-tracker/trades`)
+- `getLeaderboardList()` (`GET /api/v1/dex/market/leaderboard/list`)
+- `getLeaderboardSupportedChains()` (`GET /api/v1/dex/market/leaderboard/supported/chain`)
+- `getPortfolioDexHistory()` (`GET /api/v1/dex/market/portfolio/dex-history`)
+- `getPortfolioOverview()` (`GET /api/v1/dex/market/portfolio/overview`)
+- `getPortfolioRecentPnL()` (`GET /api/v1/dex/market/portfolio/recent-pnl`)
+- `getPortfolioSupportedChains()` (`GET /api/v1/dex/market/portfolio/supported/chain`)
+- `getPortfolioTokenLatestPnL()` (`GET /api/v1/dex/market/portfolio/token/latest-pnl`)
+- `getTokenDevInfo()` (`GET /api/v1/dex/market/memepump/tokenDevInfo`)
+
 ## 6.0.0 - 2026-06-19
 
 ### Added (2)

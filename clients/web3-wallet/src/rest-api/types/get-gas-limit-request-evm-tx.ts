@@ -42,5 +42,5 @@ export interface GetGasLimitRequestEvmTx {
      * @type {string}
      * @memberof GetGasLimitRequestEvmTx
      */
-    data?: string;
+    data: string;
 }

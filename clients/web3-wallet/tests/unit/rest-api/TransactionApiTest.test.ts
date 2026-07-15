@@ -331,6 +331,8 @@ describe('TransactionApi', () => {
         it('should execute getGasLimit() successfully with required parameters only', async () => {
             const params: GetGasLimitRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
             };
 
             mockResponse = JSONParse(
@@ -360,10 +362,10 @@ describe('TransactionApi', () => {
         it('should execute getGasLimit() successfully with optional parameters', async () => {
             const params: GetGasLimitRequest = {
                 binanceChainId: 'binanceChainId_example',
-                recvWindow: 5000,
-                nonce: 'unique-nonce-string',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
             };
 
             mockResponse = JSONParse(
@@ -393,6 +395,8 @@ describe('TransactionApi', () => {
         it('should throw RequiredError when binanceChainId is missing', async () => {
             const _params: GetGasLimitRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.binanceChainId;
@@ -402,9 +406,39 @@ describe('TransactionApi', () => {
             );
         });
 
+        it('should throw RequiredError when evmTx is missing', async () => {
+            const _params: GetGasLimitRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.evmTx;
+
+            await expect(client.getGasLimit(params)).rejects.toThrow(
+                'Required parameter evmTx was null or undefined when calling getGasLimit.'
+            );
+        });
+
+        it('should throw RequiredError when solTx is missing', async () => {
+            const _params: GetGasLimitRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.solTx;
+
+            await expect(client.getGasLimit(params)).rejects.toThrow(
+                'Required parameter solTx was null or undefined when calling getGasLimit.'
+            );
+        });
+
         it('should throw an error when server is returning an error', async () => {
             const params: GetGasLimitRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
             };
 
             const errorResponse = {
@@ -655,6 +689,8 @@ describe('TransactionApi', () => {
         it('should execute simulateTransactions() successfully with required parameters only', async () => {
             const params: SimulateTransactionsRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
             };
 
             mockResponse = JSONParse(
@@ -704,10 +740,10 @@ describe('TransactionApi', () => {
         it('should execute simulateTransactions() successfully with optional parameters', async () => {
             const params: SimulateTransactionsRequest = {
                 binanceChainId: 'binanceChainId_example',
-                recvWindow: 5000,
-                nonce: 'unique-nonce-string',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
             };
 
             mockResponse = JSONParse(
@@ -757,6 +793,8 @@ describe('TransactionApi', () => {
         it('should throw RequiredError when binanceChainId is missing', async () => {
             const _params: SimulateTransactionsRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.binanceChainId;
@@ -766,9 +804,39 @@ describe('TransactionApi', () => {
             );
         });
 
+        it('should throw RequiredError when evmTx is missing', async () => {
+            const _params: SimulateTransactionsRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.evmTx;
+
+            await expect(client.simulateTransactions(params)).rejects.toThrow(
+                'Required parameter evmTx was null or undefined when calling simulateTransactions.'
+            );
+        });
+
+        it('should throw RequiredError when solTx is missing', async () => {
+            const _params: SimulateTransactionsRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.solTx;
+
+            await expect(client.simulateTransactions(params)).rejects.toThrow(
+                'Required parameter solTx was null or undefined when calling simulateTransactions.'
+            );
+        });
+
         it('should throw an error when server is returning an error', async () => {
             const params: SimulateTransactionsRequest = {
                 binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
             };
 
             const errorResponse = {

@@ -26,7 +26,7 @@ export interface GetRfqOrderStatusResponseData {
      */
     orderId?: string;
     /**
-     * Current order status. - **Terminal**: `FILLED` (settled on-chain), `FAILED` (settlement failed). - **Intermediate**: `PENDING_VENDOR` (forwarded to vendor, awaiting settlement),   `SUBMITTED` (forwarded to relayer).
+     * Current order status. - **Terminal**: `FILLED` (settled on-chain), `FAILED` (settlement failed),   `EXPIRED` (vendor could not settle before the order deadline), `CANCELLED`   (cancelled by the user or vendor).  - **Intermediate**: `PENDING_VENDOR` (forwarded to vendor, awaiting settlement),   `PENDING_ONCHAIN` (vendor has broadcast the on-chain transaction, awaiting   block confirmation).
      * @type {string}
      * @memberof GetRfqOrderStatusResponseData
      */

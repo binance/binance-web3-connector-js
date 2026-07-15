@@ -12,26 +12,45 @@
  */
 
 import { ConfigurationRestAPI, RestApiResponse, sendRequest } from '@binance/common';
-import { MarketApi } from './modules/market-api';
+import { GeneralDataApi } from './modules/general-data-api';
+import { RWADataApi } from './modules/rwadata-api';
 import { TradingApi } from './modules/trading-api';
 import { TransactionApi } from './modules/transaction-api';
 import { WalletApi } from './modules/wallet-api';
 
 import type {
+    GetAddressTrackerTradesRequest,
     GetCandlesRequest,
     GetHoldersRankingRequest,
     GetHotTokenListRequest,
+    GetLeaderboardListRequest,
+    GetLeaderboardSupportedChainsRequest,
+    GetPortfolioDexHistoryRequest,
+    GetPortfolioOverviewRequest,
+    GetPortfolioRecentPnLRequest,
+    GetPortfolioSupportedChainsRequest,
+    GetPortfolioTokenLatestPnLRequest,
     GetSupportedChainsRequest,
     GetTokenAdvancedInfoRequest,
     GetTokenBasicInfoRequest,
+    GetTokenDevInfoRequest,
     GetTokenPriceRequest,
     GetTokenTradesRequest,
     GetTokenTradingInfoRequest,
     GetTopLiquidityPoolsRequest,
     GetTopTradersRequest,
     SearchTokenRequest,
-} from './modules/market-api';
+} from './modules/general-data-api';
 import type {
+    GetRwaTokenIssuancePlatformsRequest,
+    GetRwaTokenListRequest,
+    GetRwaTokenPriceRequest,
+    GetRwaUnderlyingInfoRequest,
+    GetRwaUnderlyingMarketDataRequest,
+    SearchRwaTokenRequest,
+} from './modules/rwadata-api';
+import type {
+    BuildSolanaSwapInstructionsRequest,
     BuildSwapTransactionRequest,
     GetAggregatedQuoteRequest,
     GetAggregatorSupportedChainsRequest,
@@ -57,12 +76,21 @@ import type {
 } from './modules/wallet-api';
 
 import type {
+    GetAddressTrackerTradesResponse,
     GetCandlesResponse,
     GetHoldersRankingResponse,
     GetHotTokenListResponse,
+    GetLeaderboardListResponse,
+    GetLeaderboardSupportedChainsResponse,
+    GetPortfolioDexHistoryResponse,
+    GetPortfolioOverviewResponse,
+    GetPortfolioRecentPnLResponse,
+    GetPortfolioSupportedChainsResponse,
+    GetPortfolioTokenLatestPnLResponse,
     GetSupportedChainsResponse,
     GetTokenAdvancedInfoResponse,
     GetTokenBasicInfoResponse,
+    GetTokenDevInfoResponse,
     GetTokenPriceResponse,
     GetTokenTradesResponse,
     GetTokenTradingInfoResponse,
@@ -71,6 +99,15 @@ import type {
     SearchTokenResponse,
 } from './types';
 import type {
+    GetRwaTokenIssuancePlatformsResponse,
+    GetRwaTokenListResponse,
+    GetRwaTokenPriceResponse,
+    GetRwaUnderlyingInfoResponse,
+    GetRwaUnderlyingMarketDataResponse,
+    SearchRwaTokenResponse,
+} from './types';
+import type {
+    BuildSolanaSwapInstructionsResponse,
     BuildSwapTransactionResponse,
     GetAggregatedQuoteResponse,
     GetAggregatorSupportedChainsResponse,
@@ -97,14 +134,16 @@ import type {
 
 export class RestAPI {
     private configuration: ConfigurationRestAPI;
-    private marketApi: MarketApi;
+    private generalDataApi: GeneralDataApi;
+    private rWADataApi: RWADataApi;
     private tradingApi: TradingApi;
     private transactionApi: TransactionApi;
     private walletApi: WalletApi;
 
     constructor(configuration: ConfigurationRestAPI) {
         this.configuration = configuration;
-        this.marketApi = new MarketApi(configuration);
+        this.generalDataApi = new GeneralDataApi(configuration);
+        this.rWADataApi = new RWADataApi(configuration);
         this.tradingApi = new TradingApi(configuration);
         this.transactionApi = new TransactionApi(configuration);
         this.walletApi = new WalletApi(configuration);
@@ -164,6 +203,23 @@ export class RestAPI {
     }
 
     /**
+     * Return the latest DEX trades from tracked addresses (smart money, KOL, or custom address list). Supports filtering by trade type, chain, volume, market cap, and risk token visibility.
+     * This endpoint is not cursor-paginated. trackerType=1/2 (Smart Money / KOL) return a single fixed-size set determined by the downstream public query cap; trackerType=3 (custom address list) returns up to `limit` trades (omit `limit` to use the downstream default).
+     *
+     * @summary Get Address Tracker Trades
+     * @param {GetAddressTrackerTradesRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetAddressTrackerTradesResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-address-tracker-trades Binance API Documentation}
+     */
+    getAddressTrackerTrades(
+        requestParameters: GetAddressTrackerTradesRequest
+    ): Promise<RestApiResponse<GetAddressTrackerTradesResponse>> {
+        return this.generalDataApi.getAddressTrackerTrades(requestParameters);
+    }
+
+    /**
      * Return candlestick (K-line) data for a token.
      *
      * @summary Get Candles
@@ -171,10 +227,10 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetCandlesResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-candles Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-candles Binance API Documentation}
      */
     getCandles(requestParameters: GetCandlesRequest): Promise<RestApiResponse<GetCandlesResponse>> {
-        return this.marketApi.getCandles(requestParameters);
+        return this.generalDataApi.getCandles(requestParameters);
     }
 
     /**
@@ -185,12 +241,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetHoldersRankingResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-holders-ranking Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-holders-ranking Binance API Documentation}
      */
     getHoldersRanking(
         requestParameters: GetHoldersRankingRequest
     ): Promise<RestApiResponse<GetHoldersRankingResponse>> {
-        return this.marketApi.getHoldersRanking(requestParameters);
+        return this.generalDataApi.getHoldersRanking(requestParameters);
     }
 
     /**
@@ -201,12 +257,124 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetHotTokenListResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-hot-token-list Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-hot-token-list Binance API Documentation}
      */
     getHotTokenList(
-        requestParameters: GetHotTokenListRequest = {}
+        requestParameters: GetHotTokenListRequest
     ): Promise<RestApiResponse<GetHotTokenListResponse>> {
-        return this.marketApi.getHotTokenList(requestParameters);
+        return this.generalDataApi.getHotTokenList(requestParameters);
+    }
+
+    /**
+     * Return a paginated leaderboard of top-performing wallet addresses, supporting filtering and sorting by time frame, wallet type, realized PnL, win rate, transaction count, and volume.
+     *
+     * @summary Get Leaderboard List
+     * @param {GetLeaderboardListRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetLeaderboardListResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-leaderboard-list Binance API Documentation}
+     */
+    getLeaderboardList(
+        requestParameters: GetLeaderboardListRequest
+    ): Promise<RestApiResponse<GetLeaderboardListResponse>> {
+        return this.generalDataApi.getLeaderboardList(requestParameters);
+    }
+
+    /**
+     * Return the list of blockchains supported by the leaderboard feature.
+     *
+     * @summary Get Leaderboard Supported Chains
+     * @param {GetLeaderboardSupportedChainsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetLeaderboardSupportedChainsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-leaderboard-supported-chains Binance API Documentation}
+     */
+    getLeaderboardSupportedChains(
+        requestParameters: GetLeaderboardSupportedChainsRequest = {}
+    ): Promise<RestApiResponse<GetLeaderboardSupportedChainsResponse>> {
+        return this.generalDataApi.getLeaderboardSupportedChains(requestParameters);
+    }
+
+    /**
+     * Return a paginated list of an address's DEX transaction history, sorted by time descending. Up to 1000 records total; up to 100 per page. Supports filtering by time range, token, and trade type.
+     *
+     * @summary Get Portfolio DEX History
+     * @param {GetPortfolioDexHistoryRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioDexHistoryResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-dex-history Binance API Documentation}
+     */
+    getPortfolioDexHistory(
+        requestParameters: GetPortfolioDexHistoryRequest
+    ): Promise<RestApiResponse<GetPortfolioDexHistoryResponse>> {
+        return this.generalDataApi.getPortfolioDexHistory(requestParameters);
+    }
+
+    /**
+     * Return a summary of an address's trading performance over a specified time frame, including realized PnL, daily PnL breakdown, win rate, token count by PnL range, buy/sell statistics, and top 3 profit tokens.
+     *
+     * @summary Get Portfolio Overview
+     * @param {GetPortfolioOverviewRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioOverviewResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-overview Binance API Documentation}
+     */
+    getPortfolioOverview(
+        requestParameters: GetPortfolioOverviewRequest
+    ): Promise<RestApiResponse<GetPortfolioOverviewResponse>> {
+        return this.generalDataApi.getPortfolioOverview(requestParameters);
+    }
+
+    /**
+     * Return a paginated list of an address's recent realized PnL records, sorted by last active timestamp descending. Up to 1000 records total; up to 100 per page.
+     *
+     * @summary Get Portfolio Recent PnL
+     * @param {GetPortfolioRecentPnLRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioRecentPnLResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-recent-pn-l Binance API Documentation}
+     */
+    getPortfolioRecentPnL(
+        requestParameters: GetPortfolioRecentPnLRequest
+    ): Promise<RestApiResponse<GetPortfolioRecentPnLResponse>> {
+        return this.generalDataApi.getPortfolioRecentPnL(requestParameters);
+    }
+
+    /**
+     * Return the list of blockchains supported by the portfolio (address analysis) feature.
+     *
+     * @summary Get Portfolio Supported Chains
+     * @param {GetPortfolioSupportedChainsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-supported-chains Binance API Documentation}
+     */
+    getPortfolioSupportedChains(
+        requestParameters: GetPortfolioSupportedChainsRequest = {}
+    ): Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>> {
+        return this.generalDataApi.getPortfolioSupportedChains(requestParameters);
+    }
+
+    /**
+     * Return the latest realized PnL details for a specific token held by a wallet address, including buy/sell statistics, current balance, holding duration, and PnL support status.
+     *
+     * @summary Get Portfolio Token Latest PnL
+     * @param {GetPortfolioTokenLatestPnLRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioTokenLatestPnLResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-token-latest-pn-l Binance API Documentation}
+     */
+    getPortfolioTokenLatestPnL(
+        requestParameters: GetPortfolioTokenLatestPnLRequest
+    ): Promise<RestApiResponse<GetPortfolioTokenLatestPnLResponse>> {
+        return this.generalDataApi.getPortfolioTokenLatestPnL(requestParameters);
     }
 
     /**
@@ -217,12 +385,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetSupportedChainsResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-supported-chains Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains Binance API Documentation}
      */
     getSupportedChains(
         requestParameters: GetSupportedChainsRequest = {}
     ): Promise<RestApiResponse<GetSupportedChainsResponse>> {
-        return this.marketApi.getSupportedChains(requestParameters);
+        return this.generalDataApi.getSupportedChains(requestParameters);
     }
 
     /**
@@ -233,12 +401,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTokenAdvancedInfoResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-token-advanced-info Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-advanced-info Binance API Documentation}
      */
     getTokenAdvancedInfo(
         requestParameters: GetTokenAdvancedInfoRequest
     ): Promise<RestApiResponse<GetTokenAdvancedInfoResponse>> {
-        return this.marketApi.getTokenAdvancedInfo(requestParameters);
+        return this.generalDataApi.getTokenAdvancedInfo(requestParameters);
     }
 
     /**
@@ -249,12 +417,28 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTokenBasicInfoResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-token-basic-info Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-basic-info Binance API Documentation}
      */
     getTokenBasicInfo(
         requestParameters: GetTokenBasicInfoRequest
     ): Promise<RestApiResponse<GetTokenBasicInfoResponse>> {
-        return this.marketApi.getTokenBasicInfo(requestParameters);
+        return this.generalDataApi.getTokenBasicInfo(requestParameters);
+    }
+
+    /**
+     * Return developer information for a token, including historical token launch statistics, current holding percentage, and funding source details.
+     *
+     * @summary Get Token Dev Info
+     * @param {GetTokenDevInfoRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetTokenDevInfoResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-dev-info Binance API Documentation}
+     */
+    getTokenDevInfo(
+        requestParameters: GetTokenDevInfoRequest
+    ): Promise<RestApiResponse<GetTokenDevInfoResponse>> {
+        return this.generalDataApi.getTokenDevInfo(requestParameters);
     }
 
     /**
@@ -265,12 +449,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTokenPriceResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-token-price Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-price Binance API Documentation}
      */
     getTokenPrice(
         requestParameters: GetTokenPriceRequest = {}
     ): Promise<RestApiResponse<GetTokenPriceResponse>> {
-        return this.marketApi.getTokenPrice(requestParameters);
+        return this.generalDataApi.getTokenPrice(requestParameters);
     }
 
     /**
@@ -281,12 +465,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTokenTradesResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-token-trades Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-trades Binance API Documentation}
      */
     getTokenTrades(
         requestParameters: GetTokenTradesRequest
     ): Promise<RestApiResponse<GetTokenTradesResponse>> {
-        return this.marketApi.getTokenTrades(requestParameters);
+        return this.generalDataApi.getTokenTrades(requestParameters);
     }
 
     /**
@@ -297,12 +481,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTokenTradingInfoResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-token-trading-info Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-token-trading-info Binance API Documentation}
      */
     getTokenTradingInfo(
         requestParameters: GetTokenTradingInfoRequest = {}
     ): Promise<RestApiResponse<GetTokenTradingInfoResponse>> {
-        return this.marketApi.getTokenTradingInfo(requestParameters);
+        return this.generalDataApi.getTokenTradingInfo(requestParameters);
     }
 
     /**
@@ -313,12 +497,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTopLiquidityPoolsResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-top-liquidity-pools Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-top-liquidity-pools Binance API Documentation}
      */
     getTopLiquidityPools(
         requestParameters: GetTopLiquidityPoolsRequest
     ): Promise<RestApiResponse<GetTopLiquidityPoolsResponse>> {
-        return this.marketApi.getTopLiquidityPools(requestParameters);
+        return this.generalDataApi.getTopLiquidityPools(requestParameters);
     }
 
     /**
@@ -329,12 +513,12 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<GetTopTradersResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#get-top-traders Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-top-traders Binance API Documentation}
      */
     getTopTraders(
         requestParameters: GetTopTradersRequest
     ): Promise<RestApiResponse<GetTopTradersResponse>> {
-        return this.marketApi.getTopTraders(requestParameters);
+        return this.generalDataApi.getTopTraders(requestParameters);
     }
 
     /**
@@ -345,12 +529,135 @@ export class RestAPI {
      *
      * @returns {Promise<RestApiResponse<SearchTokenResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/market-api#search-token Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#search-token Binance API Documentation}
      */
     searchToken(
         requestParameters: SearchTokenRequest
     ): Promise<RestApiResponse<SearchTokenResponse>> {
-        return this.marketApi.searchToken(requestParameters);
+        return this.generalDataApi.searchToken(requestParameters);
+    }
+
+    /**
+     * Return the list of supported RWA token issuance platforms and their basic info.
+     *
+     * @summary Get RWA Token Issuance Platforms
+     * @param {GetRwaTokenIssuancePlatformsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRwaTokenIssuancePlatformsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#get-rwa-token-issuance-platforms Binance API Documentation}
+     */
+    getRwaTokenIssuancePlatforms(
+        requestParameters: GetRwaTokenIssuancePlatformsRequest = {}
+    ): Promise<RestApiResponse<GetRwaTokenIssuancePlatformsResponse>> {
+        return this.rWADataApi.getRwaTokenIssuancePlatforms(requestParameters);
+    }
+
+    /**
+     * Get the list of RWA tokens with underlying asset info. Supports filtering by platform and sector tab.
+     *
+     * @summary Get RWA Token List
+     * @param {GetRwaTokenListRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRwaTokenListResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#get-rwa-token-list Binance API Documentation}
+     */
+    getRwaTokenList(
+        requestParameters: GetRwaTokenListRequest = {}
+    ): Promise<RestApiResponse<GetRwaTokenListResponse>> {
+        return this.rWADataApi.getRwaTokenList(requestParameters);
+    }
+
+    /**
+     * Batch query RWA token prices, including on-chain price and underlying reference price.
+     *
+     * @summary Get RWA Token Price
+     * @param {GetRwaTokenPriceRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRwaTokenPriceResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#get-rwa-token-price Binance API Documentation}
+     */
+    getRwaTokenPrice(
+        requestParameters: GetRwaTokenPriceRequest
+    ): Promise<RestApiResponse<GetRwaTokenPriceResponse>> {
+        return this.rWADataApi.getRwaTokenPrice(requestParameters);
+    }
+
+    /**
+     * Get the underlying company information for an RWA token.
+     *
+     * @summary Get RWA Underlying Info
+     * @param {GetRwaUnderlyingInfoRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRwaUnderlyingInfoResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#get-rwa-underlying-info Binance API Documentation}
+     */
+    getRwaUnderlyingInfo(
+        requestParameters: GetRwaUnderlyingInfoRequest
+    ): Promise<RestApiResponse<GetRwaUnderlyingInfoResponse>> {
+        return this.rWADataApi.getRwaUnderlyingInfo(requestParameters);
+    }
+
+    /**
+     * Get market data for the underlying asset of an RWA token.
+     *
+     * @summary Get RWA Underlying Market Data
+     * @param {GetRwaUnderlyingMarketDataRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetRwaUnderlyingMarketDataResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#get-rwa-underlying-market-data Binance API Documentation}
+     */
+    getRwaUnderlyingMarketData(
+        requestParameters: GetRwaUnderlyingMarketDataRequest
+    ): Promise<RestApiResponse<GetRwaUnderlyingMarketDataResponse>> {
+        return this.rWADataApi.getRwaUnderlyingMarketData(requestParameters);
+    }
+
+    /**
+     * Search RWA tokens by keyword or contract address.
+     *
+     * @summary Search RWA Token
+     * @param {SearchRwaTokenRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<SearchRwaTokenResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/rwa-data#search-rwa-token Binance API Documentation}
+     */
+    searchRwaToken(
+        requestParameters: SearchRwaTokenRequest
+    ): Promise<RestApiResponse<SearchRwaTokenResponse>> {
+        return this.rWADataApi.searchRwaToken(requestParameters);
+    }
+
+    /**
+     * Solana-only counterpart to `/swap`. Shares the full quote → route → vendor `buildSwapTx` → priceImpact → minReceive → instruction-assembly pipeline; the only difference is the response: instead of returning a signed-and-serialized base64 transaction, this endpoint returns the **uncompiled** instruction list plus the address-lookup-table (ALT) address list, leaving v0-transaction compilation, signing, and submission to the caller.
+     *
+     * Use this when the caller needs to:
+     * - prepend / append their own instructions (e.g. fee splitting, custom
+     * logging) before signing;
+     *
+     * - reuse the platform-curated route, slippage, PS-variant rewriting, ALT
+     * injection, ComputeBudget overwrite, and ATA batching while still
+     * controlling the final wire format.
+     *
+     *
+     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`).
+     *
+     * @summary Build Solana Swap Instructions
+     * @param {BuildSolanaSwapInstructionsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildSolanaSwapInstructionsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#build-solana-swap-instructions Binance API Documentation}
+     */
+    buildSolanaSwapInstructions(
+        requestParameters: BuildSolanaSwapInstructionsRequest
+    ): Promise<RestApiResponse<BuildSolanaSwapInstructionsResponse>> {
+        return this.tradingApi.buildSolanaSwapInstructions(requestParameters);
     }
 
     /**

@@ -11,7 +11,8 @@
  * Do not edit the class manually.
  */
 
-export * from './market-api';
+export * from './general-data-api';
+export * from './rwadata-api';
 export * from './trading-api';
 export * from './transaction-api';
 export * from './wallet-api';

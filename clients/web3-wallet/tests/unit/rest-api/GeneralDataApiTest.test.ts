@@ -16,21 +16,36 @@ import { JSONParse, JSONStringify } from 'json-with-bigint';
 import { ConfigurationRestAPI, type RestApiResponse } from '@binance/common';
 
 import {
-    MarketApi,
+    GeneralDataApi,
+    GetAddressTrackerTradesTrackerTypeEnum,
     GetCandlesBarEnum,
     GetHoldersRankingTagFilterEnum,
     GetHotTokenListRankByEnum,
     GetHotTokenListRankingTimeFrameEnum,
+    GetLeaderboardListTimeFrameEnum,
+    GetLeaderboardListSortByEnum,
+    GetLeaderboardListWalletTypeEnum,
+    GetPortfolioDexHistoryTypeEnum,
+    GetPortfolioOverviewTimeFrameEnum,
     GetTokenTradesTagFilterEnum,
     GetTopTradersTagFilterEnum,
 } from '../../../src/rest-api';
 import {
+    GetAddressTrackerTradesRequest,
     GetCandlesRequest,
     GetHoldersRankingRequest,
     GetHotTokenListRequest,
+    GetLeaderboardListRequest,
+    GetLeaderboardSupportedChainsRequest,
+    GetPortfolioDexHistoryRequest,
+    GetPortfolioOverviewRequest,
+    GetPortfolioRecentPnLRequest,
+    GetPortfolioSupportedChainsRequest,
+    GetPortfolioTokenLatestPnLRequest,
     GetSupportedChainsRequest,
     GetTokenAdvancedInfoRequest,
     GetTokenBasicInfoRequest,
+    GetTokenDevInfoRequest,
     GetTokenPriceRequest,
     GetTokenTradesRequest,
     GetTokenTradingInfoRequest,
@@ -39,12 +54,21 @@ import {
     SearchTokenRequest,
 } from '../../../src/rest-api';
 import type {
+    GetAddressTrackerTradesResponse,
     GetCandlesResponse,
     GetHoldersRankingResponse,
     GetHotTokenListResponse,
+    GetLeaderboardListResponse,
+    GetLeaderboardSupportedChainsResponse,
+    GetPortfolioDexHistoryResponse,
+    GetPortfolioOverviewResponse,
+    GetPortfolioRecentPnLResponse,
+    GetPortfolioSupportedChainsResponse,
+    GetPortfolioTokenLatestPnLResponse,
     GetSupportedChainsResponse,
     GetTokenAdvancedInfoResponse,
     GetTokenBasicInfoResponse,
+    GetTokenDevInfoResponse,
     GetTokenPriceResponse,
     GetTokenTradesResponse,
     GetTokenTradingInfoResponse,
@@ -53,8 +77,8 @@ import type {
     SearchTokenResponse,
 } from '../../../src/rest-api/types';
 
-describe('MarketApi', () => {
-    let client: MarketApi;
+describe('GeneralDataApi', () => {
+    let client: GeneralDataApi;
     let config: ConfigurationRestAPI;
     let mockResponse: object = {};
 
@@ -64,7 +88,140 @@ describe('MarketApi', () => {
             apiSecret: 'test-api-secret',
             basePath: '',
         });
-        client = new MarketApi(config);
+        client = new GeneralDataApi(config);
+    });
+
+    describe('getAddressTrackerTrades()', () => {
+        it('should execute getAddressTrackerTrades() successfully with required parameters only', async () => {
+            const params: GetAddressTrackerTradesRequest = {
+                trackerType: GetAddressTrackerTradesTrackerTypeEnum.TRACKER_TYPE_1,
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        trades: [
+                            {
+                                txHash: '0x3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+                                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                                tokenSymbol: 'PEPE',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                binanceChainId: '1',
+                                tokenPrice: '0.00153',
+                                marketCap: '1534835.38',
+                                tradeType: '1',
+                                tradeTime: '1777113793000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getAddressTrackerTrades').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetAddressTrackerTradesResponse>)
+            );
+            const response = await client.getAddressTrackerTrades(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getAddressTrackerTrades() successfully with optional parameters', async () => {
+            const params: GetAddressTrackerTradesRequest = {
+                trackerType: GetAddressTrackerTradesTrackerTypeEnum.TRACKER_TYPE_1,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                walletAddress:
+                    '0x28c6c06298d514db089934071355e5743bf21d60,0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+                tradeType: '0',
+                binanceChainId: '1',
+                minVolume: '100',
+                maxVolume: '100000',
+                minMarketCap: '10000',
+                maxMarketCap: '10000000',
+                isHideRiskToken: true,
+                limit: 50,
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        trades: [
+                            {
+                                txHash: '0x3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+                                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                                tokenSymbol: 'PEPE',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                binanceChainId: '1',
+                                tokenPrice: '0.00153',
+                                marketCap: '1534835.38',
+                                tradeType: '1',
+                                tradeTime: '1777113793000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getAddressTrackerTrades').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetAddressTrackerTradesResponse>)
+            );
+            const response = await client.getAddressTrackerTrades(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when trackerType is missing', async () => {
+            const _params: GetAddressTrackerTradesRequest = {
+                trackerType: GetAddressTrackerTradesTrackerTypeEnum.TRACKER_TYPE_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.trackerType;
+
+            await expect(client.getAddressTrackerTrades(params)).rejects.toThrow(
+                'Required parameter trackerType was null or undefined when calling getAddressTrackerTrades.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetAddressTrackerTradesRequest = {
+                trackerType: GetAddressTrackerTradesTrackerTypeEnum.TRACKER_TYPE_1,
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getAddressTrackerTrades')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getAddressTrackerTrades(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
     });
 
     describe('getCandles()', () => {
@@ -340,6 +497,10 @@ describe('MarketApi', () => {
 
     describe('getHotTokenList()', () => {
         it('should execute getHotTokenList() successfully with required parameters only', async () => {
+            const params: GetHotTokenListRequest = {
+                binanceChainId: '1',
+            };
+
             mockResponse = JSONParse(
                 JSONStringify({
                     code: 0,
@@ -393,7 +554,7 @@ describe('MarketApi', () => {
                     rateLimits: [],
                 } as RestApiResponse<GetHotTokenListResponse>)
             );
-            const response = await client.getHotTokenList();
+            const response = await client.getHotTokenList(params);
             expect(response).toBeDefined();
             await expect(response.data()).resolves.toBe(mockResponse);
             spy.mockRestore();
@@ -401,9 +562,9 @@ describe('MarketApi', () => {
 
         it('should execute getHotTokenList() successfully with optional parameters', async () => {
             const params: GetHotTokenListRequest = {
+                binanceChainId: '1',
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
-                binanceChainId: '1',
                 rankBy: GetHotTokenListRankByEnum.RANK_BY_1,
                 rankingTimeFrame: GetHotTokenListRankingTimeFrameEnum.RANKING_TIME_FRAME_1,
                 priceChangePercentMin: '5',
@@ -516,7 +677,23 @@ describe('MarketApi', () => {
             spy.mockRestore();
         });
 
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetHotTokenListRequest = {
+                binanceChainId: '1',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getHotTokenList(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getHotTokenList.'
+            );
+        });
+
         it('should throw an error when server is returning an error', async () => {
+            const params: GetHotTokenListRequest = {
+                binanceChainId: '1',
+            };
+
             const errorResponse = {
                 code: -1111,
                 msg: 'Server Error',
@@ -527,7 +704,1085 @@ describe('MarketApi', () => {
             };
             mockError.response = { status: 400, data: errorResponse };
             const spy = jest.spyOn(client, 'getHotTokenList').mockRejectedValueOnce(mockError);
-            await expect(client.getHotTokenList()).rejects.toThrow('ResponseError');
+            await expect(client.getHotTokenList(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getLeaderboardList()', () => {
+        it('should execute getLeaderboardList() successfully with required parameters only', async () => {
+            const params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        items: [
+                            {
+                                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                                walletName: 'Smart Money #1',
+                                walletLogoUrl: '',
+                                walletTwitterUrl: 'https://x.com/example_trader',
+                                walletType: '1,2',
+                                nativeTokenBalance: '12.5',
+                                nativeTokenBalanceUsd: '31250.00',
+                                realizedPnlUsd: '1204530.647494',
+                                realizedPnlPercent: '1699.97',
+                                dailyPnl: [{ date: '2026-04-25', pnlUsd: '12000.50' }],
+                                winRatePercent: '100.0',
+                                txVolume: '1346559.275964',
+                                buyTxVolume: '673279.637982',
+                                sellTxVolume: '673279.637982',
+                                avgBuyValueUsd: '23724.225',
+                                txs: '40',
+                                buyTxCount: '20',
+                                sellTxCount: '20',
+                                topPnlTokenList: [
+                                    {
+                                        tokenContractAddress:
+                                            '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                                        tokenSymbol: 'USDT',
+                                        tokenLogoUrl:
+                                            'https://static.onchainos.com/tokens/usdt.png',
+                                        tokenPnLUsd: '5000.50',
+                                        tokenPnLPercent: '250.5',
+                                    },
+                                ],
+                                tokenCountByPnlPercent: {
+                                    above500Percent: '3',
+                                    between0And500Percent: '8',
+                                    betweenNeg50And0Percent: '5',
+                                    belowNeg50Percent: '2',
+                                },
+                                lastActiveTimestamp: '1776995058000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLeaderboardList').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLeaderboardListResponse>)
+            );
+            const response = await client.getLeaderboardList(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getLeaderboardList() successfully with optional parameters', async () => {
+            const params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                walletType: GetLeaderboardListWalletTypeEnum.WALLET_TYPE_1,
+                minRealizedPnlUsd: '1000',
+                maxRealizedPnlUsd: '50000',
+                minWinRatePercent: '50',
+                maxWinRatePercent: '90',
+                minTxs: '10',
+                maxTxs: '1000',
+                minTxVolume: '5000',
+                maxTxVolume: '1000000',
+                cursor: '',
+                limit: '50',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        items: [
+                            {
+                                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                                walletName: 'Smart Money #1',
+                                walletLogoUrl: '',
+                                walletTwitterUrl: 'https://x.com/example_trader',
+                                walletType: '1,2',
+                                nativeTokenBalance: '12.5',
+                                nativeTokenBalanceUsd: '31250.00',
+                                realizedPnlUsd: '1204530.647494',
+                                realizedPnlPercent: '1699.97',
+                                dailyPnl: [{ date: '2026-04-25', pnlUsd: '12000.50' }],
+                                winRatePercent: '100.0',
+                                txVolume: '1346559.275964',
+                                buyTxVolume: '673279.637982',
+                                sellTxVolume: '673279.637982',
+                                avgBuyValueUsd: '23724.225',
+                                txs: '40',
+                                buyTxCount: '20',
+                                sellTxCount: '20',
+                                topPnlTokenList: [
+                                    {
+                                        tokenContractAddress:
+                                            '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                                        tokenSymbol: 'USDT',
+                                        tokenLogoUrl:
+                                            'https://static.onchainos.com/tokens/usdt.png',
+                                        tokenPnLUsd: '5000.50',
+                                        tokenPnLPercent: '250.5',
+                                    },
+                                ],
+                                tokenCountByPnlPercent: {
+                                    above500Percent: '3',
+                                    between0And500Percent: '8',
+                                    betweenNeg50And0Percent: '5',
+                                    belowNeg50Percent: '2',
+                                },
+                                lastActiveTimestamp: '1776995058000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLeaderboardList').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLeaderboardListResponse>)
+            );
+            const response = await client.getLeaderboardList(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getLeaderboardList(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getLeaderboardList.'
+            );
+        });
+
+        it('should throw RequiredError when timeFrame is missing', async () => {
+            const _params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.timeFrame;
+
+            await expect(client.getLeaderboardList(params)).rejects.toThrow(
+                'Required parameter timeFrame was null or undefined when calling getLeaderboardList.'
+            );
+        });
+
+        it('should throw RequiredError when sortBy is missing', async () => {
+            const _params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.sortBy;
+
+            await expect(client.getLeaderboardList(params)).rejects.toThrow(
+                'Required parameter sortBy was null or undefined when calling getLeaderboardList.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetLeaderboardListRequest = {
+                binanceChainId: '1',
+                timeFrame: GetLeaderboardListTimeFrameEnum.TIME_FRAME_1,
+                sortBy: GetLeaderboardListSortByEnum.SORT_BY_1,
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'getLeaderboardList').mockRejectedValueOnce(mockError);
+            await expect(client.getLeaderboardList(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getLeaderboardSupportedChains()', () => {
+        it('should execute getLeaderboardSupportedChains() successfully with required parameters only', async () => {
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: [
+                        {
+                            binanceChainId: '1',
+                            name: 'Ethereum',
+                            shortName: 'ETH',
+                            logoUrl:
+                                'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                            caseSensitive: false,
+                            nativeTokenSymbol: 'ETH',
+                            nativeTokenDecimals: 18,
+                        },
+                    ],
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLeaderboardSupportedChains').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLeaderboardSupportedChainsResponse>)
+            );
+            const response = await client.getLeaderboardSupportedChains();
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getLeaderboardSupportedChains() successfully with optional parameters', async () => {
+            const params: GetLeaderboardSupportedChainsRequest = {
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: [
+                        {
+                            binanceChainId: '1',
+                            name: 'Ethereum',
+                            shortName: 'ETH',
+                            logoUrl:
+                                'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                            caseSensitive: false,
+                            nativeTokenSymbol: 'ETH',
+                            nativeTokenDecimals: 18,
+                        },
+                    ],
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLeaderboardSupportedChains').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLeaderboardSupportedChainsResponse>)
+            );
+            const response = await client.getLeaderboardSupportedChains(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getLeaderboardSupportedChains')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getLeaderboardSupportedChains()).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getPortfolioDexHistory()', () => {
+        it('should execute getPortfolioDexHistory() successfully with required parameters only', async () => {
+            const params: GetPortfolioDexHistoryRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        transactionList: [
+                            {
+                                type: '1',
+                                binanceChainId: '1',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                valueUsd: '312.329',
+                                amount: '18580000',
+                                price: '0.000016807',
+                                marketCap: '168070.50',
+                                txHash: '0x3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+                                chainLogoUrl:
+                                    'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                                time: '1714000000000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioDexHistory').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioDexHistoryResponse>)
+            );
+            const response = await client.getPortfolioDexHistory(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getPortfolioDexHistory() successfully with optional parameters', async () => {
+            const params: GetPortfolioDexHistoryRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                begin: '1714000000000',
+                end: '1748601600000',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                type: GetPortfolioDexHistoryTypeEnum.TYPE_1,
+                cursor: '',
+                limit: '20',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        transactionList: [
+                            {
+                                type: '1',
+                                binanceChainId: '1',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                valueUsd: '312.329',
+                                amount: '18580000',
+                                price: '0.000016807',
+                                marketCap: '168070.50',
+                                txHash: '0x3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+                                chainLogoUrl:
+                                    'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                                time: '1714000000000',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioDexHistory').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioDexHistoryResponse>)
+            );
+            const response = await client.getPortfolioDexHistory(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetPortfolioDexHistoryRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getPortfolioDexHistory(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getPortfolioDexHistory.'
+            );
+        });
+
+        it('should throw RequiredError when walletAddress is missing', async () => {
+            const _params: GetPortfolioDexHistoryRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.walletAddress;
+
+            await expect(client.getPortfolioDexHistory(params)).rejects.toThrow(
+                'Required parameter walletAddress was null or undefined when calling getPortfolioDexHistory.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetPortfolioDexHistoryRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getPortfolioDexHistory')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getPortfolioDexHistory(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getPortfolioOverview()', () => {
+        it('should execute getPortfolioOverview() successfully with required parameters only', async () => {
+            const params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        realizedPnlUsd: '4670.50',
+                        realizedPnlPercent: '16.44',
+                        dailyPnl: [{ date: '2026-04-25', pnlUsd: '120.50' }],
+                        winRate: '61.11',
+                        tokenCountByPnlPercent: {
+                            over500Percent: '3',
+                            from200To500Percent: '5',
+                            from50To200Percent: '8',
+                            zeroTo50Percent: '12',
+                            zeroToMinus50Percent: '7',
+                            overMinus50Percent: '4',
+                        },
+                        buyTxCount: '145',
+                        sellTxCount: '132',
+                        totalTokenCount: '73',
+                        buyTxVolume: '15000.50',
+                        sellTxVolume: '12000.30',
+                        avgBuyValueUsd: '86.71',
+                        top3PnlTokenSumUsd: '3200.00',
+                        top3PnlTokenPercent: '68.52',
+                        topPnlTokenList: [
+                            {
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                tokenPnLUsd: '1200.50',
+                                tokenPnLPercent: '250.5',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioOverview').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioOverviewResponse>)
+            );
+            const response = await client.getPortfolioOverview(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getPortfolioOverview() successfully with optional parameters', async () => {
+            const params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        realizedPnlUsd: '4670.50',
+                        realizedPnlPercent: '16.44',
+                        dailyPnl: [{ date: '2026-04-25', pnlUsd: '120.50' }],
+                        winRate: '61.11',
+                        tokenCountByPnlPercent: {
+                            over500Percent: '3',
+                            from200To500Percent: '5',
+                            from50To200Percent: '8',
+                            zeroTo50Percent: '12',
+                            zeroToMinus50Percent: '7',
+                            overMinus50Percent: '4',
+                        },
+                        buyTxCount: '145',
+                        sellTxCount: '132',
+                        totalTokenCount: '73',
+                        buyTxVolume: '15000.50',
+                        sellTxVolume: '12000.30',
+                        avgBuyValueUsd: '86.71',
+                        top3PnlTokenSumUsd: '3200.00',
+                        top3PnlTokenPercent: '68.52',
+                        topPnlTokenList: [
+                            {
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                tokenPnLUsd: '1200.50',
+                                tokenPnLPercent: '250.5',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioOverview').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioOverviewResponse>)
+            );
+            const response = await client.getPortfolioOverview(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getPortfolioOverview(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getPortfolioOverview.'
+            );
+        });
+
+        it('should throw RequiredError when walletAddress is missing', async () => {
+            const _params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.walletAddress;
+
+            await expect(client.getPortfolioOverview(params)).rejects.toThrow(
+                'Required parameter walletAddress was null or undefined when calling getPortfolioOverview.'
+            );
+        });
+
+        it('should throw RequiredError when timeFrame is missing', async () => {
+            const _params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.timeFrame;
+
+            await expect(client.getPortfolioOverview(params)).rejects.toThrow(
+                'Required parameter timeFrame was null or undefined when calling getPortfolioOverview.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetPortfolioOverviewRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                timeFrame: GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'getPortfolioOverview').mockRejectedValueOnce(mockError);
+            await expect(client.getPortfolioOverview(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getPortfolioRecentPnL()', () => {
+        it('should execute getPortfolioRecentPnL() successfully with required parameters only', async () => {
+            const params: GetPortfolioRecentPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        pnlList: [
+                            {
+                                binanceChainId: '1',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                lastActiveTimestamp: '1769398550000',
+                                realizedPnlUsd: '1277.837',
+                                realizedPnlPercent: '77.64',
+                                tokenBalanceUsd: '333.598',
+                                tokenBalanceAmount: '18580000',
+                                tokenPositionDuration: { holdingTimestamp: '1756873866000' },
+                                buyTxCount: '5',
+                                buyTxVolume: '1958.067',
+                                buyAvgPrice: '0.000105',
+                                sellTxCount: '3',
+                                sellTxVolume: '2923.574',
+                                sellAvgPrice: '0.000195',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioRecentPnL').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioRecentPnLResponse>)
+            );
+            const response = await client.getPortfolioRecentPnL(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getPortfolioRecentPnL() successfully with optional parameters', async () => {
+            const params: GetPortfolioRecentPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                cursor: '',
+                limit: '20',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        cursor: '',
+                        pnlList: [
+                            {
+                                binanceChainId: '1',
+                                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                                tokenSymbol: 'PEPE',
+                                lastActiveTimestamp: '1769398550000',
+                                realizedPnlUsd: '1277.837',
+                                realizedPnlPercent: '77.64',
+                                tokenBalanceUsd: '333.598',
+                                tokenBalanceAmount: '18580000',
+                                tokenPositionDuration: { holdingTimestamp: '1756873866000' },
+                                buyTxCount: '5',
+                                buyTxVolume: '1958.067',
+                                buyAvgPrice: '0.000105',
+                                sellTxCount: '3',
+                                sellTxVolume: '2923.574',
+                                sellAvgPrice: '0.000195',
+                            },
+                        ],
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioRecentPnL').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioRecentPnLResponse>)
+            );
+            const response = await client.getPortfolioRecentPnL(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetPortfolioRecentPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getPortfolioRecentPnL(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getPortfolioRecentPnL.'
+            );
+        });
+
+        it('should throw RequiredError when walletAddress is missing', async () => {
+            const _params: GetPortfolioRecentPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.walletAddress;
+
+            await expect(client.getPortfolioRecentPnL(params)).rejects.toThrow(
+                'Required parameter walletAddress was null or undefined when calling getPortfolioRecentPnL.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetPortfolioRecentPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getPortfolioRecentPnL')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getPortfolioRecentPnL(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getPortfolioSupportedChains()', () => {
+        it('should execute getPortfolioSupportedChains() successfully with required parameters only', async () => {
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: [
+                        {
+                            binanceChainId: '1',
+                            name: 'Ethereum',
+                            shortName: 'ETH',
+                            logoUrl:
+                                'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                            caseSensitive: false,
+                            nativeTokenSymbol: 'ETH',
+                            nativeTokenDecimals: 18,
+                        },
+                    ],
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioSupportedChains').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioSupportedChainsResponse>)
+            );
+            const response = await client.getPortfolioSupportedChains();
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getPortfolioSupportedChains() successfully with optional parameters', async () => {
+            const params: GetPortfolioSupportedChainsRequest = {
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: [
+                        {
+                            binanceChainId: '1',
+                            name: 'Ethereum',
+                            shortName: 'ETH',
+                            logoUrl:
+                                'https://onchainos.bnbstatic.com/image/admin_mgs_image_upload/20250228/b549e557-76ca-4873-88ef-3a107cf2c9fe.png',
+                            caseSensitive: false,
+                            nativeTokenSymbol: 'ETH',
+                            nativeTokenDecimals: 18,
+                        },
+                    ],
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioSupportedChains').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioSupportedChainsResponse>)
+            );
+            const response = await client.getPortfolioSupportedChains(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getPortfolioSupportedChains')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getPortfolioSupportedChains()).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getPortfolioTokenLatestPnL()', () => {
+        it('should execute getPortfolioTokenLatestPnL() successfully with required parameters only', async () => {
+            const params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        realizedPnlUsd: '1277.837',
+                        realizedPnlPercent: '77.64',
+                        buyTxVolume: '1958.067',
+                        buyAmount: '18580000',
+                        buyTxCount: '5',
+                        sellTxVolume: '2923.574',
+                        sellAmount: '15000000',
+                        sellTxCount: '3',
+                        buyAvgPrice: '0.000105',
+                        sellAvgPrice: '0.000195',
+                        tokenBalanceUsd: '333.598',
+                        tokenBalanceAmount: '3580000',
+                        maxBalanceAmount: '18580000',
+                        holdingDuration: '864000000',
+                        isPnlSupported: true,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioTokenLatestPnL').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioTokenLatestPnLResponse>)
+            );
+            const response = await client.getPortfolioTokenLatestPnL(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getPortfolioTokenLatestPnL() successfully with optional parameters', async () => {
+            const params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        realizedPnlUsd: '1277.837',
+                        realizedPnlPercent: '77.64',
+                        buyTxVolume: '1958.067',
+                        buyAmount: '18580000',
+                        buyTxCount: '5',
+                        sellTxVolume: '2923.574',
+                        sellAmount: '15000000',
+                        sellTxCount: '3',
+                        buyAvgPrice: '0.000105',
+                        sellAvgPrice: '0.000195',
+                        tokenBalanceUsd: '333.598',
+                        tokenBalanceAmount: '3580000',
+                        maxBalanceAmount: '18580000',
+                        holdingDuration: '864000000',
+                        isPnlSupported: true,
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getPortfolioTokenLatestPnL').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetPortfolioTokenLatestPnLResponse>)
+            );
+            const response = await client.getPortfolioTokenLatestPnL(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getPortfolioTokenLatestPnL(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getPortfolioTokenLatestPnL.'
+            );
+        });
+
+        it('should throw RequiredError when walletAddress is missing', async () => {
+            const _params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.walletAddress;
+
+            await expect(client.getPortfolioTokenLatestPnL(params)).rejects.toThrow(
+                'Required parameter walletAddress was null or undefined when calling getPortfolioTokenLatestPnL.'
+            );
+        });
+
+        it('should throw RequiredError when tokenContractAddress is missing', async () => {
+            const _params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.tokenContractAddress;
+
+            await expect(client.getPortfolioTokenLatestPnL(params)).rejects.toThrow(
+                'Required parameter tokenContractAddress was null or undefined when calling getPortfolioTokenLatestPnL.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetPortfolioTokenLatestPnLRequest = {
+                binanceChainId: '1',
+                walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+                tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'getPortfolioTokenLatestPnL')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.getPortfolioTokenLatestPnL(params)).rejects.toThrow(
+                'ResponseError'
+            );
             spy.mockRestore();
         });
     });
@@ -910,6 +2165,142 @@ describe('MarketApi', () => {
             mockError.response = { status: 400, data: errorResponse };
             const spy = jest.spyOn(client, 'getTokenBasicInfo').mockRejectedValueOnce(mockError);
             await expect(client.getTokenBasicInfo(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getTokenDevInfo()', () => {
+        it('should execute getTokenDevInfo() successfully with required parameters only', async () => {
+            const params: GetTokenDevInfoRequest = {
+                binanceChainId: 'CT_501',
+                tokenContractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        devLaunchedInfo: { totalToken: '5', migratedCount: '1' },
+                        devHoldingInfo: {
+                            devHoldingPercent: '2.5',
+                            devAddress: '0x382bb369d343125bfb2117af9c149795c6c65c50',
+                            fundingSource: '0x28c6c06298d514db089934071355e5743bf21d60',
+                            fundingSourceLabel: 'Binance',
+                            fundingSourceHash:
+                                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                            fundingSourceTime: '1777117516000',
+                            fundingSourceAmount: '1.5',
+                            devBalance: '10.5',
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getTokenDevInfo').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetTokenDevInfoResponse>)
+            );
+            const response = await client.getTokenDevInfo(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getTokenDevInfo() successfully with optional parameters', async () => {
+            const params: GetTokenDevInfoRequest = {
+                binanceChainId: 'CT_501',
+                tokenContractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        devLaunchedInfo: { totalToken: '5', migratedCount: '1' },
+                        devHoldingInfo: {
+                            devHoldingPercent: '2.5',
+                            devAddress: '0x382bb369d343125bfb2117af9c149795c6c65c50',
+                            fundingSource: '0x28c6c06298d514db089934071355e5743bf21d60',
+                            fundingSourceLabel: 'Binance',
+                            fundingSourceHash:
+                                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                            fundingSourceTime: '1777117516000',
+                            fundingSourceAmount: '1.5',
+                            devBalance: '10.5',
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getTokenDevInfo').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetTokenDevInfoResponse>)
+            );
+            const response = await client.getTokenDevInfo(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetTokenDevInfoRequest = {
+                binanceChainId: 'CT_501',
+                tokenContractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getTokenDevInfo(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getTokenDevInfo.'
+            );
+        });
+
+        it('should throw RequiredError when tokenContractAddress is missing', async () => {
+            const _params: GetTokenDevInfoRequest = {
+                binanceChainId: 'CT_501',
+                tokenContractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.tokenContractAddress;
+
+            await expect(client.getTokenDevInfo(params)).rejects.toThrow(
+                'Required parameter tokenContractAddress was null or undefined when calling getTokenDevInfo.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetTokenDevInfoRequest = {
+                binanceChainId: 'CT_501',
+                tokenContractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'getTokenDevInfo').mockRejectedValueOnce(mockError);
+            await expect(client.getTokenDevInfo(params)).rejects.toThrow('ResponseError');
             spy.mockRestore();
         });
     });
