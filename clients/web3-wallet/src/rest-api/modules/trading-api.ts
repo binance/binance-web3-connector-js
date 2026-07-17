@@ -26,6 +26,7 @@ import type {
     GetErc20ApproveTransactionResponse,
     GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    QuoteAndBuildSwapTransactionResponse,
     SubmitRfqOrderResponse,
 } from '../types';
 
@@ -618,6 +619,156 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             };
         },
         /**
+         * Combines quoting and swap-transaction construction into a single call. Unlike the two-step `/quote` + `/swap` flow, this endpoint does not require a prior `/quote` call or a `quoteId` — it returns the executable calldata / swapTransaction directly, eliminating one HTTP round-trip.
+         * Use this endpoint for latency-sensitive trading when the vendor is known upfront. The response shape is identical to `/swap`, so clients can reuse the same response parsing logic for both endpoints.
+         *
+         * @summary Quote and Build Swap Transaction (Flash API)
+         * @param {string} binanceChainId Unique chain identifier (e.g. "56"=BSC, "1"=Ethereum, "CT_501"=Solana).
+         * @param {string} amount Sell-token amount in the token's smallest unit (positive integer string, no decimals).
+         * @param {string} fromTokenAddress Sell-token contract address.
+         * @param {string} toTokenAddress Buy-token contract address.
+         * @param {string} userWalletAddress User wallet address (transaction sender). For Solana, a Base58 system-account address with sufficient SOL for gas.
+         * @param {QuoteAndBuildSwapTransactionVendorEnum} vendor Swap vendor to use for this request. **Required** — case-sensitive; must match one of the enum values. Any other value returns `PARAM_ERROR` (40001). For multi-vendor aggregation, use `/swap` with a `quoteId` instead.
+         * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
+         * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {string} [slippagePercent] Maximum slippage tolerance as a percentage string. Required unless `autoSlippage=true`.
+         *
+         **Range by chain:**
+         * - EVM chains (BSC, Ethereum, Base, etc.): `0` to `100` (inclusive)
+         * - Solana (`CT_501`): `0` to less than `100` (i.e. `< 100`)
+         *
+         * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
+         * @param {QuoteAndBuildSwapTransactionApproveTransactionEnum} [approveTransaction] When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
+         * @param {string} [approveAmount] Override approve amount (smallest unit, positive integer string). Defaults to the swap amount.
+         * @param {string} [gasLimit] Gas limit override (positive integer string). EVM only.
+         * @param {QuoteAndBuildSwapTransactionGasLevelEnum} [gasLevel] Gas price tier. Defaults to "average".
+         * @param {string} [priceImpactProtectionPercent] Maximum allowed price impact percentage (0–100). Defaults to 90; set to 100 to disable.
+         * @param {QuoteAndBuildSwapTransactionAutoSlippageEnum} [autoSlippage] When `"true"`, slippage is auto-derived from market data and overrides `slippagePercent`. Either `slippagePercent` or `autoSlippage=true` must be provided — omitting both returns a parameter error. Defaults to `"false"`.
+         * @param {string} [maxAutoSlippagePercent] Cap on auto-derived slippage (only applies when `autoSlippage=true`).
+         * @param {string} [computeUnitLimit] Solana only — maximum compute units the transaction may consume (analogous to EVM gasLimit). Applies only when `binanceChainId=CT_501`.
+         * @param {string} [computeUnitPrice] Solana only — priority fee per compute unit (micro-lamports), analogous to EVM gasPrice. When omitted, the platform computes a value dynamically. Applies only when `binanceChainId=CT_501`.
+         * @param {string} [tips] Solana only — Jito tips in SOL for MEV protection. Valid range [0.000000001, 2] (minimum 1 lamport). When specified, it is recommended to set `computeUnitPrice=0`. Applies only when `binanceChainId=CT_501`.
+         *
+         * @throws {RequiredError}
+         */
+        quoteAndBuildSwapTransaction: async (
+            binanceChainId: string,
+            amount: string,
+            fromTokenAddress: string,
+            toTokenAddress: string,
+            userWalletAddress: string,
+            vendor: QuoteAndBuildSwapTransactionVendorEnum,
+            recvWindow?: number | bigint,
+            nonce?: string,
+            slippagePercent?: string,
+            approveTransaction?: QuoteAndBuildSwapTransactionApproveTransactionEnum,
+            approveAmount?: string,
+            gasLimit?: string,
+            gasLevel?: QuoteAndBuildSwapTransactionGasLevelEnum,
+            priceImpactProtectionPercent?: string,
+            autoSlippage?: QuoteAndBuildSwapTransactionAutoSlippageEnum,
+            maxAutoSlippagePercent?: string,
+            computeUnitLimit?: string,
+            computeUnitPrice?: string,
+            tips?: string
+        ): Promise<RequestArgs> => {
+            // verify required parameter 'binanceChainId' is not null or undefined
+            assertParamExists('quoteAndBuildSwapTransaction', 'binanceChainId', binanceChainId);
+            // verify required parameter 'amount' is not null or undefined
+            assertParamExists('quoteAndBuildSwapTransaction', 'amount', amount);
+            // verify required parameter 'fromTokenAddress' is not null or undefined
+            assertParamExists('quoteAndBuildSwapTransaction', 'fromTokenAddress', fromTokenAddress);
+            // verify required parameter 'toTokenAddress' is not null or undefined
+            assertParamExists('quoteAndBuildSwapTransaction', 'toTokenAddress', toTokenAddress);
+            // verify required parameter 'userWalletAddress' is not null or undefined
+            assertParamExists(
+                'quoteAndBuildSwapTransaction',
+                'userWalletAddress',
+                userWalletAddress
+            );
+            // verify required parameter 'vendor' is not null or undefined
+            assertParamExists('quoteAndBuildSwapTransaction', 'vendor', vendor);
+
+            const localVarQueryParameter: Record<string, unknown> = {};
+            const localVarBodyParameter: Record<string, unknown> = {};
+            const localVarHeaderParameter: Record<string, unknown> = {};
+
+            if (binanceChainId !== undefined && binanceChainId !== null) {
+                localVarQueryParameter['binanceChainId'] = binanceChainId;
+            }
+            if (amount !== undefined && amount !== null) {
+                localVarQueryParameter['amount'] = amount;
+            }
+            if (fromTokenAddress !== undefined && fromTokenAddress !== null) {
+                localVarQueryParameter['fromTokenAddress'] = fromTokenAddress;
+            }
+            if (toTokenAddress !== undefined && toTokenAddress !== null) {
+                localVarQueryParameter['toTokenAddress'] = toTokenAddress;
+            }
+            if (slippagePercent !== undefined && slippagePercent !== null) {
+                localVarQueryParameter['slippagePercent'] = slippagePercent;
+            }
+            if (userWalletAddress !== undefined && userWalletAddress !== null) {
+                localVarQueryParameter['userWalletAddress'] = userWalletAddress;
+            }
+            if (vendor !== undefined && vendor !== null) {
+                localVarQueryParameter['vendor'] = vendor;
+            }
+            if (approveTransaction !== undefined && approveTransaction !== null) {
+                localVarQueryParameter['approveTransaction'] = approveTransaction;
+            }
+            if (approveAmount !== undefined && approveAmount !== null) {
+                localVarQueryParameter['approveAmount'] = approveAmount;
+            }
+            if (gasLimit !== undefined && gasLimit !== null) {
+                localVarQueryParameter['gasLimit'] = gasLimit;
+            }
+            if (gasLevel !== undefined && gasLevel !== null) {
+                localVarQueryParameter['gasLevel'] = gasLevel;
+            }
+            if (
+                priceImpactProtectionPercent !== undefined &&
+                priceImpactProtectionPercent !== null
+            ) {
+                localVarQueryParameter['priceImpactProtectionPercent'] =
+                    priceImpactProtectionPercent;
+            }
+            if (autoSlippage !== undefined && autoSlippage !== null) {
+                localVarQueryParameter['autoSlippage'] = autoSlippage;
+            }
+            if (maxAutoSlippagePercent !== undefined && maxAutoSlippagePercent !== null) {
+                localVarQueryParameter['maxAutoSlippagePercent'] = maxAutoSlippagePercent;
+            }
+            if (computeUnitLimit !== undefined && computeUnitLimit !== null) {
+                localVarQueryParameter['computeUnitLimit'] = computeUnitLimit;
+            }
+            if (computeUnitPrice !== undefined && computeUnitPrice !== null) {
+                localVarQueryParameter['computeUnitPrice'] = computeUnitPrice;
+            }
+            if (tips !== undefined && tips !== null) {
+                localVarQueryParameter['tips'] = tips;
+            }
+
+            if (recvWindow !== undefined && recvWindow !== null) {
+                localVarHeaderParameter['recvWindow'] = recvWindow;
+            }
+            if (nonce !== undefined && nonce !== null) {
+                localVarHeaderParameter['nonce'] = nonce;
+            }
+
+            let _timeUnit: TimeUnit | undefined;
+            if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
+
+            return {
+                endpoint: '/api/v1/dex/aggregator/quote-and-swap',
+                method: 'GET',
+                queryParams: localVarQueryParameter,
+                bodyParams: localVarBodyParameter,
+                headerParams: localVarHeaderParameter,
+                timeUnit: _timeUnit,
+            };
+        },
+        /**
          * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
          *
          **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
@@ -808,6 +959,19 @@ export interface TradingApiInterface {
     getTransactionStatus(
         requestParameters: GetTransactionStatusRequest
     ): Promise<RestApiResponse<GetTransactionStatusResponse>>;
+    /**
+     * Combines quoting and swap-transaction construction into a single call. Unlike the two-step `/quote` + `/swap` flow, this endpoint does not require a prior `/quote` call or a `quoteId` — it returns the executable calldata / swapTransaction directly, eliminating one HTTP round-trip.
+     * Use this endpoint for latency-sensitive trading when the vendor is known upfront. The response shape is identical to `/swap`, so clients can reuse the same response parsing logic for both endpoints.
+     *
+     * @summary Quote and Build Swap Transaction (Flash API)
+     * @param {QuoteAndBuildSwapTransactionRequest} requestParameters Request parameters.
+     *
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApiInterface
+     */
+    quoteAndBuildSwapTransaction(
+        requestParameters: QuoteAndBuildSwapTransactionRequest
+    ): Promise<RestApiResponse<QuoteAndBuildSwapTransactionResponse>>;
     /**
      * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
      *
@@ -1288,6 +1452,151 @@ export interface GetTransactionStatusRequest {
 }
 
 /**
+ * Request parameters for quoteAndBuildSwapTransaction operation in TradingApi.
+ * @interface QuoteAndBuildSwapTransactionRequest
+ */
+export interface QuoteAndBuildSwapTransactionRequest {
+    /**
+     * Unique chain identifier (e.g. "56"=BSC, "1"=Ethereum, "CT_501"=Solana).
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly binanceChainId: string;
+
+    /**
+     * Sell-token amount in the token's smallest unit (positive integer string, no decimals).
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly amount: string;
+
+    /**
+     * Sell-token contract address.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly fromTokenAddress: string;
+
+    /**
+     * Buy-token contract address.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly toTokenAddress: string;
+
+    /**
+     * User wallet address (transaction sender). For Solana, a Base58 system-account address with sufficient SOL for gas.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly userWalletAddress: string;
+
+    /**
+     * Swap vendor to use for this request. **Required** — case-sensitive; must match one of the enum values. Any other value returns `PARAM_ERROR` (40001). For multi-vendor aggregation, use `/swap` with a `quoteId` instead.
+     * @type {'LiquidMesh'}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly vendor: QuoteAndBuildSwapTransactionVendorEnum;
+
+    /**
+     * Allowed time deviation in milliseconds (default: 5000, max: 60000).
+     * @type {number | bigint}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly recvWindow?: number | bigint;
+
+    /**
+     * Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly nonce?: string;
+
+    /**
+     * Maximum slippage tolerance as a percentage string. Required unless `autoSlippage=true`.
+     *
+     **Range by chain:**
+     * - EVM chains (BSC, Ethereum, Base, etc.): `0` to `100` (inclusive)
+     * - Solana (`CT_501`): `0` to less than `100` (i.e. `< 100`)
+     *
+     * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly slippagePercent?: string;
+
+    /**
+     * When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
+     * @type {'true' | 'false'}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly approveTransaction?: QuoteAndBuildSwapTransactionApproveTransactionEnum;
+
+    /**
+     * Override approve amount (smallest unit, positive integer string). Defaults to the swap amount.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly approveAmount?: string;
+
+    /**
+     * Gas limit override (positive integer string). EVM only.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly gasLimit?: string;
+
+    /**
+     * Gas price tier. Defaults to "average".
+     * @type {'slow' | 'average' | 'fast'}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly gasLevel?: QuoteAndBuildSwapTransactionGasLevelEnum;
+
+    /**
+     * Maximum allowed price impact percentage (0–100). Defaults to 90; set to 100 to disable.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly priceImpactProtectionPercent?: string;
+
+    /**
+     * When `"true"`, slippage is auto-derived from market data and overrides `slippagePercent`. Either `slippagePercent` or `autoSlippage=true` must be provided — omitting both returns a parameter error. Defaults to `"false"`.
+     * @type {'true' | 'false'}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly autoSlippage?: QuoteAndBuildSwapTransactionAutoSlippageEnum;
+
+    /**
+     * Cap on auto-derived slippage (only applies when `autoSlippage=true`).
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly maxAutoSlippagePercent?: string;
+
+    /**
+     * Solana only — maximum compute units the transaction may consume (analogous to EVM gasLimit). Applies only when `binanceChainId=CT_501`.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly computeUnitLimit?: string;
+
+    /**
+     * Solana only — priority fee per compute unit (micro-lamports), analogous to EVM gasPrice. When omitted, the platform computes a value dynamically. Applies only when `binanceChainId=CT_501`.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly computeUnitPrice?: string;
+
+    /**
+     * Solana only — Jito tips in SOL for MEV protection. Valid range [0.000000001, 2] (minimum 1 lamport). When specified, it is recommended to set `computeUnitPrice=0`. Applies only when `binanceChainId=CT_501`.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly tips?: string;
+}
+
+/**
  * Request parameters for submitRfqOrder operation in TradingApi.
  * @interface SubmitRfqOrderRequest
  */
@@ -1623,6 +1932,53 @@ export class TradingApi implements TradingApiInterface {
     }
 
     /**
+     * Combines quoting and swap-transaction construction into a single call. Unlike the two-step `/quote` + `/swap` flow, this endpoint does not require a prior `/quote` call or a `quoteId` — it returns the executable calldata / swapTransaction directly, eliminating one HTTP round-trip.
+     * Use this endpoint for latency-sensitive trading when the vendor is known upfront. The response shape is identical to `/swap`, so clients can reuse the same response parsing logic for both endpoints.
+     *
+     * @summary Quote and Build Swap Transaction (Flash API)
+     * @param {QuoteAndBuildSwapTransactionRequest} requestParameters Request parameters.
+     * @returns {Promise<RestApiResponse<QuoteAndBuildSwapTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TradingApi
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#quote-and-build-swap-transaction Binance API Documentation}
+     */
+    public async quoteAndBuildSwapTransaction(
+        requestParameters: QuoteAndBuildSwapTransactionRequest
+    ): Promise<RestApiResponse<QuoteAndBuildSwapTransactionResponse>> {
+        const localVarAxiosArgs = await this.localVarAxiosParamCreator.quoteAndBuildSwapTransaction(
+            requestParameters?.binanceChainId,
+            requestParameters?.amount,
+            requestParameters?.fromTokenAddress,
+            requestParameters?.toTokenAddress,
+            requestParameters?.userWalletAddress,
+            requestParameters?.vendor,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce,
+            requestParameters?.slippagePercent,
+            requestParameters?.approveTransaction,
+            requestParameters?.approveAmount,
+            requestParameters?.gasLimit,
+            requestParameters?.gasLevel,
+            requestParameters?.priceImpactProtectionPercent,
+            requestParameters?.autoSlippage,
+            requestParameters?.maxAutoSlippagePercent,
+            requestParameters?.computeUnitLimit,
+            requestParameters?.computeUnitPrice,
+            requestParameters?.tips
+        );
+        return sendRequest<QuoteAndBuildSwapTransactionResponse>(
+            this.configuration,
+            localVarAxiosArgs.endpoint,
+            localVarAxiosArgs.method,
+            localVarAxiosArgs.queryParams,
+            localVarAxiosArgs.bodyParams,
+            localVarAxiosArgs.headerParams,
+            localVarAxiosArgs?.timeUnit,
+            { isSigned: true }
+        );
+    }
+
+    /**
      * Submit a signed RFQ order to the backend for on-chain settlement via the corresponding vendor relayer. Only used when `executionMode=RFQ` (equity / RWA tokens such as Ondo and BStock).
      *
      **Flow**: `GET /quote` → pick an RFQ route → `GET /swap` → sign `rfq.typedDataToSign` with EIP-712 (`eth_signTypedData_v4`) → call this endpoint → poll `GET /order/{orderId}` until `FILLED` or `FAILED`.
@@ -1688,6 +2044,26 @@ export enum BuildSwapTransactionGasLevelEnum {
 }
 
 export enum BuildSwapTransactionAutoSlippageEnum {
+    TRUE = 'true',
+    FALSE = 'false',
+}
+
+export enum QuoteAndBuildSwapTransactionVendorEnum {
+    LiquidMesh = 'LiquidMesh',
+}
+
+export enum QuoteAndBuildSwapTransactionApproveTransactionEnum {
+    TRUE = 'true',
+    FALSE = 'false',
+}
+
+export enum QuoteAndBuildSwapTransactionGasLevelEnum {
+    slow = 'slow',
+    average = 'average',
+    fast = 'fast',
+}
+
+export enum QuoteAndBuildSwapTransactionAutoSlippageEnum {
     TRUE = 'true',
     FALSE = 'false',
 }

@@ -146,6 +146,9 @@ export * from './get-transactions-by-address-response-data-inner-transaction-lis
 export * from './get-transactions-by-address-response-data-inner-transaction-list-inner-to-inner';
 export * from './get-wallet-supported-chains-response';
 export * from './get-wallet-supported-chains-response-data-inner';
+export * from './quote-and-build-swap-transaction-response';
+export * from './quote-and-build-swap-transaction-response-data';
+export * from './quote-and-build-swap-transaction-response-data-rfq';
 export * from './search-rwa-token-response';
 export * from './search-rwa-token-response-data-inner';
 export * from './search-rwa-token-response-data-inner-assets-inner';

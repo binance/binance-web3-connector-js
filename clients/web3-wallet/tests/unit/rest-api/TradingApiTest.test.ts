@@ -23,6 +23,10 @@ import {
     BuildSwapTransactionApproveTransactionEnum,
     BuildSwapTransactionGasLevelEnum,
     BuildSwapTransactionAutoSlippageEnum,
+    QuoteAndBuildSwapTransactionVendorEnum,
+    QuoteAndBuildSwapTransactionApproveTransactionEnum,
+    QuoteAndBuildSwapTransactionGasLevelEnum,
+    QuoteAndBuildSwapTransactionAutoSlippageEnum,
     SubmitRfqOrderVendorEnum,
 } from '../../../src/rest-api';
 import {
@@ -33,6 +37,7 @@ import {
     GetErc20ApproveTransactionRequest,
     GetRfqOrderStatusRequest,
     GetTransactionStatusRequest,
+    QuoteAndBuildSwapTransactionRequest,
     SubmitRfqOrderRequest,
 } from '../../../src/rest-api';
 import type {
@@ -43,6 +48,7 @@ import type {
     GetErc20ApproveTransactionResponse,
     GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    QuoteAndBuildSwapTransactionResponse,
     SubmitRfqOrderResponse,
 } from '../../../src/rest-api/types';
 
@@ -1518,6 +1524,355 @@ describe('TradingApi', () => {
             mockError.response = { status: 400, data: errorResponse };
             const spy = jest.spyOn(client, 'getTransactionStatus').mockRejectedValueOnce(mockError);
             await expect(client.getTransactionStatus(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('quoteAndBuildSwapTransaction()', () => {
+        it('should execute quoteAndBuildSwapTransaction() successfully with required parameters only', async () => {
+            const params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        routerResult: {
+                            binanceChainId: '56',
+                            vendorName: 'Lifi',
+                            fromTokenAmount: '1000000',
+                            toTokenAmount: '998500000000000000',
+                            tradeFee: '0.12',
+                            estimateGasFee: '150000',
+                            router: '0x55d3...--0xbb4C...--0x8AC7...',
+                            priceImpactPercent: '-0.01',
+                            dexRouterList: [
+                                {
+                                    dexProtocol: { dexName: 'Uniswap V3', percent: '85.99' },
+                                    fromToken: {
+                                        tokenContractAddress:
+                                            '0x55d398326f99059fF775485246999027B3197955',
+                                        tokenSymbol: 'USDT',
+                                    },
+                                    fromTokenIndex: '0',
+                                    toToken: {
+                                        tokenContractAddress:
+                                            '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                                        tokenSymbol: 'BTCB',
+                                    },
+                                    toTokenIndex: '1',
+                                },
+                            ],
+                            fromToken: {
+                                tokenContractAddress: '0x55d398326f99059fF775485246999027B3197955',
+                                tokenSymbol: 'USDT',
+                                tokenUnitPrice: '1.0002',
+                                decimal: '18',
+                                isHoneyPot: false,
+                                taxRate: '0',
+                            },
+                            toToken: {
+                                tokenContractAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                                tokenSymbol: 'BTCB',
+                                tokenUnitPrice: '67000.5',
+                                decimal: '18',
+                                isHoneyPot: false,
+                                taxRate: '0',
+                            },
+                        },
+                        tx: {
+                            from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                            to: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+                            data: '0x12aa3caf...',
+                            value: '0',
+                            gas: '200000',
+                            gasPrice: '5000000000',
+                            maxPriorityFeePerGas: '1000000000',
+                            minReceiveAmount: '993507500000000000',
+                            slippagePercent: '0.5',
+                            signatureData: ['0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f'],
+                            computeUnitPrice: '1000',
+                            computeUnitLimit: '1400000',
+                        },
+                        executionMode: 'SWAP',
+                        rfq: {
+                            vendor: 'PcsXRfq',
+                            txType: 'EIP712',
+                            typedDataToSign: '0x1901...',
+                            signingScheme: 'EIP712',
+                            signatureData: [
+                                '{"approveContract":"0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f","approveTxCalldata":"0x095ea7b3..."}',
+                            ],
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'quoteAndBuildSwapTransaction').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<QuoteAndBuildSwapTransactionResponse>)
+            );
+            const response = await client.quoteAndBuildSwapTransaction(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute quoteAndBuildSwapTransaction() successfully with optional parameters', async () => {
+            const params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+                slippagePercent: '0.5',
+                approveTransaction: QuoteAndBuildSwapTransactionApproveTransactionEnum.TRUE,
+                approveAmount: '1000000',
+                gasLimit: '200000',
+                gasLevel: QuoteAndBuildSwapTransactionGasLevelEnum.slow,
+                priceImpactProtectionPercent: '90',
+                autoSlippage: QuoteAndBuildSwapTransactionAutoSlippageEnum.TRUE,
+                maxAutoSlippagePercent: '3',
+                computeUnitLimit: '1400000',
+                computeUnitPrice: '1000',
+                tips: '0.001',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: {
+                        routerResult: {
+                            binanceChainId: '56',
+                            vendorName: 'Lifi',
+                            fromTokenAmount: '1000000',
+                            toTokenAmount: '998500000000000000',
+                            tradeFee: '0.12',
+                            estimateGasFee: '150000',
+                            router: '0x55d3...--0xbb4C...--0x8AC7...',
+                            priceImpactPercent: '-0.01',
+                            dexRouterList: [
+                                {
+                                    dexProtocol: { dexName: 'Uniswap V3', percent: '85.99' },
+                                    fromToken: {
+                                        tokenContractAddress:
+                                            '0x55d398326f99059fF775485246999027B3197955',
+                                        tokenSymbol: 'USDT',
+                                    },
+                                    fromTokenIndex: '0',
+                                    toToken: {
+                                        tokenContractAddress:
+                                            '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                                        tokenSymbol: 'BTCB',
+                                    },
+                                    toTokenIndex: '1',
+                                },
+                            ],
+                            fromToken: {
+                                tokenContractAddress: '0x55d398326f99059fF775485246999027B3197955',
+                                tokenSymbol: 'USDT',
+                                tokenUnitPrice: '1.0002',
+                                decimal: '18',
+                                isHoneyPot: false,
+                                taxRate: '0',
+                            },
+                            toToken: {
+                                tokenContractAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                                tokenSymbol: 'BTCB',
+                                tokenUnitPrice: '67000.5',
+                                decimal: '18',
+                                isHoneyPot: false,
+                                taxRate: '0',
+                            },
+                        },
+                        tx: {
+                            from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                            to: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+                            data: '0x12aa3caf...',
+                            value: '0',
+                            gas: '200000',
+                            gasPrice: '5000000000',
+                            maxPriorityFeePerGas: '1000000000',
+                            minReceiveAmount: '993507500000000000',
+                            slippagePercent: '0.5',
+                            signatureData: ['0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f'],
+                            computeUnitPrice: '1000',
+                            computeUnitLimit: '1400000',
+                        },
+                        executionMode: 'SWAP',
+                        rfq: {
+                            vendor: 'PcsXRfq',
+                            txType: 'EIP712',
+                            typedDataToSign: '0x1901...',
+                            signingScheme: 'EIP712',
+                            signatureData: [
+                                '{"approveContract":"0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f","approveTxCalldata":"0x095ea7b3..."}',
+                            ],
+                        },
+                    },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'quoteAndBuildSwapTransaction').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<QuoteAndBuildSwapTransactionResponse>)
+            );
+            const response = await client.quoteAndBuildSwapTransaction(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw RequiredError when amount is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.amount;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter amount was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw RequiredError when fromTokenAddress is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.fromTokenAddress;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter fromTokenAddress was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw RequiredError when toTokenAddress is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.toTokenAddress;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter toTokenAddress was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw RequiredError when userWalletAddress is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.userWalletAddress;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter userWalletAddress was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw RequiredError when vendor is missing', async () => {
+            const _params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.vendor;
+
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'Required parameter vendor was null or undefined when calling quoteAndBuildSwapTransaction.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: QuoteAndBuildSwapTransactionRequest = {
+                binanceChainId: '56',
+                amount: '1000000',
+                fromTokenAddress: '0x55d398326f99059fF775485246999027B3197955',
+                toTokenAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                vendor: QuoteAndBuildSwapTransactionVendorEnum.LiquidMesh,
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest
+                .spyOn(client, 'quoteAndBuildSwapTransaction')
+                .mockRejectedValueOnce(mockError);
+            await expect(client.quoteAndBuildSwapTransaction(params)).rejects.toThrow(
+                'ResponseError'
+            );
             spy.mockRestore();
         });
     });

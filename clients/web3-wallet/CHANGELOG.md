@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.0 - 2026-07-17
+
+### Added (1)
+
+- `quoteAndBuildSwapTransaction()` (`GET /api/v1/dex/aggregator/quote-and-swap`)
+
 ## 7.0.0 - 2026-07-15
 
 ### Added (9)

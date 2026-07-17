@@ -57,6 +57,7 @@ import type {
     GetErc20ApproveTransactionRequest,
     GetRfqOrderStatusRequest,
     GetTransactionStatusRequest,
+    QuoteAndBuildSwapTransactionRequest,
     SubmitRfqOrderRequest,
 } from './modules/trading-api';
 import type {
@@ -114,6 +115,7 @@ import type {
     GetErc20ApproveTransactionResponse,
     GetRfqOrderStatusResponse,
     GetTransactionStatusResponse,
+    QuoteAndBuildSwapTransactionResponse,
     SubmitRfqOrderResponse,
 } from './types';
 import type {
@@ -763,6 +765,23 @@ export class RestAPI {
         requestParameters: GetTransactionStatusRequest
     ): Promise<RestApiResponse<GetTransactionStatusResponse>> {
         return this.tradingApi.getTransactionStatus(requestParameters);
+    }
+
+    /**
+     * Combines quoting and swap-transaction construction into a single call. Unlike the two-step `/quote` + `/swap` flow, this endpoint does not require a prior `/quote` call or a `quoteId` — it returns the executable calldata / swapTransaction directly, eliminating one HTTP round-trip.
+     * Use this endpoint for latency-sensitive trading when the vendor is known upfront. The response shape is identical to `/swap`, so clients can reuse the same response parsing logic for both endpoints.
+     *
+     * @summary Quote and Build Swap Transaction (Flash API)
+     * @param {QuoteAndBuildSwapTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<QuoteAndBuildSwapTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/trading-api#quote-and-build-swap-transaction Binance API Documentation}
+     */
+    quoteAndBuildSwapTransaction(
+        requestParameters: QuoteAndBuildSwapTransactionRequest
+    ): Promise<RestApiResponse<QuoteAndBuildSwapTransactionResponse>> {
+        return this.tradingApi.quoteAndBuildSwapTransaction(requestParameters);
     }
 
     /**
