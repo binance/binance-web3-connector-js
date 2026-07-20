@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioTokenLatestPnLResponseData } from './get-portfolio-token-latest-pn-lresponse-data';
+import type { GetTrackedTradesResponseData } from './get-tracked-trades-response-data';
 
 /**
  *
  * @export
- * @interface GetPortfolioTokenLatestPnLResponse
+ * @interface GetTrackedTradesResponse
  */
-export interface GetPortfolioTokenLatestPnLResponse {
+export interface GetTrackedTradesResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetPortfolioTokenLatestPnLResponse
+     * @memberof GetTrackedTradesResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponse
+     * @memberof GetTrackedTradesResponse
      */
     msg?: string;
     /**
      *
-     * @type {GetPortfolioTokenLatestPnLResponseData}
-     * @memberof GetPortfolioTokenLatestPnLResponse
+     * @type {GetTrackedTradesResponseData}
+     * @memberof GetTrackedTradesResponse
      */
-    data?: GetPortfolioTokenLatestPnLResponseData;
+    data?: GetTrackedTradesResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetPortfolioTokenLatestPnLResponse
+     * @memberof GetTrackedTradesResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetPortfolioTokenLatestPnLResponse
+     * @memberof GetTrackedTradesResponse
      */
     success?: boolean;
 }

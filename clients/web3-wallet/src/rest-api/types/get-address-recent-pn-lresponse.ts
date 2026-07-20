@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioDexHistoryResponseData } from './get-portfolio-dex-history-response-data';
+import type { GetAddressRecentPnLResponseData } from './get-address-recent-pn-lresponse-data';
 
 /**
  *
  * @export
- * @interface GetPortfolioDexHistoryResponse
+ * @interface GetAddressRecentPnLResponse
  */
-export interface GetPortfolioDexHistoryResponse {
+export interface GetAddressRecentPnLResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetPortfolioDexHistoryResponse
+     * @memberof GetAddressRecentPnLResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponse
+     * @memberof GetAddressRecentPnLResponse
      */
     msg?: string;
     /**
      *
-     * @type {GetPortfolioDexHistoryResponseData}
-     * @memberof GetPortfolioDexHistoryResponse
+     * @type {GetAddressRecentPnLResponseData}
+     * @memberof GetAddressRecentPnLResponse
      */
-    data?: GetPortfolioDexHistoryResponseData;
+    data?: GetAddressRecentPnLResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetPortfolioDexHistoryResponse
+     * @memberof GetAddressRecentPnLResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetPortfolioDexHistoryResponse
+     * @memberof GetAddressRecentPnLResponse
      */
     success?: boolean;
 }

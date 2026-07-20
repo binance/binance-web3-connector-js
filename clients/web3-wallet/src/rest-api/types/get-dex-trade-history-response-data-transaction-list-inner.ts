@@ -16,73 +16,73 @@
 /**
  *
  * @export
- * @interface GetPortfolioDexHistoryResponseDataTransactionListInner
+ * @interface GetDexTradeHistoryResponseDataTransactionListInner
  */
-export interface GetPortfolioDexHistoryResponseDataTransactionListInner {
+export interface GetDexTradeHistoryResponseDataTransactionListInner {
     /**
      * Trade type. 1=Buy, 2=Sell.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     type?: string;
     /**
      * Unique chain identifier.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     binanceChainId?: string;
     /**
      * Token contract address. EVM addresses are lowercase; Solana addresses are case-sensitive.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     tokenContractAddress?: string;
     /**
      * Token symbol.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     tokenSymbol?: string;
     /**
      * Transaction value, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     valueUsd?: string;
     /**
      * Token quantity involved in this transaction (token units).
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     amount?: string;
     /**
      * Execution price of this transaction, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     price?: string;
     /**
      * Token market cap at the time of this transaction, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     marketCap?: string;
     /**
      * On-chain transaction hash.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     txHash?: string;
     /**
      * Chain logo image URL.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     chainLogoUrl?: string;
     /**
      * Transaction on-chain time, Unix millisecond timestamp.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseDataTransactionListInner
+     * @memberof GetDexTradeHistoryResponseDataTransactionListInner
      */
     time?: string;
 }

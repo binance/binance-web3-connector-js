@@ -16,19 +16,19 @@
 /**
  *
  * @export
- * @interface GetLeaderboardListResponseDataItemsInnerDailyPnlInner
+ * @interface GetLeaderboardResponseDataItemsInnerDailyPnlInner
  */
-export interface GetLeaderboardListResponseDataItemsInnerDailyPnlInner {
+export interface GetLeaderboardResponseDataItemsInnerDailyPnlInner {
     /**
      * Date in YYYY-MM-DD format.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerDailyPnlInner
+     * @memberof GetLeaderboardResponseDataItemsInnerDailyPnlInner
      */
     date?: string;
     /**
      * Realized PnL for this day, denominated in USD.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerDailyPnlInner
+     * @memberof GetLeaderboardResponseDataItemsInnerDailyPnlInner
      */
     pnlUsd?: string;
 }

@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioOverviewResponseData } from './get-portfolio-overview-response-data';
+import type { GetAddressPnLForSpecificTokenResponseData } from './get-address-pn-lfor-specific-token-response-data';
 
 /**
  *
  * @export
- * @interface GetPortfolioOverviewResponse
+ * @interface GetAddressPnLForSpecificTokenResponse
  */
-export interface GetPortfolioOverviewResponse {
+export interface GetAddressPnLForSpecificTokenResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetPortfolioOverviewResponse
+     * @memberof GetAddressPnLForSpecificTokenResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetPortfolioOverviewResponse
+     * @memberof GetAddressPnLForSpecificTokenResponse
      */
     msg?: string;
     /**
      *
-     * @type {GetPortfolioOverviewResponseData}
-     * @memberof GetPortfolioOverviewResponse
+     * @type {GetAddressPnLForSpecificTokenResponseData}
+     * @memberof GetAddressPnLForSpecificTokenResponse
      */
-    data?: GetPortfolioOverviewResponseData;
+    data?: GetAddressPnLForSpecificTokenResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetPortfolioOverviewResponse
+     * @memberof GetAddressPnLForSpecificTokenResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetPortfolioOverviewResponse
+     * @memberof GetAddressPnLForSpecificTokenResponse
      */
     success?: boolean;
 }

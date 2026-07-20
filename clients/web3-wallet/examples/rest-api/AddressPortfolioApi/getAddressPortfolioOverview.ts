@@ -7,22 +7,22 @@ const configurationRestAPI = {
 };
 const client = new Web3Wallet({ configurationRestAPI });
 
-async function getPortfolioOverview() {
+async function getAddressPortfolioOverview() {
     try {
-        const response = await client.restAPI.getPortfolioOverview({
+        const response = await client.restAPI.getAddressPortfolioOverview({
             binanceChainId: '1',
             walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
-            timeFrame: Web3WalletRestAPI.GetPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
+            timeFrame: Web3WalletRestAPI.GetAddressPortfolioOverviewTimeFrameEnum.TIME_FRAME_1,
         });
 
         const rateLimits = response.rateLimits!;
-        console.log('getPortfolioOverview() rate limits:', rateLimits);
+        console.log('getAddressPortfolioOverview() rate limits:', rateLimits);
 
         const data = await response.data();
-        console.log('getPortfolioOverview() response:', data);
+        console.log('getAddressPortfolioOverview() response:', data);
     } catch (error) {
-        console.error('getPortfolioOverview() error:', error);
+        console.error('getAddressPortfolioOverview() error:', error);
     }
 }
 
-getPortfolioOverview();
+getAddressPortfolioOverview();

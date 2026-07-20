@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetLeaderboardListResponseData } from './get-leaderboard-list-response-data';
+import type { GetAddressPortfolioOverviewResponseData } from './get-address-portfolio-overview-response-data';
 
 /**
  *
  * @export
- * @interface GetLeaderboardListResponse
+ * @interface GetAddressPortfolioOverviewResponse
  */
-export interface GetLeaderboardListResponse {
+export interface GetAddressPortfolioOverviewResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetLeaderboardListResponse
+     * @memberof GetAddressPortfolioOverviewResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetLeaderboardListResponse
+     * @memberof GetAddressPortfolioOverviewResponse
      */
     msg?: string;
     /**
      *
-     * @type {GetLeaderboardListResponseData}
-     * @memberof GetLeaderboardListResponse
+     * @type {GetAddressPortfolioOverviewResponseData}
+     * @memberof GetAddressPortfolioOverviewResponse
      */
-    data?: GetLeaderboardListResponseData;
+    data?: GetAddressPortfolioOverviewResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetLeaderboardListResponse
+     * @memberof GetAddressPortfolioOverviewResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetLeaderboardListResponse
+     * @memberof GetAddressPortfolioOverviewResponse
      */
     success?: boolean;
 }

@@ -7,21 +7,22 @@ const configurationRestAPI = {
 };
 const client = new Web3Wallet({ configurationRestAPI });
 
-async function getPortfolioRecentPnL() {
+async function getAddressPnLForSpecificToken() {
     try {
-        const response = await client.restAPI.getPortfolioRecentPnL({
+        const response = await client.restAPI.getAddressPnLForSpecificToken({
             binanceChainId: '1',
             walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
+            tokenContractAddress: '0x6982508145454ce325ddbe47a25d4ec3d2311933',
         });
 
         const rateLimits = response.rateLimits!;
-        console.log('getPortfolioRecentPnL() rate limits:', rateLimits);
+        console.log('getAddressPnLForSpecificToken() rate limits:', rateLimits);
 
         const data = await response.data();
-        console.log('getPortfolioRecentPnL() response:', data);
+        console.log('getAddressPnLForSpecificToken() response:', data);
     } catch (error) {
-        console.error('getPortfolioRecentPnL() error:', error);
+        console.error('getAddressPnLForSpecificToken() error:', error);
     }
 }
 
-getPortfolioRecentPnL();
+getAddressPnLForSpecificToken();

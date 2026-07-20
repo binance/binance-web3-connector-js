@@ -11,6 +11,7 @@
  * Do not edit the class manually.
  */
 
+export * from './address-portfolio-api';
 export * from './general-data-api';
 export * from './rwadata-api';
 export * from './trading-api';

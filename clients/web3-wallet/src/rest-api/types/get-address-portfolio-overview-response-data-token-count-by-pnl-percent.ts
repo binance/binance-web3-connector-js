@@ -16,43 +16,43 @@
 /**
  * Token count breakdown by realized PnL percentage range.
  * @export
- * @interface GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+ * @interface GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
  */
-export interface GetPortfolioOverviewResponseDataTokenCountByPnlPercent {
+export interface GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent {
     /**
      * Number of tokens with realized PnL ≥500%.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     over500Percent?: string;
     /**
      * Number of tokens with realized PnL in [200%, 500%).
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     from200To500Percent?: string;
     /**
      * Number of tokens with realized PnL in [50%, 200%).
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     from50To200Percent?: string;
     /**
      * Number of tokens with realized PnL in [0%, 50%).
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     zeroTo50Percent?: string;
     /**
      * Number of tokens with realized PnL in [-50%, 0%).
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     zeroToMinus50Percent?: string;
     /**
-     * Number of tokens with realized PnL <-50%.
+     * Number of tokens with realized PnL < -50%.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTokenCountByPnlPercent
+     * @memberof GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent
      */
     overMinus50Percent?: string;
 }

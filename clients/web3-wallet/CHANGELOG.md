@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.0.0 - 2026-07-20
+
+### Removed (1)
+
+- `getLeaderboardSupportedChains()` (`GET /api/v1/dex/market/leaderboard/supported/chain`)
+
 ## 8.0.0 - 2026-07-17
 
 ### Added (1)

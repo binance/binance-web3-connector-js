@@ -16,19 +16,19 @@
 /**
  *
  * @export
- * @interface GetPortfolioOverviewResponseDataDailyPnlInner
+ * @interface GetAddressPortfolioOverviewResponseDataDailyPnlInner
  */
-export interface GetPortfolioOverviewResponseDataDailyPnlInner {
+export interface GetAddressPortfolioOverviewResponseDataDailyPnlInner {
     /**
      * Date in YYYY-MM-DD format.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataDailyPnlInner
+     * @memberof GetAddressPortfolioOverviewResponseDataDailyPnlInner
      */
     date?: string;
     /**
      * Realized PnL for this day, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataDailyPnlInner
+     * @memberof GetAddressPortfolioOverviewResponseDataDailyPnlInner
      */
     pnlUsd?: string;
 }

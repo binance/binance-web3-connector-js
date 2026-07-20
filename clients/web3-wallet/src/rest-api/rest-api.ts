@@ -12,6 +12,7 @@
  */
 
 import { ConfigurationRestAPI, RestApiResponse, sendRequest } from '@binance/common';
+import { AddressPortfolioApi } from './modules/address-portfolio-api';
 import { GeneralDataApi } from './modules/general-data-api';
 import { RWADataApi } from './modules/rwadata-api';
 import { TradingApi } from './modules/trading-api';
@@ -19,17 +20,18 @@ import { TransactionApi } from './modules/transaction-api';
 import { WalletApi } from './modules/wallet-api';
 
 import type {
-    GetAddressTrackerTradesRequest,
+    GetAddressPnLForSpecificTokenRequest,
+    GetAddressPortfolioOverviewRequest,
+    GetAddressRecentPnLRequest,
+    GetDexTradeHistoryRequest,
+    GetLeaderboardRequest,
+    GetPortfolioSupportedChainsRequest,
+    GetTrackedTradesRequest,
+} from './modules/address-portfolio-api';
+import type {
     GetCandlesRequest,
     GetHoldersRankingRequest,
     GetHotTokenListRequest,
-    GetLeaderboardListRequest,
-    GetLeaderboardSupportedChainsRequest,
-    GetPortfolioDexHistoryRequest,
-    GetPortfolioOverviewRequest,
-    GetPortfolioRecentPnLRequest,
-    GetPortfolioSupportedChainsRequest,
-    GetPortfolioTokenLatestPnLRequest,
     GetSupportedChainsRequest,
     GetTokenAdvancedInfoRequest,
     GetTokenBasicInfoRequest,
@@ -77,17 +79,18 @@ import type {
 } from './modules/wallet-api';
 
 import type {
-    GetAddressTrackerTradesResponse,
+    GetAddressPnLForSpecificTokenResponse,
+    GetAddressPortfolioOverviewResponse,
+    GetAddressRecentPnLResponse,
+    GetDexTradeHistoryResponse,
+    GetLeaderboardResponse,
+    GetPortfolioSupportedChainsResponse,
+    GetTrackedTradesResponse,
+} from './types';
+import type {
     GetCandlesResponse,
     GetHoldersRankingResponse,
     GetHotTokenListResponse,
-    GetLeaderboardListResponse,
-    GetLeaderboardSupportedChainsResponse,
-    GetPortfolioDexHistoryResponse,
-    GetPortfolioOverviewResponse,
-    GetPortfolioRecentPnLResponse,
-    GetPortfolioSupportedChainsResponse,
-    GetPortfolioTokenLatestPnLResponse,
     GetSupportedChainsResponse,
     GetTokenAdvancedInfoResponse,
     GetTokenBasicInfoResponse,
@@ -136,6 +139,7 @@ import type {
 
 export class RestAPI {
     private configuration: ConfigurationRestAPI;
+    private addressPortfolioApi: AddressPortfolioApi;
     private generalDataApi: GeneralDataApi;
     private rWADataApi: RWADataApi;
     private tradingApi: TradingApi;
@@ -144,6 +148,7 @@ export class RestAPI {
 
     constructor(configuration: ConfigurationRestAPI) {
         this.configuration = configuration;
+        this.addressPortfolioApi = new AddressPortfolioApi(configuration);
         this.generalDataApi = new GeneralDataApi(configuration);
         this.rWADataApi = new RWADataApi(configuration);
         this.tradingApi = new TradingApi(configuration);
@@ -205,20 +210,115 @@ export class RestAPI {
     }
 
     /**
-     * Return the latest DEX trades from tracked addresses (smart money, KOL, or custom address list). Supports filtering by trade type, chain, volume, market cap, and risk token visibility.
-     * This endpoint is not cursor-paginated. trackerType=1/2 (Smart Money / KOL) return a single fixed-size set determined by the downstream public query cap; trackerType=3 (custom address list) returns up to `limit` trades (omit `limit` to use the downstream default).
+     * Return the latest realized PnL detail for a specific token held by an address, including buy/sell stats, current balance, and holding duration.
      *
-     * @summary Get Address Tracker Trades
-     * @param {GetAddressTrackerTradesRequest} requestParameters Request parameters.
+     * @summary Get Address PnL for Specific Token
+     * @param {GetAddressPnLForSpecificTokenRequest} requestParameters Request parameters.
      *
-     * @returns {Promise<RestApiResponse<GetAddressTrackerTradesResponse>>}
+     * @returns {Promise<RestApiResponse<GetAddressPnLForSpecificTokenResponse>>}
      * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-address-tracker-trades Binance API Documentation}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-address-pn-lfor-specific-token Binance API Documentation}
      */
-    getAddressTrackerTrades(
-        requestParameters: GetAddressTrackerTradesRequest
-    ): Promise<RestApiResponse<GetAddressTrackerTradesResponse>> {
-        return this.generalDataApi.getAddressTrackerTrades(requestParameters);
+    getAddressPnLForSpecificToken(
+        requestParameters: GetAddressPnLForSpecificTokenRequest
+    ): Promise<RestApiResponse<GetAddressPnLForSpecificTokenResponse>> {
+        return this.addressPortfolioApi.getAddressPnLForSpecificToken(requestParameters);
+    }
+
+    /**
+     * Return trading performance overview for an address within the selected time frame, including realized PnL, daily PnL breakdown, win rate, and top 3 profitable tokens.
+     *
+     * @summary Get Address Portfolio Overview
+     * @param {GetAddressPortfolioOverviewRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetAddressPortfolioOverviewResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-address-portfolio-overview Binance API Documentation}
+     */
+    getAddressPortfolioOverview(
+        requestParameters: GetAddressPortfolioOverviewRequest
+    ): Promise<RestApiResponse<GetAddressPortfolioOverviewResponse>> {
+        return this.addressPortfolioApi.getAddressPortfolioOverview(requestParameters);
+    }
+
+    /**
+     * Return recent realized PnL list for an address.
+     *
+     * @summary Get Address Recent PnL
+     * @param {GetAddressRecentPnLRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetAddressRecentPnLResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-address-recent-pn-l Binance API Documentation}
+     */
+    getAddressRecentPnL(
+        requestParameters: GetAddressRecentPnLRequest
+    ): Promise<RestApiResponse<GetAddressRecentPnLResponse>> {
+        return this.addressPortfolioApi.getAddressRecentPnL(requestParameters);
+    }
+
+    /**
+     * Return swap trade history for a specific address. Supports filtering by time range, token, and trade type.
+     *
+     * @summary Get DEX Trade History
+     * @param {GetDexTradeHistoryRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetDexTradeHistoryResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-dex-trade-history Binance API Documentation}
+     */
+    getDexTradeHistory(
+        requestParameters: GetDexTradeHistoryRequest
+    ): Promise<RestApiResponse<GetDexTradeHistoryResponse>> {
+        return this.addressPortfolioApi.getDexTradeHistory(requestParameters);
+    }
+
+    /**
+     * Return a leaderboard of top-performing wallets, with sorting and filtering by PnL, win rate, transaction count, and volume.
+     *
+     * @summary Get Leaderboard
+     * @param {GetLeaderboardRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetLeaderboardResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-leaderboard Binance API Documentation}
+     */
+    getLeaderboard(
+        requestParameters: GetLeaderboardRequest
+    ): Promise<RestApiResponse<GetLeaderboardResponse>> {
+        return this.addressPortfolioApi.getLeaderboard(requestParameters);
+    }
+
+    /**
+     * Return the list of blockchains supported by address portfolio analysis.
+     *
+     * @summary Get Portfolio Supported Chains
+     * @param {GetPortfolioSupportedChainsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-portfolio-supported-chains Binance API Documentation}
+     */
+    getPortfolioSupportedChains(
+        requestParameters: GetPortfolioSupportedChainsRequest = {}
+    ): Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>> {
+        return this.addressPortfolioApi.getPortfolioSupportedChains(requestParameters);
+    }
+
+    /**
+     * Return the latest swap trades from tracked addresses (smart money, KOL, or custom address list).
+     *
+     * @summary Get Tracked Trades
+     * @param {GetTrackedTradesRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetTrackedTradesResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/address-portfolio#get-tracked-trades Binance API Documentation}
+     */
+    getTrackedTrades(
+        requestParameters: GetTrackedTradesRequest
+    ): Promise<RestApiResponse<GetTrackedTradesResponse>> {
+        return this.addressPortfolioApi.getTrackedTrades(requestParameters);
     }
 
     /**
@@ -265,118 +365,6 @@ export class RestAPI {
         requestParameters: GetHotTokenListRequest
     ): Promise<RestApiResponse<GetHotTokenListResponse>> {
         return this.generalDataApi.getHotTokenList(requestParameters);
-    }
-
-    /**
-     * Return a paginated leaderboard of top-performing wallet addresses, supporting filtering and sorting by time frame, wallet type, realized PnL, win rate, transaction count, and volume.
-     *
-     * @summary Get Leaderboard List
-     * @param {GetLeaderboardListRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetLeaderboardListResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-leaderboard-list Binance API Documentation}
-     */
-    getLeaderboardList(
-        requestParameters: GetLeaderboardListRequest
-    ): Promise<RestApiResponse<GetLeaderboardListResponse>> {
-        return this.generalDataApi.getLeaderboardList(requestParameters);
-    }
-
-    /**
-     * Return the list of blockchains supported by the leaderboard feature.
-     *
-     * @summary Get Leaderboard Supported Chains
-     * @param {GetLeaderboardSupportedChainsRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetLeaderboardSupportedChainsResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-leaderboard-supported-chains Binance API Documentation}
-     */
-    getLeaderboardSupportedChains(
-        requestParameters: GetLeaderboardSupportedChainsRequest = {}
-    ): Promise<RestApiResponse<GetLeaderboardSupportedChainsResponse>> {
-        return this.generalDataApi.getLeaderboardSupportedChains(requestParameters);
-    }
-
-    /**
-     * Return a paginated list of an address's DEX transaction history, sorted by time descending. Up to 1000 records total; up to 100 per page. Supports filtering by time range, token, and trade type.
-     *
-     * @summary Get Portfolio DEX History
-     * @param {GetPortfolioDexHistoryRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetPortfolioDexHistoryResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-dex-history Binance API Documentation}
-     */
-    getPortfolioDexHistory(
-        requestParameters: GetPortfolioDexHistoryRequest
-    ): Promise<RestApiResponse<GetPortfolioDexHistoryResponse>> {
-        return this.generalDataApi.getPortfolioDexHistory(requestParameters);
-    }
-
-    /**
-     * Return a summary of an address's trading performance over a specified time frame, including realized PnL, daily PnL breakdown, win rate, token count by PnL range, buy/sell statistics, and top 3 profit tokens.
-     *
-     * @summary Get Portfolio Overview
-     * @param {GetPortfolioOverviewRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetPortfolioOverviewResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-overview Binance API Documentation}
-     */
-    getPortfolioOverview(
-        requestParameters: GetPortfolioOverviewRequest
-    ): Promise<RestApiResponse<GetPortfolioOverviewResponse>> {
-        return this.generalDataApi.getPortfolioOverview(requestParameters);
-    }
-
-    /**
-     * Return a paginated list of an address's recent realized PnL records, sorted by last active timestamp descending. Up to 1000 records total; up to 100 per page.
-     *
-     * @summary Get Portfolio Recent PnL
-     * @param {GetPortfolioRecentPnLRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetPortfolioRecentPnLResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-recent-pn-l Binance API Documentation}
-     */
-    getPortfolioRecentPnL(
-        requestParameters: GetPortfolioRecentPnLRequest
-    ): Promise<RestApiResponse<GetPortfolioRecentPnLResponse>> {
-        return this.generalDataApi.getPortfolioRecentPnL(requestParameters);
-    }
-
-    /**
-     * Return the list of blockchains supported by the portfolio (address analysis) feature.
-     *
-     * @summary Get Portfolio Supported Chains
-     * @param {GetPortfolioSupportedChainsRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-supported-chains Binance API Documentation}
-     */
-    getPortfolioSupportedChains(
-        requestParameters: GetPortfolioSupportedChainsRequest = {}
-    ): Promise<RestApiResponse<GetPortfolioSupportedChainsResponse>> {
-        return this.generalDataApi.getPortfolioSupportedChains(requestParameters);
-    }
-
-    /**
-     * Return the latest realized PnL details for a specific token held by a wallet address, including buy/sell statistics, current balance, holding duration, and PnL support status.
-     *
-     * @summary Get Portfolio Token Latest PnL
-     * @param {GetPortfolioTokenLatestPnLRequest} requestParameters Request parameters.
-     *
-     * @returns {Promise<RestApiResponse<GetPortfolioTokenLatestPnLResponse>>}
-     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
-     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/general-data#get-portfolio-token-latest-pn-l Binance API Documentation}
-     */
-    getPortfolioTokenLatestPnL(
-        requestParameters: GetPortfolioTokenLatestPnLRequest
-    ): Promise<RestApiResponse<GetPortfolioTokenLatestPnLResponse>> {
-        return this.generalDataApi.getPortfolioTokenLatestPnL(requestParameters);
     }
 
     /**
@@ -428,7 +416,7 @@ export class RestAPI {
     }
 
     /**
-     * Return developer information for a token, including historical token launch statistics, current holding percentage, and funding source details.
+     * Return developer profile for a token, including historical token launch stats, current holding percentage, and initial funding source.
      *
      * @summary Get Token Dev Info
      * @param {GetTokenDevInfoRequest} requestParameters Request parameters.

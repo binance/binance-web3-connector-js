@@ -16,31 +16,31 @@
 /**
  * Token count breakdown by realized PnL percentage range within the time frame.
  * @export
- * @interface GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent
+ * @interface GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent
  */
-export interface GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent {
+export interface GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent {
     /**
      * Number of tokens with realized PnL >500%.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent
+     * @memberof GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent
      */
     above500Percent?: string;
     /**
      * Number of tokens with realized PnL in [0%, 500%].
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent
+     * @memberof GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent
      */
     between0And500Percent?: string;
     /**
      * Number of tokens with realized PnL in [-50%, 0%].
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent
+     * @memberof GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent
      */
     betweenNeg50And0Percent?: string;
     /**
-     * Number of tokens with realized PnL <-50%.
+     * Number of tokens with realized PnL < -50%.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent
+     * @memberof GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent
      */
     belowNeg50Percent?: string;
 }

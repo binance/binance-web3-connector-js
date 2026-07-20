@@ -16,24 +16,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioRecentPnLResponseDataPnlListInner } from './get-portfolio-recent-pn-lresponse-data-pnl-list-inner';
+import type { GetLeaderboardResponseDataItemsInner } from './get-leaderboard-response-data-items-inner';
 
 /**
- * Paginated PnL list.
+ * Paginated leaderboard data.
  * @export
- * @interface GetPortfolioRecentPnLResponseData
+ * @interface GetLeaderboardResponseData
  */
-export interface GetPortfolioRecentPnLResponseData {
+export interface GetLeaderboardResponseData {
     /**
      * Pagination cursor for the next page. Empty string when no more data.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseData
+     * @memberof GetLeaderboardResponseData
      */
     cursor?: string;
     /**
-     * PnL records sorted by lastActiveTimestamp descending.
-     * @type {Array<GetPortfolioRecentPnLResponseDataPnlListInner>}
-     * @memberof GetPortfolioRecentPnLResponseData
+     * List of leaderboard wallet entries.
+     * @type {Array<GetLeaderboardResponseDataItemsInner>}
+     * @memberof GetLeaderboardResponseData
      */
-    pnlList?: Array<GetPortfolioRecentPnLResponseDataPnlListInner>;
+    items?: Array<GetLeaderboardResponseDataItemsInner>;
 }

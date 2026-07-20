@@ -16,61 +16,61 @@
 /**
  *
  * @export
- * @interface GetAddressTrackerTradesResponseDataTradesInner
+ * @interface GetTrackedTradesResponseDataTradesInner
  */
-export interface GetAddressTrackerTradesResponseDataTradesInner {
+export interface GetTrackedTradesResponseDataTradesInner {
     /**
      * On-chain transaction hash.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     txHash?: string;
     /**
      * Wallet address that initiated this trade. EVM addresses are lowercase; Solana addresses are case-sensitive.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     walletAddress?: string;
     /**
      * Symbol of the traded token.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     tokenSymbol?: string;
     /**
      * Contract address of the traded token. EVM addresses are lowercase; Solana addresses are case-sensitive.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     tokenContractAddress?: string;
     /**
      * Unique chain identifier of the traded token.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     binanceChainId?: string;
     /**
      * Token price at the time of this trade, denominated in USD.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     tokenPrice?: string;
     /**
      * Token market cap at the time of this trade, denominated in USD.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     marketCap?: string;
     /**
      * Trade type. 1=Buy, 2=Sell, 3=Add position, 4=Reduce position, 5=Open position, 6=Close position, 7=Transfer in, 8=Transfer out.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     tradeType?: string;
     /**
      * On-chain time of this trade, Unix millisecond timestamp.
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponseDataTradesInner
+     * @memberof GetTrackedTradesResponseDataTradesInner
      */
     tradeTime?: string;
 }

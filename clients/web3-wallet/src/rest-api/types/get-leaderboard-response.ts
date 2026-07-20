@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetAddressTrackerTradesResponseData } from './get-address-tracker-trades-response-data';
+import type { GetLeaderboardResponseData } from './get-leaderboard-response-data';
 
 /**
  *
  * @export
- * @interface GetAddressTrackerTradesResponse
+ * @interface GetLeaderboardResponse
  */
-export interface GetAddressTrackerTradesResponse {
+export interface GetLeaderboardResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetAddressTrackerTradesResponse
+     * @memberof GetLeaderboardResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetAddressTrackerTradesResponse
+     * @memberof GetLeaderboardResponse
      */
     msg?: string;
     /**
      *
-     * @type {GetAddressTrackerTradesResponseData}
-     * @memberof GetAddressTrackerTradesResponse
+     * @type {GetLeaderboardResponseData}
+     * @memberof GetLeaderboardResponse
      */
-    data?: GetAddressTrackerTradesResponseData;
+    data?: GetLeaderboardResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetAddressTrackerTradesResponse
+     * @memberof GetLeaderboardResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetAddressTrackerTradesResponse
+     * @memberof GetLeaderboardResponse
      */
     success?: boolean;
 }

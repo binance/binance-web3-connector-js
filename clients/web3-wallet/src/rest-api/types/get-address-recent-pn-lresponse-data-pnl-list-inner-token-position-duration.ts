@@ -16,13 +16,13 @@
 /**
  * Holding duration information for this token.
  * @export
- * @interface GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration
+ * @interface GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration
  */
-export interface GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration {
+export interface GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration {
     /**
      * Timestamp of the first buy for this token, Unix millisecond timestamp.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration
+     * @memberof GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration
      */
     holdingTimestamp?: string;
 }

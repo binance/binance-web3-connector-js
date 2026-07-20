@@ -16,97 +16,97 @@
 /**
  * Token latest PnL details.
  * @export
- * @interface GetPortfolioTokenLatestPnLResponseData
+ * @interface GetAddressPnLForSpecificTokenResponseData
  */
-export interface GetPortfolioTokenLatestPnLResponseData {
+export interface GetAddressPnLForSpecificTokenResponseData {
     /**
      * Cumulative realized PnL for this token, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     realizedPnlUsd?: string;
     /**
      * Realized PnL percentage. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     realizedPnlPercent?: string;
     /**
      * Cumulative buy spend for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     buyTxVolume?: string;
     /**
      * Cumulative buy quantity (token units).
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     buyAmount?: string;
     /**
      * Number of buy transactions.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     buyTxCount?: string;
     /**
      * Cumulative sell proceeds for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     sellTxVolume?: string;
     /**
      * Cumulative sell quantity (token units).
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     sellAmount?: string;
     /**
      * Number of sell transactions.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     sellTxCount?: string;
     /**
-     * Average buy price, denominated in USD. Calculated as buyTxVolume / buyAmount.
+     * Average buy price, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     buyAvgPrice?: string;
     /**
-     * Average sell price, denominated in USD. Calculated as sellTxVolume / sellAmount.
+     * Average sell price, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     sellAvgPrice?: string;
     /**
      * Current market value of the address\'s holding in this token, denominated in USD. Returns \"0\" when fully sold.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     tokenBalanceUsd?: string;
     /**
      * Current holding amount (token units). Returns \"0\" when fully sold.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     tokenBalanceAmount?: string;
     /**
      * Maximum historical holding amount (token units).
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     maxBalanceAmount?: string;
     /**
      * Cumulative holding duration in milliseconds. Counts only actual holding periods; gaps between sell and re-buy are excluded. If still holding, counts up to the current time.
      * @type {string}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     holdingDuration?: string;
     /**
      * Whether PnL calculation is meaningful for this token. true=supported; false=not supported. Returns false for stablecoins (USDT/USDC/DAI etc.), native tokens (ETH/BNB/SOL etc.), and wrapped tokens (WETH/WBNB/WSOL etc.). Returns true for regular trading tokens.
      * @type {boolean}
-     * @memberof GetPortfolioTokenLatestPnLResponseData
+     * @memberof GetAddressPnLForSpecificTokenResponseData
      */
     isPnlSupported?: boolean;
 }

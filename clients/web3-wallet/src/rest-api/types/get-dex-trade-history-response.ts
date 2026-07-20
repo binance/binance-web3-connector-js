@@ -16,42 +16,42 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioSupportedChainsResponseDataInner } from './get-portfolio-supported-chains-response-data-inner';
+import type { GetDexTradeHistoryResponseData } from './get-dex-trade-history-response-data';
 
 /**
  *
  * @export
- * @interface GetLeaderboardSupportedChainsResponse
+ * @interface GetDexTradeHistoryResponse
  */
-export interface GetLeaderboardSupportedChainsResponse {
+export interface GetDexTradeHistoryResponse {
     /**
      * Business status code. 0 indicates success.
      * @type {number}
-     * @memberof GetLeaderboardSupportedChainsResponse
+     * @memberof GetDexTradeHistoryResponse
      */
     code?: number;
     /**
      *
      * @type {string}
-     * @memberof GetLeaderboardSupportedChainsResponse
+     * @memberof GetDexTradeHistoryResponse
      */
     msg?: string;
     /**
-     * List of supported blockchain networks.
-     * @type {Array<GetPortfolioSupportedChainsResponseDataInner>}
-     * @memberof GetLeaderboardSupportedChainsResponse
+     *
+     * @type {GetDexTradeHistoryResponseData}
+     * @memberof GetDexTradeHistoryResponse
      */
-    data?: Array<GetPortfolioSupportedChainsResponseDataInner>;
+    data?: GetDexTradeHistoryResponseData;
     /**
      *
      * @type {number | bigint}
-     * @memberof GetLeaderboardSupportedChainsResponse
+     * @memberof GetDexTradeHistoryResponse
      */
     timestamp?: number | bigint;
     /**
      *
      * @type {boolean}
-     * @memberof GetLeaderboardSupportedChainsResponse
+     * @memberof GetDexTradeHistoryResponse
      */
     success?: boolean;
 }

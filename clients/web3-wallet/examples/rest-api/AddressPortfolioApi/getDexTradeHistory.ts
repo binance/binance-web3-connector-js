@@ -7,21 +7,21 @@ const configurationRestAPI = {
 };
 const client = new Web3Wallet({ configurationRestAPI });
 
-async function getPortfolioDexHistory() {
+async function getDexTradeHistory() {
     try {
-        const response = await client.restAPI.getPortfolioDexHistory({
+        const response = await client.restAPI.getDexTradeHistory({
             binanceChainId: '1',
             walletAddress: '0x28c6c06298d514db089934071355e5743bf21d60',
         });
 
         const rateLimits = response.rateLimits!;
-        console.log('getPortfolioDexHistory() rate limits:', rateLimits);
+        console.log('getDexTradeHistory() rate limits:', rateLimits);
 
         const data = await response.data();
-        console.log('getPortfolioDexHistory() response:', data);
+        console.log('getDexTradeHistory() response:', data);
     } catch (error) {
-        console.error('getPortfolioDexHistory() error:', error);
+        console.error('getDexTradeHistory() error:', error);
     }
 }
 
-getPortfolioDexHistory();
+getDexTradeHistory();

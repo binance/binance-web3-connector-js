@@ -7,20 +7,22 @@ const configurationRestAPI = {
 };
 const client = new Web3Wallet({ configurationRestAPI });
 
-async function getAddressTrackerTrades() {
+async function getLeaderboard() {
     try {
-        const response = await client.restAPI.getAddressTrackerTrades({
-            trackerType: Web3WalletRestAPI.GetAddressTrackerTradesTrackerTypeEnum.TRACKER_TYPE_1,
+        const response = await client.restAPI.getLeaderboard({
+            binanceChainId: '1',
+            timeFrame: Web3WalletRestAPI.GetLeaderboardTimeFrameEnum.TIME_FRAME_1,
+            sortBy: Web3WalletRestAPI.GetLeaderboardSortByEnum.SORT_BY_1,
         });
 
         const rateLimits = response.rateLimits!;
-        console.log('getAddressTrackerTrades() rate limits:', rateLimits);
+        console.log('getLeaderboard() rate limits:', rateLimits);
 
         const data = await response.data();
-        console.log('getAddressTrackerTrades() response:', data);
+        console.log('getLeaderboard() response:', data);
     } catch (error) {
-        console.error('getAddressTrackerTrades() error:', error);
+        console.error('getLeaderboard() error:', error);
     }
 }
 
-getAddressTrackerTrades();
+getLeaderboard();

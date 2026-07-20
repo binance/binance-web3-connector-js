@@ -16,144 +16,144 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetLeaderboardListResponseDataItemsInnerDailyPnlInner } from './get-leaderboard-list-response-data-items-inner-daily-pnl-inner';
+import type { GetLeaderboardResponseDataItemsInnerDailyPnlInner } from './get-leaderboard-response-data-items-inner-daily-pnl-inner';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent } from './get-leaderboard-list-response-data-items-inner-token-count-by-pnl-percent';
+import type { GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent } from './get-leaderboard-response-data-items-inner-token-count-by-pnl-percent';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetLeaderboardListResponseDataItemsInnerTopPnlTokenListInner } from './get-leaderboard-list-response-data-items-inner-top-pnl-token-list-inner';
+import type { GetLeaderboardResponseDataItemsInnerTopPnlTokenListInner } from './get-leaderboard-response-data-items-inner-top-pnl-token-list-inner';
 
 /**
  *
  * @export
- * @interface GetLeaderboardListResponseDataItemsInner
+ * @interface GetLeaderboardResponseDataItemsInner
  */
-export interface GetLeaderboardListResponseDataItemsInner {
+export interface GetLeaderboardResponseDataItemsInner {
     /**
      * Wallet address.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     walletAddress?: string;
     /**
      * Wallet display name. Empty string when unavailable.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     walletName?: string;
     /**
      * Wallet avatar URL. Empty string when unavailable.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     walletLogoUrl?: string;
     /**
      * Associated Twitter/X profile URL. Empty string when unavailable.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     walletTwitterUrl?: string;
     /**
-     * Wallet type tags, comma-separated if multiple. 1=Smart Money, 2=KOL, 3=MPC. Empty string when no tag applies.
+     * Wallet type tags, comma-separated if multiple. 1=Smart Money, 2=KOL, 3=Hot List. Empty string when no tag applies.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     walletType?: string;
     /**
      * Native token balance of this address on the queried chain.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     nativeTokenBalance?: string;
     /**
      * Native token balance of this address, denominated in USD.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     nativeTokenBalanceUsd?: string;
     /**
      * Cumulative realized PnL within the time frame, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     realizedPnlUsd?: string;
     /**
      * Realized PnL percentage within the time frame. No percent sign included.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     realizedPnlPercent?: string;
     /**
      * Daily realized PnL within the selected time frame, sorted by date descending.
-     * @type {Array<GetLeaderboardListResponseDataItemsInnerDailyPnlInner>}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @type {Array<GetLeaderboardResponseDataItemsInnerDailyPnlInner>}
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
-    dailyPnl?: Array<GetLeaderboardListResponseDataItemsInnerDailyPnlInner>;
+    dailyPnl?: Array<GetLeaderboardResponseDataItemsInnerDailyPnlInner>;
     /**
      * Win rate within the time frame. No percent sign included.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     winRatePercent?: string;
     /**
      * Total transaction volume within the time frame, denominated in USD. Equals buyTxVolume + sellTxVolume.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     txVolume?: string;
     /**
      * Total buy volume within the time frame, denominated in USD.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     buyTxVolume?: string;
     /**
      * Total sell volume within the time frame, denominated in USD.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     sellTxVolume?: string;
     /**
      * Average buy value per transaction within the time frame, denominated in USD. Returns \"0\" when no buy transactions.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     avgBuyValueUsd?: string;
     /**
      * Total transaction count within the time frame. Equals buyTxCount + sellTxCount.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     txs?: string;
     /**
      * Buy transaction count within the time frame.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     buyTxCount?: string;
     /**
      * Sell transaction count within the time frame.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     sellTxCount?: string;
     /**
      * Top 3 tokens by realized PnL. Returns fewer items if fewer than 3 tokens were traded.
-     * @type {Array<GetLeaderboardListResponseDataItemsInnerTopPnlTokenListInner>}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @type {Array<GetLeaderboardResponseDataItemsInnerTopPnlTokenListInner>}
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
-    topPnlTokenList?: Array<GetLeaderboardListResponseDataItemsInnerTopPnlTokenListInner>;
+    topPnlTokenList?: Array<GetLeaderboardResponseDataItemsInnerTopPnlTokenListInner>;
     /**
      *
-     * @type {GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @type {GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent}
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
-    tokenCountByPnlPercent?: GetLeaderboardListResponseDataItemsInnerTokenCountByPnlPercent;
+    tokenCountByPnlPercent?: GetLeaderboardResponseDataItemsInnerTokenCountByPnlPercent;
     /**
      * Timestamp of the address\'s last trade, Unix millisecond timestamp.
      * @type {string}
-     * @memberof GetLeaderboardListResponseDataItemsInner
+     * @memberof GetLeaderboardResponseDataItemsInner
      */
     lastActiveTimestamp?: string;
 }

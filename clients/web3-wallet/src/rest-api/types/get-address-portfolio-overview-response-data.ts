@@ -16,102 +16,102 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioOverviewResponseDataDailyPnlInner } from './get-portfolio-overview-response-data-daily-pnl-inner';
+import type { GetAddressPortfolioOverviewResponseDataDailyPnlInner } from './get-address-portfolio-overview-response-data-daily-pnl-inner';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioOverviewResponseDataTokenCountByPnlPercent } from './get-portfolio-overview-response-data-token-count-by-pnl-percent';
+import type { GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent } from './get-address-portfolio-overview-response-data-token-count-by-pnl-percent';
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioOverviewResponseDataTopPnlTokenListInner } from './get-portfolio-overview-response-data-top-pnl-token-list-inner';
+import type { GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner } from './get-address-portfolio-overview-response-data-top-pnl-token-list-inner';
 
 /**
  * Address portfolio overview.
  * @export
- * @interface GetPortfolioOverviewResponseData
+ * @interface GetAddressPortfolioOverviewResponseData
  */
-export interface GetPortfolioOverviewResponseData {
+export interface GetAddressPortfolioOverviewResponseData {
     /**
      * Total realized PnL within the time frame, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     realizedPnlUsd?: string;
     /**
      * Realized PnL percentage within the time frame. \"16.44\" means +16.44%. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     realizedPnlPercent?: string;
     /**
      * Daily realized PnL breakdown, sorted by date descending (most recent first). Number of entries matches the timeFrame.
-     * @type {Array<GetPortfolioOverviewResponseDataDailyPnlInner>}
-     * @memberof GetPortfolioOverviewResponseData
+     * @type {Array<GetAddressPortfolioOverviewResponseDataDailyPnlInner>}
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
-    dailyPnl?: Array<GetPortfolioOverviewResponseDataDailyPnlInner>;
+    dailyPnl?: Array<GetAddressPortfolioOverviewResponseDataDailyPnlInner>;
     /**
-     * Win rate within the time frame. \"61.11\" means 61.11%. Calculated as profitable tokens / total closed positions. No percent sign included.
+     * Win rate within the time frame. \"61.11\" means 61.11%. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     winRate?: string;
     /**
      *
-     * @type {GetPortfolioOverviewResponseDataTokenCountByPnlPercent}
-     * @memberof GetPortfolioOverviewResponseData
+     * @type {GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent}
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
-    tokenCountByPnlPercent?: GetPortfolioOverviewResponseDataTokenCountByPnlPercent;
+    tokenCountByPnlPercent?: GetAddressPortfolioOverviewResponseDataTokenCountByPnlPercent;
     /**
      * Number of buy transactions within the time frame.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     buyTxCount?: string;
     /**
      * Number of sell transactions within the time frame.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     sellTxCount?: string;
     /**
      * Total number of distinct tokens traded within the time frame.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     totalTokenCount?: string;
     /**
      * Total buy volume within the time frame, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     buyTxVolume?: string;
     /**
      * Total sell volume within the time frame, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     sellTxVolume?: string;
     /**
-     * Average buy value per transaction within the time frame, denominated in USD. Calculated as buyTxVolume / buyTxCount.
+     * Average buy value per transaction within the time frame, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     avgBuyValueUsd?: string;
     /**
      * Total realized PnL of the top 3 profit tokens, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     top3PnlTokenSumUsd?: string;
     /**
      * Percentage of total realized PnL contributed by the top 3 profit tokens. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseData
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
     top3PnlTokenPercent?: string;
     /**
      * Top 3 tokens by realized PnL. Returns fewer items if fewer than 3 tokens were traded.
-     * @type {Array<GetPortfolioOverviewResponseDataTopPnlTokenListInner>}
-     * @memberof GetPortfolioOverviewResponseData
+     * @type {Array<GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner>}
+     * @memberof GetAddressPortfolioOverviewResponseData
      */
-    topPnlTokenList?: Array<GetPortfolioOverviewResponseDataTopPnlTokenListInner>;
+    topPnlTokenList?: Array<GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner>;
 }

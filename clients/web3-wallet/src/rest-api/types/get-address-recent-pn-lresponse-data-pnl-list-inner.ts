@@ -16,102 +16,102 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration } from './get-portfolio-recent-pn-lresponse-data-pnl-list-inner-token-position-duration';
+import type { GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration } from './get-address-recent-pn-lresponse-data-pnl-list-inner-token-position-duration';
 
 /**
  *
  * @export
- * @interface GetPortfolioRecentPnLResponseDataPnlListInner
+ * @interface GetAddressRecentPnLResponseDataPnlListInner
  */
-export interface GetPortfolioRecentPnLResponseDataPnlListInner {
+export interface GetAddressRecentPnLResponseDataPnlListInner {
     /**
      * Unique chain identifier.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     binanceChainId?: string;
     /**
      * Token contract address. EVM addresses are lowercase; Solana addresses are case-sensitive.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     tokenContractAddress?: string;
     /**
      * Token symbol.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     tokenSymbol?: string;
     /**
      * Timestamp of the last transaction for this token, Unix millisecond timestamp.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     lastActiveTimestamp?: string;
     /**
      * Realized PnL for this token, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     realizedPnlUsd?: string;
     /**
      * Realized PnL percentage for this token. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     realizedPnlPercent?: string;
     /**
      * Current market value of the address\'s holding in this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     tokenBalanceUsd?: string;
     /**
      * Current holding amount of this token (token units).
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     tokenBalanceAmount?: string;
     /**
      *
-     * @type {GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @type {GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration}
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
-    tokenPositionDuration?: GetPortfolioRecentPnLResponseDataPnlListInnerTokenPositionDuration;
+    tokenPositionDuration?: GetAddressRecentPnLResponseDataPnlListInnerTokenPositionDuration;
     /**
      * Number of buy transactions for this token.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     buyTxCount?: string;
     /**
      * Total buy spend for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     buyTxVolume?: string;
     /**
-     * Average buy price for this token, denominated in USD. Calculated as buyTxVolume / total buy quantity.
+     * Average buy price for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     buyAvgPrice?: string;
     /**
      * Number of sell transactions for this token.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     sellTxCount?: string;
     /**
      * Total sell proceeds for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     sellTxVolume?: string;
     /**
-     * Average sell price for this token, denominated in USD. Calculated as sellTxVolume / total sell quantity.
+     * Average sell price for this token, denominated in USD.
      * @type {string}
-     * @memberof GetPortfolioRecentPnLResponseDataPnlListInner
+     * @memberof GetAddressRecentPnLResponseDataPnlListInner
      */
     sellAvgPrice?: string;
 }

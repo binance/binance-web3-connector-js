@@ -16,24 +16,24 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetPortfolioDexHistoryResponseDataTransactionListInner } from './get-portfolio-dex-history-response-data-transaction-list-inner';
+import type { GetDexTradeHistoryResponseDataTransactionListInner } from './get-dex-trade-history-response-data-transaction-list-inner';
 
 /**
  * Paginated DEX transaction list.
  * @export
- * @interface GetPortfolioDexHistoryResponseData
+ * @interface GetDexTradeHistoryResponseData
  */
-export interface GetPortfolioDexHistoryResponseData {
+export interface GetDexTradeHistoryResponseData {
     /**
      * Pagination cursor for the next page. Empty string when no more data.
      * @type {string}
-     * @memberof GetPortfolioDexHistoryResponseData
+     * @memberof GetDexTradeHistoryResponseData
      */
     cursor?: string;
     /**
      * DEX transaction records sorted by time descending.
-     * @type {Array<GetPortfolioDexHistoryResponseDataTransactionListInner>}
-     * @memberof GetPortfolioDexHistoryResponseData
+     * @type {Array<GetDexTradeHistoryResponseDataTransactionListInner>}
+     * @memberof GetDexTradeHistoryResponseData
      */
-    transactionList?: Array<GetPortfolioDexHistoryResponseDataTransactionListInner>;
+    transactionList?: Array<GetDexTradeHistoryResponseDataTransactionListInner>;
 }

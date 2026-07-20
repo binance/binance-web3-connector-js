@@ -16,18 +16,18 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetAddressTrackerTradesResponseDataTradesInner } from './get-address-tracker-trades-response-data-trades-inner';
+import type { GetTrackedTradesResponseDataTradesInner } from './get-tracked-trades-response-data-trades-inner';
 
 /**
  * Tracker trade results.
  * @export
- * @interface GetAddressTrackerTradesResponseData
+ * @interface GetTrackedTradesResponseData
  */
-export interface GetAddressTrackerTradesResponseData {
+export interface GetTrackedTradesResponseData {
     /**
      * List of tracked address trades.
-     * @type {Array<GetAddressTrackerTradesResponseDataTradesInner>}
-     * @memberof GetAddressTrackerTradesResponseData
+     * @type {Array<GetTrackedTradesResponseDataTradesInner>}
+     * @memberof GetTrackedTradesResponseData
      */
-    trades?: Array<GetAddressTrackerTradesResponseDataTradesInner>;
+    trades?: Array<GetTrackedTradesResponseDataTradesInner>;
 }

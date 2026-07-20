@@ -16,31 +16,31 @@
 /**
  *
  * @export
- * @interface GetPortfolioOverviewResponseDataTopPnlTokenListInner
+ * @interface GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner
  */
-export interface GetPortfolioOverviewResponseDataTopPnlTokenListInner {
+export interface GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner {
     /**
      * Token contract address. EVM addresses are lowercase; Solana addresses are case-sensitive.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTopPnlTokenListInner
+     * @memberof GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner
      */
     tokenContractAddress?: string;
     /**
      * Token symbol.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTopPnlTokenListInner
+     * @memberof GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner
      */
     tokenSymbol?: string;
     /**
      * Realized PnL for this token, denominated in USD. Positive means profit, negative means loss.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTopPnlTokenListInner
+     * @memberof GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner
      */
     tokenPnLUsd?: string;
     /**
      * Realized PnL percentage for this token. No percent sign included.
      * @type {string}
-     * @memberof GetPortfolioOverviewResponseDataTopPnlTokenListInner
+     * @memberof GetAddressPortfolioOverviewResponseDataTopPnlTokenListInner
      */
     tokenPnLPercent?: string;
 }
