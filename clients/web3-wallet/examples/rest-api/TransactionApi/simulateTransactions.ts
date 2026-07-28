@@ -13,6 +13,7 @@ async function simulateTransactions() {
             binanceChainId: 'binanceChainId_example',
             evmTx: {} as Web3WalletRestAPI.SimulateTransactionsRequestEvmTx,
             solTx: {} as Web3WalletRestAPI.SimulateTransactionsRequestSolTx,
+            tronTx: {} as Web3WalletRestAPI.SimulateTransactionsRequestTronTx,
         });
 
         const rateLimits = response.rateLimits!;

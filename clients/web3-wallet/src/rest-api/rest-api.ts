@@ -794,7 +794,7 @@ export class RestAPI {
 
     /**
      * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
-     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
+     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks. Tron and Solana do not support MEV protection; the flag is ignored on these chains.
      *
      * @summary Broadcast Transactions
      * @param {BroadcastTransactionsRequest} requestParameters Request parameters.
@@ -827,7 +827,8 @@ export class RestAPI {
 
     /**
      * Estimate the gas limit (or compute-unit ceiling on Solana) for an unsigned transaction.
-     * Provide either `evmTx` for EVM chains or `solTx` for Solana, matching the value of `binanceChainId`.
+     * Provide either `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron ("CT_195"), matching the value of `binanceChainId`.
+     * On Tron the response carries energy/bandwidth fields instead of a single gas limit; `gasLimit` is the fee limit (in sun) and the energy/bandwidth fields describe resource consumption and pricing.
      *
      * @summary Get Gas Limit
      * @param {GetGasLimitRequest} requestParameters Request parameters.
@@ -846,7 +847,9 @@ export class RestAPI {
      * Query the current network gas price for the specified chain. The response shape varies by chain family:
      * - EVM chains return both `evmLegacyGasPrice` (legacy gasPrice) and
      * `eip1559GasPrice` (baseFee + priority/max fees) when EIP-1559 is supported.
-     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips).
+     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips). - Tron ("CT_195") returns an empty `data` object because Tron has no
+     * on-chain gas-price concept; use the gas-limit endpoint instead.
+     *
      * Fields not applicable to the chain family are returned as `null`.
      *
      * @summary Get Gas Price
@@ -880,7 +883,8 @@ export class RestAPI {
 
     /**
      * Simulate transaction execution off-chain to predict its outcome before broadcasting. The response includes the predicted execution status, balance changes per affected account/token, and ERC-20 allowance changes (EVM chains).
-     * Provide either `evmTx` (EVM chains) or `solTx` (Solana) matching `binanceChainId`.
+     * Provide either `evmTx` (EVM chains), `solTx` (Solana), or `tronTx` (Tron "CT_195") matching `binanceChainId`. On Tron, `allowanceChanges` is returned as an empty array.
+     * Note: Metis (chainId 1088) is not supported by this endpoint.
      *
      * @summary Simulate Transactions
      * @param {SimulateTransactionsRequest} requestParameters Request parameters.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 10.0.0 - 2026-07-28
+
+### Changed (1)
+
+- Modified response for `getGasLimit()` (`POST /api/v1/dex/pre-transaction/gas-limit`):
+  - `data`: property `energyFee` added
+  - `data`: property `energyRequired` added
+  - `data`: property `freeBandwidth` added
+  - `data`: property `freeEnergy` added
+  - `data`: property `bandwidthFee` added
+  - `data`: property `bandwidthRequired` added
+
 ## 9.0.1 - 2026-07-21
 
 ### Changed (2)

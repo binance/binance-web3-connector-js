@@ -23,11 +23,13 @@ import type {
     GetBroadcastOrdersResponse,
     GetGasLimitRequestEvmTx,
     GetGasLimitRequestSolTx,
+    GetGasLimitRequestTronTx,
     GetGasLimitResponse,
     GetGasPriceResponse,
     GetTransactionSupportedChainsResponse,
     SimulateTransactionsRequestEvmTx,
     SimulateTransactionsRequestSolTx,
+    SimulateTransactionsRequestTronTx,
     SimulateTransactionsResponse,
 } from '../types';
 
@@ -38,12 +40,12 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
     return {
         /**
          * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
-         * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
+         * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks. Tron and Solana do not support MEV protection; the flag is ignored on these chains.
          *
          * @summary Broadcast Transactions
-         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
-         * @param {string} signedTransaction Client-signed raw transaction. EVM chains use a hex-encoded RLP transaction; Solana uses a base64-encoded signed transaction.
-         * @param {string} address Sender wallet address. Used for status attribution and signature verification.
+         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron).
+         * @param {string} signedTransaction Client-signed raw transaction. Format depends on `binanceChainId`:  - **EVM chains**: hex-encoded RLP transaction (e.g. `0xf86c...`). - **Solana (`CT_501`)**: base64-encoded signed transaction. - **Tron (`CT_195`)**: JSON string of the signed transaction   returned by a Tron signer, containing `raw_data` (with   `contract[].parameter.value.owner_address`) and a `signature`   array. Example:   `{\"raw_data\":{\"contract\":[{\"type\":\"TriggerSmartContract\",\"parameter\":{\"value\":{\"owner_address\":\"T...\",\"contract_address\":\"T...\",\"data\":\"<calldata hex>\",\"call_value\":0}}}]},\"signature\":[\"...\"]}`.   Note for Tron: `signedTransaction` is NOT the calldata hex passed to `simulate` / `getGasLimit` under `tronTx.triggerSmartContractParams.data`. The signer is extracted from `raw_data.contract[0].parameter.value.owner_address` and must match `address`; passing calldata hex here will be rejected with `code=40001, invalid signedTransaction: failed to parse Tron signedTransaction: syntax error`.
+         * @param {string} address Sender wallet address. Used for status attribution and signature verification. On Tron and Solana the address is case-sensitive base58check.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          * @param {boolean} [enableMevProtection] When true, route the transaction through a private mempool for MEV protection.
@@ -178,12 +180,14 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
         },
         /**
          * Estimate the gas limit (or compute-unit ceiling on Solana) for an unsigned transaction.
-         * Provide either `evmTx` for EVM chains or `solTx` for Solana, matching the value of `binanceChainId`.
+         * Provide either `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron ("CT_195"), matching the value of `binanceChainId`.
+         * On Tron the response carries energy/bandwidth fields instead of a single gas limit; `gasLimit` is the fee limit (in sun) and the energy/bandwidth fields describe resource consumption and pricing.
          *
          * @summary Get Gas Limit
-         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron). Provide `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron — exactly one must be present. Note: `evmTx`, `solTx`, and `tronTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
          * @param {GetGasLimitRequestEvmTx} evmTx
          * @param {GetGasLimitRequestSolTx} solTx
+         * @param {GetGasLimitRequestTronTx} tronTx
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          *
@@ -193,6 +197,7 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
             binanceChainId: string,
             evmTx: GetGasLimitRequestEvmTx,
             solTx: GetGasLimitRequestSolTx,
+            tronTx: GetGasLimitRequestTronTx,
             recvWindow?: number | bigint,
             nonce?: string
         ): Promise<RequestArgs> => {
@@ -202,6 +207,8 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
             assertParamExists('getGasLimit', 'evmTx', evmTx);
             // verify required parameter 'solTx' is not null or undefined
             assertParamExists('getGasLimit', 'solTx', solTx);
+            // verify required parameter 'tronTx' is not null or undefined
+            assertParamExists('getGasLimit', 'tronTx', tronTx);
 
             const localVarQueryParameter: Record<string, unknown> = {};
             const localVarBodyParameter: Record<string, unknown> = {};
@@ -226,6 +233,10 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
                 localVarBodyParameter['solTx'] = solTx;
             }
 
+            if (tronTx !== undefined && tronTx !== null) {
+                localVarBodyParameter['tronTx'] = tronTx;
+            }
+
             let _timeUnit: TimeUnit | undefined;
             if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
 
@@ -242,11 +253,13 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
          * Query the current network gas price for the specified chain. The response shape varies by chain family:
          * - EVM chains return both `evmLegacyGasPrice` (legacy gasPrice) and
          * `eip1559GasPrice` (baseFee + priority/max fees) when EIP-1559 is supported.
-         * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips).
+         * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips). - Tron ("CT_195") returns an empty `data` object because Tron has no
+         * on-chain gas-price concept; use the gas-limit endpoint instead.
+         *
          * Fields not applicable to the chain family are returned as `null`.
          *
          * @summary Get Gas Price
-         * @param {string} binanceChainId Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana).
+         * @param {string} binanceChainId Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana, "CT_195"=Tron).
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          *
@@ -325,12 +338,14 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
         },
         /**
          * Simulate transaction execution off-chain to predict its outcome before broadcasting. The response includes the predicted execution status, balance changes per affected account/token, and ERC-20 allowance changes (EVM chains).
-         * Provide either `evmTx` (EVM chains) or `solTx` (Solana) matching `binanceChainId`.
+         * Provide either `evmTx` (EVM chains), `solTx` (Solana), or `tronTx` (Tron "CT_195") matching `binanceChainId`. On Tron, `allowanceChanges` is returned as an empty array.
+         * Note: Metis (chainId 1088) is not supported by this endpoint.
          *
          * @summary Simulate Transactions
-         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+         * @param {string} binanceChainId Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron). Provide `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron — exactly one must be present. Note: `evmTx`, `solTx`, and `tronTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
          * @param {SimulateTransactionsRequestEvmTx} evmTx
          * @param {SimulateTransactionsRequestSolTx} solTx
+         * @param {SimulateTransactionsRequestTronTx} tronTx
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          *
@@ -340,6 +355,7 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
             binanceChainId: string,
             evmTx: SimulateTransactionsRequestEvmTx,
             solTx: SimulateTransactionsRequestSolTx,
+            tronTx: SimulateTransactionsRequestTronTx,
             recvWindow?: number | bigint,
             nonce?: string
         ): Promise<RequestArgs> => {
@@ -349,6 +365,8 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
             assertParamExists('simulateTransactions', 'evmTx', evmTx);
             // verify required parameter 'solTx' is not null or undefined
             assertParamExists('simulateTransactions', 'solTx', solTx);
+            // verify required parameter 'tronTx' is not null or undefined
+            assertParamExists('simulateTransactions', 'tronTx', tronTx);
 
             const localVarQueryParameter: Record<string, unknown> = {};
             const localVarBodyParameter: Record<string, unknown> = {};
@@ -373,6 +391,10 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
                 localVarBodyParameter['solTx'] = solTx;
             }
 
+            if (tronTx !== undefined && tronTx !== null) {
+                localVarBodyParameter['tronTx'] = tronTx;
+            }
+
             let _timeUnit: TimeUnit | undefined;
             if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
 
@@ -395,7 +417,7 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
 export interface TransactionApiInterface {
     /**
      * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
-     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
+     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks. Tron and Solana do not support MEV protection; the flag is ignored on these chains.
      *
      * @summary Broadcast Transactions
      * @param {BroadcastTransactionsRequest} requestParameters Request parameters.
@@ -420,7 +442,8 @@ export interface TransactionApiInterface {
     ): Promise<RestApiResponse<GetBroadcastOrdersResponse>>;
     /**
      * Estimate the gas limit (or compute-unit ceiling on Solana) for an unsigned transaction.
-     * Provide either `evmTx` for EVM chains or `solTx` for Solana, matching the value of `binanceChainId`.
+     * Provide either `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron ("CT_195"), matching the value of `binanceChainId`.
+     * On Tron the response carries energy/bandwidth fields instead of a single gas limit; `gasLimit` is the fee limit (in sun) and the energy/bandwidth fields describe resource consumption and pricing.
      *
      * @summary Get Gas Limit
      * @param {GetGasLimitRequest} requestParameters Request parameters.
@@ -435,7 +458,9 @@ export interface TransactionApiInterface {
      * Query the current network gas price for the specified chain. The response shape varies by chain family:
      * - EVM chains return both `evmLegacyGasPrice` (legacy gasPrice) and
      * `eip1559GasPrice` (baseFee + priority/max fees) when EIP-1559 is supported.
-     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips).
+     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips). - Tron ("CT_195") returns an empty `data` object because Tron has no
+     * on-chain gas-price concept; use the gas-limit endpoint instead.
+     *
      * Fields not applicable to the chain family are returned as `null`.
      *
      * @summary Get Gas Price
@@ -461,7 +486,8 @@ export interface TransactionApiInterface {
     ): Promise<RestApiResponse<GetTransactionSupportedChainsResponse>>;
     /**
      * Simulate transaction execution off-chain to predict its outcome before broadcasting. The response includes the predicted execution status, balance changes per affected account/token, and ERC-20 allowance changes (EVM chains).
-     * Provide either `evmTx` (EVM chains) or `solTx` (Solana) matching `binanceChainId`.
+     * Provide either `evmTx` (EVM chains), `solTx` (Solana), or `tronTx` (Tron "CT_195") matching `binanceChainId`. On Tron, `allowanceChanges` is returned as an empty array.
+     * Note: Metis (chainId 1088) is not supported by this endpoint.
      *
      * @summary Simulate Transactions
      * @param {SimulateTransactionsRequest} requestParameters Request parameters.
@@ -480,21 +506,21 @@ export interface TransactionApiInterface {
  */
 export interface BroadcastTransactionsRequest {
     /**
-     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron).
      * @type {string}
      * @memberof TransactionApiBroadcastTransactions
      */
     readonly binanceChainId: string;
 
     /**
-     * Client-signed raw transaction. EVM chains use a hex-encoded RLP transaction; Solana uses a base64-encoded signed transaction.
+     * Client-signed raw transaction. Format depends on `binanceChainId`:  - **EVM chains**: hex-encoded RLP transaction (e.g. `0xf86c...`). - **Solana (`CT_501`)**: base64-encoded signed transaction. - **Tron (`CT_195`)**: JSON string of the signed transaction   returned by a Tron signer, containing `raw_data` (with   `contract[].parameter.value.owner_address`) and a `signature`   array. Example:   `{\"raw_data\":{\"contract\":[{\"type\":\"TriggerSmartContract\",\"parameter\":{\"value\":{\"owner_address\":\"T...\",\"contract_address\":\"T...\",\"data\":\"<calldata hex>\",\"call_value\":0}}}]},\"signature\":[\"...\"]}`.   Note for Tron: `signedTransaction` is NOT the calldata hex passed to `simulate` / `getGasLimit` under `tronTx.triggerSmartContractParams.data`. The signer is extracted from `raw_data.contract[0].parameter.value.owner_address` and must match `address`; passing calldata hex here will be rejected with `code=40001, invalid signedTransaction: failed to parse Tron signedTransaction: syntax error`.
      * @type {string}
      * @memberof TransactionApiBroadcastTransactions
      */
     readonly signedTransaction: string;
 
     /**
-     * Sender wallet address. Used for status attribution and signature verification.
+     * Sender wallet address. Used for status attribution and signature verification. On Tron and Solana the address is case-sensitive base58check.
      * @type {string}
      * @memberof TransactionApiBroadcastTransactions
      */
@@ -590,7 +616,7 @@ export interface GetBroadcastOrdersRequest {
  */
 export interface GetGasLimitRequest {
     /**
-     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron). Provide `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron — exactly one must be present. Note: `evmTx`, `solTx`, and `tronTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
      * @type {string}
      * @memberof TransactionApiGetGasLimit
      */
@@ -609,6 +635,13 @@ export interface GetGasLimitRequest {
      * @memberof TransactionApiGetGasLimit
      */
     readonly solTx: GetGasLimitRequestSolTx;
+
+    /**
+     *
+     * @type {GetGasLimitRequestTronTx}
+     * @memberof TransactionApiGetGasLimit
+     */
+    readonly tronTx: GetGasLimitRequestTronTx;
 
     /**
      * Allowed time deviation in milliseconds (default: 5000, max: 60000).
@@ -631,7 +664,7 @@ export interface GetGasLimitRequest {
  */
 export interface GetGasPriceRequest {
     /**
-     * Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana).
+     * Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana, "CT_195"=Tron).
      * @type {string}
      * @memberof TransactionApiGetGasPrice
      */
@@ -678,7 +711,7 @@ export interface GetTransactionSupportedChainsRequest {
  */
 export interface SimulateTransactionsRequest {
     /**
-     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana). Provide `evmTx` for EVM chains or `solTx` for Solana — exactly one must be present. Note: both `evmTx` and `solTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
+     * Unique chain identifier (e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron). Provide `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron — exactly one must be present. Note: `evmTx`, `solTx`, and `tronTx` are marked required in this schema for rendering purposes only; in practice supply exactly one matching `binanceChainId`.
      * @type {string}
      * @memberof TransactionApiSimulateTransactions
      */
@@ -697,6 +730,13 @@ export interface SimulateTransactionsRequest {
      * @memberof TransactionApiSimulateTransactions
      */
     readonly solTx: SimulateTransactionsRequestSolTx;
+
+    /**
+     *
+     * @type {SimulateTransactionsRequestTronTx}
+     * @memberof TransactionApiSimulateTransactions
+     */
+    readonly tronTx: SimulateTransactionsRequestTronTx;
 
     /**
      * Allowed time deviation in milliseconds (default: 5000, max: 60000).
@@ -728,7 +768,7 @@ export class TransactionApi implements TransactionApiInterface {
 
     /**
      * Broadcast a client-signed transaction to the chain via the Binance Web3 API relay. Returns the transaction hash and an internal `orderId` you can use to track on-chain status via the post-transaction service.
-     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks.
+     * Optional MEV protection (EVM chains only) routes the transaction through a private mempool to mitigate front-running and sandwich attacks. Tron and Solana do not support MEV protection; the flag is ignored on these chains.
      *
      * @summary Broadcast Transactions
      * @param {BroadcastTransactionsRequest} requestParameters Request parameters.
@@ -797,7 +837,8 @@ export class TransactionApi implements TransactionApiInterface {
 
     /**
      * Estimate the gas limit (or compute-unit ceiling on Solana) for an unsigned transaction.
-     * Provide either `evmTx` for EVM chains or `solTx` for Solana, matching the value of `binanceChainId`.
+     * Provide either `evmTx` for EVM chains, `solTx` for Solana, or `tronTx` for Tron ("CT_195"), matching the value of `binanceChainId`.
+     * On Tron the response carries energy/bandwidth fields instead of a single gas limit; `gasLimit` is the fee limit (in sun) and the energy/bandwidth fields describe resource consumption and pricing.
      *
      * @summary Get Gas Limit
      * @param {GetGasLimitRequest} requestParameters Request parameters.
@@ -813,6 +854,7 @@ export class TransactionApi implements TransactionApiInterface {
             requestParameters?.binanceChainId,
             requestParameters?.evmTx,
             requestParameters?.solTx,
+            requestParameters?.tronTx,
             requestParameters?.recvWindow,
             requestParameters?.nonce
         );
@@ -832,7 +874,9 @@ export class TransactionApi implements TransactionApiInterface {
      * Query the current network gas price for the specified chain. The response shape varies by chain family:
      * - EVM chains return both `evmLegacyGasPrice` (legacy gasPrice) and
      * `eip1559GasPrice` (baseFee + priority/max fees) when EIP-1559 is supported.
-     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips).
+     * - Solana returns `solanaGasPrice` (compute-unit prices and Jito tips). - Tron ("CT_195") returns an empty `data` object because Tron has no
+     * on-chain gas-price concept; use the gas-limit endpoint instead.
+     *
      * Fields not applicable to the chain family are returned as `null`.
      *
      * @summary Get Gas Price
@@ -894,7 +938,8 @@ export class TransactionApi implements TransactionApiInterface {
 
     /**
      * Simulate transaction execution off-chain to predict its outcome before broadcasting. The response includes the predicted execution status, balance changes per affected account/token, and ERC-20 allowance changes (EVM chains).
-     * Provide either `evmTx` (EVM chains) or `solTx` (Solana) matching `binanceChainId`.
+     * Provide either `evmTx` (EVM chains), `solTx` (Solana), or `tronTx` (Tron "CT_195") matching `binanceChainId`. On Tron, `allowanceChanges` is returned as an empty array.
+     * Note: Metis (chainId 1088) is not supported by this endpoint.
      *
      * @summary Simulate Transactions
      * @param {SimulateTransactionsRequest} requestParameters Request parameters.
@@ -910,6 +955,7 @@ export class TransactionApi implements TransactionApiInterface {
             requestParameters?.binanceChainId,
             requestParameters?.evmTx,
             requestParameters?.solTx,
+            requestParameters?.tronTx,
             requestParameters?.recvWindow,
             requestParameters?.nonce
         );

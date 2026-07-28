@@ -29,11 +29,13 @@ import type {
     GetBroadcastOrdersResponse,
     GetGasLimitRequestEvmTx,
     GetGasLimitRequestSolTx,
+    GetGasLimitRequestTronTx,
     GetGasLimitResponse,
     GetGasPriceResponse,
     GetTransactionSupportedChainsResponse,
     SimulateTransactionsRequestEvmTx,
     SimulateTransactionsRequestSolTx,
+    SimulateTransactionsRequestTronTx,
     SimulateTransactionsResponse,
 } from '../../../src/rest-api/types';
 
@@ -333,13 +335,22 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
             };
 
             mockResponse = JSONParse(
                 JSONStringify({
                     code: 0,
                     msg: 'success',
-                    data: { gasLimit: '21000' },
+                    data: {
+                        gasLimit: '21000',
+                        energyRequired: '15000',
+                        bandwidthRequired: '268',
+                        freeEnergy: '14145',
+                        freeBandwidth: '600',
+                        energyFee: '210',
+                        bandwidthFee: '1000',
+                    },
                     timestamp: 1748601600000,
                     success: true,
                 })
@@ -364,6 +375,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
             };
@@ -372,7 +384,15 @@ describe('TransactionApi', () => {
                 JSONStringify({
                     code: 0,
                     msg: 'success',
-                    data: { gasLimit: '21000' },
+                    data: {
+                        gasLimit: '21000',
+                        energyRequired: '15000',
+                        bandwidthRequired: '268',
+                        freeEnergy: '14145',
+                        freeBandwidth: '600',
+                        energyFee: '210',
+                        bandwidthFee: '1000',
+                    },
                     timestamp: 1748601600000,
                     success: true,
                 })
@@ -397,6 +417,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.binanceChainId;
@@ -411,6 +432,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.evmTx;
@@ -425,6 +447,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.solTx;
@@ -434,11 +457,27 @@ describe('TransactionApi', () => {
             );
         });
 
+        it('should throw RequiredError when tronTx is missing', async () => {
+            const _params: GetGasLimitRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as GetGasLimitRequestEvmTx,
+                solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.tronTx;
+
+            await expect(client.getGasLimit(params)).rejects.toThrow(
+                'Required parameter tronTx was null or undefined when calling getGasLimit.'
+            );
+        });
+
         it('should throw an error when server is returning an error', async () => {
             const params: GetGasLimitRequest = {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as GetGasLimitRequestEvmTx,
                 solTx: {} as GetGasLimitRequestSolTx,
+                tronTx: {} as GetGasLimitRequestTronTx,
             };
 
             const errorResponse = {
@@ -691,6 +730,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
             };
 
             mockResponse = JSONParse(
@@ -742,6 +782,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
             };
@@ -795,6 +836,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.binanceChainId;
@@ -809,6 +851,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.evmTx;
@@ -823,6 +866,7 @@ describe('TransactionApi', () => {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
             };
             const params = Object.assign({ ..._params });
             delete params?.solTx;
@@ -832,11 +876,27 @@ describe('TransactionApi', () => {
             );
         });
 
+        it('should throw RequiredError when tronTx is missing', async () => {
+            const _params: SimulateTransactionsRequest = {
+                binanceChainId: 'binanceChainId_example',
+                evmTx: {} as SimulateTransactionsRequestEvmTx,
+                solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.tronTx;
+
+            await expect(client.simulateTransactions(params)).rejects.toThrow(
+                'Required parameter tronTx was null or undefined when calling simulateTransactions.'
+            );
+        });
+
         it('should throw an error when server is returning an error', async () => {
             const params: SimulateTransactionsRequest = {
                 binanceChainId: 'binanceChainId_example',
                 evmTx: {} as SimulateTransactionsRequestEvmTx,
                 solTx: {} as SimulateTransactionsRequestSolTx,
+                tronTx: {} as SimulateTransactionsRequestTronTx,
             };
 
             const errorResponse = {

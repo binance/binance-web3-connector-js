@@ -20,7 +20,7 @@
  */
 export interface GetTransactionSupportedChainsResponseDataInner {
     /**
-     * Unique chain identifier (follows EIP-155 chainId for EVM chains; e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana).
+     * Unique chain identifier (follows EIP-155 chainId for EVM chains; e.g. \"1\"=Ethereum, \"56\"=BSC, \"CT_501\"=Solana, \"CT_195\"=Tron).
      * @type {string}
      * @memberof GetTransactionSupportedChainsResponseDataInner
      */

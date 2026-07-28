@@ -13,6 +13,7 @@ async function getGasLimit() {
             binanceChainId: 'binanceChainId_example',
             evmTx: {} as Web3WalletRestAPI.GetGasLimitRequestEvmTx,
             solTx: {} as Web3WalletRestAPI.GetGasLimitRequestSolTx,
+            tronTx: {} as Web3WalletRestAPI.GetGasLimitRequestTronTx,
         });
 
         const rateLimits = response.rateLimits!;

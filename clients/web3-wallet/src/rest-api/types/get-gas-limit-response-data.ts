@@ -14,15 +14,51 @@
  */
 
 /**
- *
+ * Estimated gas limit. On Tron, the response additionally carries energy/bandwidth fields; non-applicable fields are returned as `null`.
  * @export
  * @interface GetGasLimitResponseData
  */
 export interface GetGasLimitResponseData {
     /**
-     * Estimated gas limit (EVM) or compute-unit ceiling (Solana), as an integer string.
+     * Estimated gas limit (EVM), compute-unit ceiling (Solana), or fee limit in sun (Tron), as an integer string.
      * @type {string}
      * @memberof GetGasLimitResponseData
      */
     gasLimit?: string;
+    /**
+     * Energy consumed by the Tron transaction (integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    energyRequired?: string | null;
+    /**
+     * Bandwidth consumed by the Tron transaction (integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    bandwidthRequired?: string | null;
+    /**
+     * Free energy available to the account on Tron (integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    freeEnergy?: string | null;
+    /**
+     * Free bandwidth available to the account on Tron (integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    freeBandwidth?: string | null;
+    /**
+     * Unit price of energy on Tron (sun per energy, integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    energyFee?: string | null;
+    /**
+     * Unit price of bandwidth on Tron (sun per byte, integer string). Null on non-Tron chains.
+     * @type {string}
+     * @memberof GetGasLimitResponseData
+     */
+    bandwidthFee?: string | null;
 }
