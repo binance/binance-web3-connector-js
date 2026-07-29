@@ -120,4 +120,22 @@ export interface GetAggregatedQuoteResponseDataInner {
      * @memberof GetAggregatedQuoteResponseDataInner
      */
     isBest?: boolean;
+    /**
+     * Fee amount deducted for this route (smallest unit, integer string). Only populated when the request enabled the custom fee (`feePercent` + `feeSource` both present); `null` otherwise. `FROM_TOKEN` direction = `originalFromCoinAmount × feePercent/100` (HALF_UP); `TO_TOKEN` direction = `originalToCoinAmount × feePercent/100` (HALF_DOWN).
+     * @type {string}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    feeAmount?: string | null;
+    /**
+     * Contract address of the token in which the fee is denominated. `FROM_TOKEN` direction = sell-token address; `TO_TOKEN` direction = buy-token address. `null` when the custom fee is not enabled.
+     * @type {string}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    feeToken?: string | null;
+    /**
+     * Actual amount participating in the DEX swap (smallest unit, integer string). `FROM_TOKEN` direction = net amount after fee deduction (`fromTokenAmount − feeAmount`, i.e. the amountIn sent to the DEX); `TO_TOKEN` direction = original input amount (fee is taken from the output side, so the full input participates in the swap). `null` when the custom fee is not enabled.
+     * @type {string}
+     * @memberof GetAggregatedQuoteResponseDataInner
+     */
+    actualSwapAmount?: string | null;
 }

@@ -47,7 +47,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * controlling the final wire format.
          *
          *
-         * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`).
+         * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`). Supports the custom-fee (Add Fee / referral fee) parameters (`feePercent` + `fromTokenReferrerWalletAddress` / `toTokenReferrerWalletAddress`), with the same semantics as `/swap` — the fee instructions are injected into the returned uncompiled instruction list.
          *
          * @summary Build Solana Swap Instructions
          * @param {BuildSolanaSwapInstructionsBinanceChainIdEnum} binanceChainId Chain identifier. Only `CT_501` (Solana) is accepted; other values return `CHAIN_NOT_SUPPORTED` (40411).
@@ -66,6 +66,13 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} [computeUnitPrice] Priority fee per compute unit (micro-lamports). When omitted, the platform computes a value either from the `gasLevel` tier or from chain-side defaults.
          * @param {BuildSolanaSwapInstructionsGasLevelEnum} [gasLevel] Priority-fee tier; consulted only when `computeUnitPrice` is omitted. Defaults to "average".
          * @param {string} [tips] Jito tips in SOL for MEV protection. Valid range [0.000000001, 2] (minimum 1 lamport). When specified, it is recommended to set `computeUnitPrice=0`. The platform picks one of Jito's tip accounts at random per request.
+         * @param {string} [feePercent] Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive). Same semantics as `/swap`.
+         *
+         **Range (Solana):** `(0, 10]` — greater than 0, up to 10 inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+         *
+         **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+         * @param {string} [fromTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Solana requires a Base58 pubkey; an invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+         * @param {string} [toTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Solana requires a Base58 pubkey; an invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. The referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
          *
          * @throws {RequiredError}
          */
@@ -85,7 +92,10 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             computeUnitLimit?: string,
             computeUnitPrice?: string,
             gasLevel?: BuildSolanaSwapInstructionsGasLevelEnum,
-            tips?: string
+            tips?: string,
+            feePercent?: string,
+            fromTokenReferrerWalletAddress?: string,
+            toTokenReferrerWalletAddress?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('buildSolanaSwapInstructions', 'binanceChainId', binanceChainId);
@@ -156,6 +166,23 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             if (tips !== undefined && tips !== null) {
                 localVarQueryParameter['tips'] = tips;
             }
+            if (feePercent !== undefined && feePercent !== null) {
+                localVarQueryParameter['feePercent'] = feePercent;
+            }
+            if (
+                fromTokenReferrerWalletAddress !== undefined &&
+                fromTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['fromTokenReferrerWalletAddress'] =
+                    fromTokenReferrerWalletAddress;
+            }
+            if (
+                toTokenReferrerWalletAddress !== undefined &&
+                toTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['toTokenReferrerWalletAddress'] =
+                    toTokenReferrerWalletAddress;
+            }
 
             if (recvWindow !== undefined && recvWindow !== null) {
                 localVarHeaderParameter['recvWindow'] = recvWindow;
@@ -210,6 +237,13 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} [computeUnitLimit] Solana only — maximum compute units the transaction may consume (analogous to EVM gasLimit). Applies only when `binanceChainId=CT_501`.
          * @param {string} [computeUnitPrice] Solana only — priority fee per compute unit (micro-lamports), analogous to EVM gasPrice. When omitted, the platform computes a value dynamically. Applies only when `binanceChainId=CT_501`.
          * @param {string} [tips] Solana only — Jito tips in SOL for MEV protection. Valid range [0.000000001, 2] (minimum 1 lamport). When specified, it is recommended to set `computeUnitPrice=0`. Applies only when `binanceChainId=CT_501`.
+         * @param {string} [feePercent] Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive).
+         *
+         **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+         *
+         **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+         * @param {string} [fromTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+         * @param {string} [toTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. On Solana, the referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
          *
          * @throws {RequiredError}
          */
@@ -232,7 +266,10 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             maxAutoSlippagePercent?: string,
             computeUnitLimit?: string,
             computeUnitPrice?: string,
-            tips?: string
+            tips?: string,
+            feePercent?: string,
+            fromTokenReferrerWalletAddress?: string,
+            toTokenReferrerWalletAddress?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('buildSwapTransaction', 'binanceChainId', binanceChainId);
@@ -306,6 +343,23 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             if (tips !== undefined && tips !== null) {
                 localVarQueryParameter['tips'] = tips;
             }
+            if (feePercent !== undefined && feePercent !== null) {
+                localVarQueryParameter['feePercent'] = feePercent;
+            }
+            if (
+                fromTokenReferrerWalletAddress !== undefined &&
+                fromTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['fromTokenReferrerWalletAddress'] =
+                    fromTokenReferrerWalletAddress;
+            }
+            if (
+                toTokenReferrerWalletAddress !== undefined &&
+                toTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['toTokenReferrerWalletAddress'] =
+                    toTokenReferrerWalletAddress;
+            }
 
             if (recvWindow !== undefined && recvWindow !== null) {
                 localVarHeaderParameter['recvWindow'] = recvWindow;
@@ -337,6 +391,12 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          * @param {string} [userWalletAddress] User wallet address. Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock). This address is used as the receiver in the RFQ order and must match the wallet that signs `rfq.typedDataToSign` in the subsequent `/swap` call.
+         * @param {string} [feePercent] Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with `feeSource` — either both present or both absent.
+         *
+         **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+         *
+         **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+         * @param {GetAggregatedQuoteFeeSourceEnum} [feeSource] Fee deduction direction. `FROM_TOKEN` = deduct the fee from the sell token (the amount passed to the DEX is reduced to a net amount); `TO_TOKEN` = deduct the fee from the buy-token output (the user's actual received amount is reduced). Must be paired with `feePercent`.
          *
          * @throws {RequiredError}
          */
@@ -347,7 +407,9 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             toTokenAddress: string,
             recvWindow?: number | bigint,
             nonce?: string,
-            userWalletAddress?: string
+            userWalletAddress?: string,
+            feePercent?: string,
+            feeSource?: GetAggregatedQuoteFeeSourceEnum
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('getAggregatedQuote', 'binanceChainId', binanceChainId);
@@ -376,6 +438,12 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (userWalletAddress !== undefined && userWalletAddress !== null) {
                 localVarQueryParameter['userWalletAddress'] = userWalletAddress;
+            }
+            if (feePercent !== undefined && feePercent !== null) {
+                localVarQueryParameter['feePercent'] = feePercent;
+            }
+            if (feeSource !== undefined && feeSource !== null) {
+                localVarQueryParameter['feeSource'] = feeSource;
             }
 
             if (recvWindow !== undefined && recvWindow !== null) {
@@ -648,6 +716,13 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} [computeUnitLimit] Solana only — maximum compute units the transaction may consume (analogous to EVM gasLimit). Applies only when `binanceChainId=CT_501`.
          * @param {string} [computeUnitPrice] Solana only — priority fee per compute unit (micro-lamports), analogous to EVM gasPrice. When omitted, the platform computes a value dynamically. Applies only when `binanceChainId=CT_501`.
          * @param {string} [tips] Solana only — Jito tips in SOL for MEV protection. Valid range [0.000000001, 2] (minimum 1 lamport). When specified, it is recommended to set `computeUnitPrice=0`. Applies only when `binanceChainId=CT_501`.
+         * @param {string} [feePercent] Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive).
+         *
+         **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+         *
+         **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+         * @param {string} [fromTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+         * @param {string} [toTokenReferrerWalletAddress] Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. On Solana, the referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
          *
          * @throws {RequiredError}
          */
@@ -670,7 +745,10 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             maxAutoSlippagePercent?: string,
             computeUnitLimit?: string,
             computeUnitPrice?: string,
-            tips?: string
+            tips?: string,
+            feePercent?: string,
+            fromTokenReferrerWalletAddress?: string,
+            toTokenReferrerWalletAddress?: string
         ): Promise<RequestArgs> => {
             // verify required parameter 'binanceChainId' is not null or undefined
             assertParamExists('quoteAndBuildSwapTransaction', 'binanceChainId', binanceChainId);
@@ -747,6 +825,23 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (tips !== undefined && tips !== null) {
                 localVarQueryParameter['tips'] = tips;
+            }
+            if (feePercent !== undefined && feePercent !== null) {
+                localVarQueryParameter['feePercent'] = feePercent;
+            }
+            if (
+                fromTokenReferrerWalletAddress !== undefined &&
+                fromTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['fromTokenReferrerWalletAddress'] =
+                    fromTokenReferrerWalletAddress;
+            }
+            if (
+                toTokenReferrerWalletAddress !== undefined &&
+                toTokenReferrerWalletAddress !== null
+            ) {
+                localVarQueryParameter['toTokenReferrerWalletAddress'] =
+                    toTokenReferrerWalletAddress;
             }
 
             if (recvWindow !== undefined && recvWindow !== null) {
@@ -867,7 +962,7 @@ export interface TradingApiInterface {
      * controlling the final wire format.
      *
      *
-     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`).
+     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`). Supports the custom-fee (Add Fee / referral fee) parameters (`feePercent` + `fromTokenReferrerWalletAddress` / `toTokenReferrerWalletAddress`), with the same semantics as `/swap` — the fee instructions are injected into the returned uncompiled instruction list.
      *
      * @summary Build Solana Swap Instructions
      * @param {BuildSolanaSwapInstructionsRequest} requestParameters Request parameters.
@@ -1106,6 +1201,31 @@ export interface BuildSolanaSwapInstructionsRequest {
      * @memberof TradingApiBuildSolanaSwapInstructions
      */
     readonly tips?: string;
+
+    /**
+     * Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive). Same semantics as `/swap`.
+     *
+     **Range (Solana):** `(0, 10]` — greater than 0, up to 10 inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+     *
+     **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+     * @type {string}
+     * @memberof TradingApiBuildSolanaSwapInstructions
+     */
+    readonly feePercent?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Solana requires a Base58 pubkey; an invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+     * @type {string}
+     * @memberof TradingApiBuildSolanaSwapInstructions
+     */
+    readonly fromTokenReferrerWalletAddress?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Solana requires a Base58 pubkey; an invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. The referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
+     * @type {string}
+     * @memberof TradingApiBuildSolanaSwapInstructions
+     */
+    readonly toTokenReferrerWalletAddress?: string;
 }
 
 /**
@@ -1256,6 +1376,31 @@ export interface BuildSwapTransactionRequest {
      * @memberof TradingApiBuildSwapTransaction
      */
     readonly tips?: string;
+
+    /**
+     * Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive).
+     *
+     **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+     *
+     **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+     * @type {string}
+     * @memberof TradingApiBuildSwapTransaction
+     */
+    readonly feePercent?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+     * @type {string}
+     * @memberof TradingApiBuildSwapTransaction
+     */
+    readonly fromTokenReferrerWalletAddress?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. On Solana, the referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
+     * @type {string}
+     * @memberof TradingApiBuildSwapTransaction
+     */
+    readonly toTokenReferrerWalletAddress?: string;
 }
 
 /**
@@ -1311,6 +1456,24 @@ export interface GetAggregatedQuoteRequest {
      * @memberof TradingApiGetAggregatedQuote
      */
     readonly userWalletAddress?: string;
+
+    /**
+     * Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with `feeSource` — either both present or both absent.
+     *
+     **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+     *
+     **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+     * @type {string}
+     * @memberof TradingApiGetAggregatedQuote
+     */
+    readonly feePercent?: string;
+
+    /**
+     * Fee deduction direction. `FROM_TOKEN` = deduct the fee from the sell token (the amount passed to the DEX is reduced to a net amount); `TO_TOKEN` = deduct the fee from the buy-token output (the user's actual received amount is reduced). Must be paired with `feePercent`.
+     * @type {'FROM_TOKEN' | 'TO_TOKEN'}
+     * @memberof TradingApiGetAggregatedQuote
+     */
+    readonly feeSource?: GetAggregatedQuoteFeeSourceEnum;
 }
 
 /**
@@ -1594,6 +1757,31 @@ export interface QuoteAndBuildSwapTransactionRequest {
      * @memberof TradingApiQuoteAndBuildSwapTransaction
      */
     readonly tips?: string;
+
+    /**
+     * Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with exactly one of `fromTokenReferrerWalletAddress` or `toTokenReferrerWalletAddress` (the two referrer addresses are mutually exclusive).
+     *
+     **Range by chain:** `(0, 5]` for EVM chains (BSC, Ethereum, Base, etc.) and `(0, 10]` for Solana (`CT_501`) — greater than 0, up to the chain-specific maximum inclusive, max 2 decimal places. `"1.5"` means 1.5%. Values exceeding 2 decimal places are rejected with `INVALID_FEE_PERCENT` (40466).
+     *
+     **`four.meme` tokens are not supported** — do not pass fee parameters when either side of the pair is a `four.meme` token.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly feePercent?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the sell token (`FROM_TOKEN` direction). Mutually exclusive with `toTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly fromTokenReferrerWalletAddress?: string;
+
+    /**
+     * Wallet address that receives the fee deducted from the buy-token output (`TO_TOKEN` direction). Mutually exclusive with `fromTokenReferrerWalletAddress` — providing both returns `CONFLICT_REFERRER_PARAMS` (40468). Address format depends on the chain: EVM chains require `0x` + 40 hex chars; Solana (`CT_501`) requires a Base58 pubkey. An invalid format returns `INVALID_REFERRER_ADDRESS` (40467). Must be paired with `feePercent`. On Solana, the referrer must already be activated (funded with some SOL) or the request returns `REFERRER_NOT_ACTIVATED` (40469).
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly toTokenReferrerWalletAddress?: string;
 }
 
 /**
@@ -1676,7 +1864,7 @@ export class TradingApi implements TradingApiInterface {
      * controlling the final wire format.
      *
      *
-     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`).
+     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`). Supports the custom-fee (Add Fee / referral fee) parameters (`feePercent` + `fromTokenReferrerWalletAddress` / `toTokenReferrerWalletAddress`), with the same semantics as `/swap` — the fee instructions are injected into the returned uncompiled instruction list.
      *
      * @summary Build Solana Swap Instructions
      * @param {BuildSolanaSwapInstructionsRequest} requestParameters Request parameters.
@@ -1704,7 +1892,10 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.computeUnitLimit,
             requestParameters?.computeUnitPrice,
             requestParameters?.gasLevel,
-            requestParameters?.tips
+            requestParameters?.tips,
+            requestParameters?.feePercent,
+            requestParameters?.fromTokenReferrerWalletAddress,
+            requestParameters?.toTokenReferrerWalletAddress
         );
         return sendRequest<BuildSolanaSwapInstructionsResponse>(
             this.configuration,
@@ -1750,7 +1941,10 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.maxAutoSlippagePercent,
             requestParameters?.computeUnitLimit,
             requestParameters?.computeUnitPrice,
-            requestParameters?.tips
+            requestParameters?.tips,
+            requestParameters?.feePercent,
+            requestParameters?.fromTokenReferrerWalletAddress,
+            requestParameters?.toTokenReferrerWalletAddress
         );
         return sendRequest<BuildSwapTransactionResponse>(
             this.configuration,
@@ -1784,7 +1978,9 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.toTokenAddress,
             requestParameters?.recvWindow,
             requestParameters?.nonce,
-            requestParameters?.userWalletAddress
+            requestParameters?.userWalletAddress,
+            requestParameters?.feePercent,
+            requestParameters?.feeSource
         );
         return sendRequest<GetAggregatedQuoteResponse>(
             this.configuration,
@@ -1964,7 +2160,10 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.maxAutoSlippagePercent,
             requestParameters?.computeUnitLimit,
             requestParameters?.computeUnitPrice,
-            requestParameters?.tips
+            requestParameters?.tips,
+            requestParameters?.feePercent,
+            requestParameters?.fromTokenReferrerWalletAddress,
+            requestParameters?.toTokenReferrerWalletAddress
         );
         return sendRequest<QuoteAndBuildSwapTransactionResponse>(
             this.configuration,
@@ -2046,6 +2245,11 @@ export enum BuildSwapTransactionGasLevelEnum {
 export enum BuildSwapTransactionAutoSlippageEnum {
     TRUE = 'true',
     FALSE = 'false',
+}
+
+export enum GetAggregatedQuoteFeeSourceEnum {
+    FROM_TOKEN = 'FROM_TOKEN',
+    TO_TOKEN = 'TO_TOKEN',
 }
 
 export enum QuoteAndBuildSwapTransactionVendorEnum {

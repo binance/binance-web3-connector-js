@@ -96,4 +96,22 @@ export interface BuildSwapTransactionResponseDataRouterResult {
      * @memberof BuildSwapTransactionResponseDataRouterResult
      */
     toToken?: BuildSwapTransactionResponseDataRouterResultToToken;
+    /**
+     * Fee amount deducted for this swap (smallest unit, integer string). Only populated when the request enabled the custom fee; `null` otherwise. `FROM_TOKEN` direction = `originalFromCoinAmount × feePercent/100` (HALF_UP); `TO_TOKEN` direction = `originalToCoinAmount × feePercent/100` (HALF_DOWN).
+     * @type {string}
+     * @memberof BuildSwapTransactionResponseDataRouterResult
+     */
+    feeAmount?: string | null;
+    /**
+     * Contract address of the token in which the fee is denominated. `FROM_TOKEN` direction = sell-token address; `TO_TOKEN` direction = buy-token address. `null` when the custom fee is not enabled.
+     * @type {string}
+     * @memberof BuildSwapTransactionResponseDataRouterResult
+     */
+    feeToken?: string | null;
+    /**
+     * Actual amount participating in the DEX swap (smallest unit, integer string). `FROM_TOKEN` direction = net amount after fee deduction (`fromTokenAmount − feeAmount`); `TO_TOKEN` direction = original input amount (fee is taken from the output side). `null` when the custom fee is not enabled.
+     * @type {string}
+     * @memberof BuildSwapTransactionResponseDataRouterResult
+     */
+    actualSwapAmount?: string | null;
 }

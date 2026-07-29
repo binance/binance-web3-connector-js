@@ -635,7 +635,7 @@ export class RestAPI {
      * controlling the final wire format.
      *
      *
-     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`).
+     * Only supports `binanceChainId=CT_501` (Solana). Other chains return `CHAIN_NOT_SUPPORTED` (40411). Parameters mirror the Solana subset of `/swap` (no EVM-only `approveTransaction` / `approveAmount` / `gasLimit`). Supports the custom-fee (Add Fee / referral fee) parameters (`feePercent` + `fromTokenReferrerWalletAddress` / `toTokenReferrerWalletAddress`), with the same semantics as `/swap` — the fee instructions are injected into the returned uncompiled instruction list.
      *
      * @summary Build Solana Swap Instructions
      * @param {BuildSolanaSwapInstructionsRequest} requestParameters Request parameters.

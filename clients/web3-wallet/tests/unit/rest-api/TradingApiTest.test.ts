@@ -23,6 +23,7 @@ import {
     BuildSwapTransactionApproveTransactionEnum,
     BuildSwapTransactionGasLevelEnum,
     BuildSwapTransactionAutoSlippageEnum,
+    GetAggregatedQuoteFeeSourceEnum,
     QuoteAndBuildSwapTransactionVendorEnum,
     QuoteAndBuildSwapTransactionApproveTransactionEnum,
     QuoteAndBuildSwapTransactionGasLevelEnum,
@@ -134,6 +135,9 @@ describe('TradingApi', () => {
                                 tokenSymbol: 'WSOL',
                                 decimal: '9',
                             },
+                            feeAmount: '15000',
+                            feeToken: 'So11111111111111111111111111111111111111112',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
@@ -179,6 +183,9 @@ describe('TradingApi', () => {
                 computeUnitPrice: '1000',
                 gasLevel: BuildSolanaSwapInstructionsGasLevelEnum.slow,
                 tips: '0.001',
+                feePercent: '1.5',
+                fromTokenReferrerWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
+                toTokenReferrerWalletAddress: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
             };
 
             mockResponse = JSONParse(
@@ -237,6 +244,9 @@ describe('TradingApi', () => {
                                 tokenSymbol: 'WSOL',
                                 decimal: '9',
                             },
+                            feeAmount: '15000',
+                            feeToken: 'So11111111111111111111111111111111111111112',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: 'J5CBzXpcYn6WR2JBah8zU4Yxct985CAFGwXRcFaX2pbS',
@@ -478,6 +488,9 @@ describe('TradingApi', () => {
                                 isHoneyPot: false,
                                 taxRate: '0',
                             },
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
@@ -544,6 +557,9 @@ describe('TradingApi', () => {
                 computeUnitLimit: '1400000',
                 computeUnitPrice: '1000',
                 tips: '0.001',
+                feePercent: '1.5',
+                fromTokenReferrerWalletAddress: '0xCbF2B6E6e3D7e9e4e4e4e4e4e4e4e4e4e4e4e4e4',
+                toTokenReferrerWalletAddress: '0xCbF2B6E6e3D7e9e4e4e4e4e4e4e4e4e4e4e4e4e4',
             };
 
             mockResponse = JSONParse(
@@ -593,6 +609,9 @@ describe('TradingApi', () => {
                                 isHoneyPot: false,
                                 taxRate: '0',
                             },
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
@@ -825,6 +844,9 @@ describe('TradingApi', () => {
                             executionMode: 'SWAP',
                             approveTarget: '0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f',
                             isBest: true,
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                     ],
                     timestamp: 1748601600000,
@@ -855,6 +877,8 @@ describe('TradingApi', () => {
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
                 userWalletAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                feePercent: '1.5',
+                feeSource: GetAggregatedQuoteFeeSourceEnum.FROM_TOKEN,
             };
 
             mockResponse = JSONParse(
@@ -908,6 +932,9 @@ describe('TradingApi', () => {
                             executionMode: 'SWAP',
                             approveTarget: '0xc67879F4065d3B9fe1C09EE990B891Aa8E3a4c2f',
                             isBest: true,
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                     ],
                     timestamp: 1748601600000,
@@ -1586,6 +1613,9 @@ describe('TradingApi', () => {
                                 isHoneyPot: false,
                                 taxRate: '0',
                             },
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
@@ -1652,6 +1682,9 @@ describe('TradingApi', () => {
                 computeUnitLimit: '1400000',
                 computeUnitPrice: '1000',
                 tips: '0.001',
+                feePercent: '1.5',
+                fromTokenReferrerWalletAddress: '0xCbF2B6E6e3D7e9e4e4e4e4e4e4e4e4e4e4e4e4e4',
+                toTokenReferrerWalletAddress: '0xCbF2B6E6e3D7e9e4e4e4e4e4e4e4e4e4e4e4e4e4',
             };
 
             mockResponse = JSONParse(
@@ -1701,6 +1734,9 @@ describe('TradingApi', () => {
                                 isHoneyPot: false,
                                 taxRate: '0',
                             },
+                            feeAmount: '15000',
+                            feeToken: '0x55d398326f99059fF775485246999027B3197955',
+                            actualSwapAmount: '985000',
                         },
                         tx: {
                             from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
