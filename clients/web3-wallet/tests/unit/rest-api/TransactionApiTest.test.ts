@@ -21,6 +21,7 @@ import {
     GetBroadcastOrdersRequest,
     GetGasLimitRequest,
     GetGasPriceRequest,
+    GetLatestBlockHeightRequest,
     GetTransactionSupportedChainsRequest,
     SimulateTransactionsRequest,
 } from '../../../src/rest-api';
@@ -32,6 +33,7 @@ import type {
     GetGasLimitRequestTronTx,
     GetGasLimitResponse,
     GetGasPriceResponse,
+    GetLatestBlockHeightResponse,
     GetTransactionSupportedChainsResponse,
     SimulateTransactionsRequestEvmTx,
     SimulateTransactionsRequestSolTx,
@@ -630,6 +632,99 @@ describe('TransactionApi', () => {
             mockError.response = { status: 400, data: errorResponse };
             const spy = jest.spyOn(client, 'getGasPrice').mockRejectedValueOnce(mockError);
             await expect(client.getGasPrice(params)).rejects.toThrow('ResponseError');
+            spy.mockRestore();
+        });
+    });
+
+    describe('getLatestBlockHeight()', () => {
+        it('should execute getLatestBlockHeight() successfully with required parameters only', async () => {
+            const params: GetLatestBlockHeightRequest = {
+                binanceChainId: '1',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: { binanceChainId: '1', blockHeight: 21000000 },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLatestBlockHeight').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLatestBlockHeightResponse>)
+            );
+            const response = await client.getLatestBlockHeight(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should execute getLatestBlockHeight() successfully with optional parameters', async () => {
+            const params: GetLatestBlockHeightRequest = {
+                binanceChainId: '1',
+                recvWindow: 5000,
+                nonce: 'unique-nonce-string',
+            };
+
+            mockResponse = JSONParse(
+                JSONStringify({
+                    code: 0,
+                    msg: 'success',
+                    data: { binanceChainId: '1', blockHeight: 21000000 },
+                    timestamp: 1748601600000,
+                    success: true,
+                })
+            );
+
+            const spy = jest.spyOn(client, 'getLatestBlockHeight').mockReturnValue(
+                Promise.resolve({
+                    data: () => Promise.resolve(mockResponse),
+                    status: 200,
+                    headers: {},
+                    rateLimits: [],
+                } as RestApiResponse<GetLatestBlockHeightResponse>)
+            );
+            const response = await client.getLatestBlockHeight(params);
+            expect(response).toBeDefined();
+            await expect(response.data()).resolves.toBe(mockResponse);
+            spy.mockRestore();
+        });
+
+        it('should throw RequiredError when binanceChainId is missing', async () => {
+            const _params: GetLatestBlockHeightRequest = {
+                binanceChainId: '1',
+            };
+            const params = Object.assign({ ..._params });
+            delete params?.binanceChainId;
+
+            await expect(client.getLatestBlockHeight(params)).rejects.toThrow(
+                'Required parameter binanceChainId was null or undefined when calling getLatestBlockHeight.'
+            );
+        });
+
+        it('should throw an error when server is returning an error', async () => {
+            const params: GetLatestBlockHeightRequest = {
+                binanceChainId: '1',
+            };
+
+            const errorResponse = {
+                code: -1111,
+                msg: 'Server Error',
+            };
+
+            const mockError = new Error('ResponseError') as Error & {
+                response?: { status: number; data: unknown };
+            };
+            mockError.response = { status: 400, data: errorResponse };
+            const spy = jest.spyOn(client, 'getLatestBlockHeight').mockRejectedValueOnce(mockError);
+            await expect(client.getLatestBlockHeight(params)).rejects.toThrow('ResponseError');
             spy.mockRestore();
         });
     });

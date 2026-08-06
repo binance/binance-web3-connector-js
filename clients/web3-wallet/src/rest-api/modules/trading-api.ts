@@ -390,6 +390,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * @param {string} toTokenAddress Buy-token contract address. Must differ from `fromTokenAddress`.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         * @param {GetAggregatedQuoteVendorEnum} [vendor] Optional vendor selector. When provided, only the specified vendor is queried through the single-vendor fast path; the request bypasses the multi-vendor dual-window, early-return, and price-check logic. Values are case-sensitive and must be one of `LiquidMesh`, `Pancake`, or `Jupiter`. The vendor must also support the requested chain. An unsupported value or unavailable vendor/chain returns `PARAM_ERROR` (40001). When omitted, the API queries all applicable vendors in parallel and returns the aggregated routes.
          * @param {string} [userWalletAddress] User wallet address. Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock). This address is used as the receiver in the RFQ order and must match the wallet that signs `rfq.typedDataToSign` in the subsequent `/swap` call.
          * @param {string} [feePercent] Custom fee (referral fee / Add Fee) percentage as a decimal string. Must be paired with `feeSource` — either both present or both absent.
          *
@@ -407,6 +408,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             toTokenAddress: string,
             recvWindow?: number | bigint,
             nonce?: string,
+            vendor?: GetAggregatedQuoteVendorEnum,
             userWalletAddress?: string,
             feePercent?: string,
             feeSource?: GetAggregatedQuoteFeeSourceEnum
@@ -435,6 +437,9 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (toTokenAddress !== undefined && toTokenAddress !== null) {
                 localVarQueryParameter['toTokenAddress'] = toTokenAddress;
+            }
+            if (vendor !== undefined && vendor !== null) {
+                localVarQueryParameter['vendor'] = vendor;
             }
             if (userWalletAddress !== undefined && userWalletAddress !== null) {
                 localVarQueryParameter['userWalletAddress'] = userWalletAddress;
@@ -1451,6 +1456,13 @@ export interface GetAggregatedQuoteRequest {
     readonly nonce?: string;
 
     /**
+     * Optional vendor selector. When provided, only the specified vendor is queried through the single-vendor fast path; the request bypasses the multi-vendor dual-window, early-return, and price-check logic. Values are case-sensitive and must be one of `LiquidMesh`, `Pancake`, or `Jupiter`. The vendor must also support the requested chain. An unsupported value or unavailable vendor/chain returns `PARAM_ERROR` (40001). When omitted, the API queries all applicable vendors in parallel and returns the aggregated routes.
+     * @type {'LiquidMesh' | 'Pancake' | 'Jupiter'}
+     * @memberof TradingApiGetAggregatedQuote
+     */
+    readonly vendor?: GetAggregatedQuoteVendorEnum;
+
+    /**
      * User wallet address. Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock). This address is used as the receiver in the RFQ order and must match the wallet that signs `rfq.typedDataToSign` in the subsequent `/swap` call.
      * @type {string}
      * @memberof TradingApiGetAggregatedQuote
@@ -1978,6 +1990,7 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.toTokenAddress,
             requestParameters?.recvWindow,
             requestParameters?.nonce,
+            requestParameters?.vendor,
             requestParameters?.userWalletAddress,
             requestParameters?.feePercent,
             requestParameters?.feeSource
@@ -2245,6 +2258,12 @@ export enum BuildSwapTransactionGasLevelEnum {
 export enum BuildSwapTransactionAutoSlippageEnum {
     TRUE = 'true',
     FALSE = 'false',
+}
+
+export enum GetAggregatedQuoteVendorEnum {
+    LiquidMesh = 'LiquidMesh',
+    Pancake = 'Pancake',
+    Jupiter = 'Jupiter',
 }
 
 export enum GetAggregatedQuoteFeeSourceEnum {

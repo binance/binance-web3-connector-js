@@ -26,6 +26,7 @@ import type {
     GetGasLimitRequestTronTx,
     GetGasLimitResponse,
     GetGasPriceResponse,
+    GetLatestBlockHeightResponse,
     GetTransactionSupportedChainsResponse,
     SimulateTransactionsRequestEvmTx,
     SimulateTransactionsRequestSolTx,
@@ -301,6 +302,51 @@ const TransactionApiAxiosParamCreator = function (configuration: ConfigurationRe
             };
         },
         /**
+         * Return the latest block height that the Binance Web3 node has synced to for the specified chain. Callers can use this to monitor node sync progress for risk control and detect when the node lags behind the canonical chain head.
+         *
+         * @summary Get Latest Block Height
+         * @param {string} binanceChainId Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana, "CT_195"=Tron).
+         * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
+         * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+         *
+         * @throws {RequiredError}
+         */
+        getLatestBlockHeight: async (
+            binanceChainId: string,
+            recvWindow?: number | bigint,
+            nonce?: string
+        ): Promise<RequestArgs> => {
+            // verify required parameter 'binanceChainId' is not null or undefined
+            assertParamExists('getLatestBlockHeight', 'binanceChainId', binanceChainId);
+
+            const localVarQueryParameter: Record<string, unknown> = {};
+            const localVarBodyParameter: Record<string, unknown> = {};
+            const localVarHeaderParameter: Record<string, unknown> = {};
+
+            if (binanceChainId !== undefined && binanceChainId !== null) {
+                localVarQueryParameter['binanceChainId'] = binanceChainId;
+            }
+
+            if (recvWindow !== undefined && recvWindow !== null) {
+                localVarHeaderParameter['recvWindow'] = recvWindow;
+            }
+            if (nonce !== undefined && nonce !== null) {
+                localVarHeaderParameter['nonce'] = nonce;
+            }
+
+            let _timeUnit: TimeUnit | undefined;
+            if ('timeUnit' in configuration) _timeUnit = configuration.timeUnit as TimeUnit;
+
+            return {
+                endpoint: '/api/v1/dex/pre-transaction/block-height',
+                method: 'GET',
+                queryParams: localVarQueryParameter,
+                bodyParams: localVarBodyParameter,
+                headerParams: localVarHeaderParameter,
+                timeUnit: _timeUnit,
+            };
+        },
+        /**
          * Return the blockchain networks supported by the Transaction service for gas estimation, simulation, and broadcasting. The list is dynamically configured server-side and may change over time.
          *
          * @summary Get Transaction Supported Chains
@@ -472,6 +518,18 @@ export interface TransactionApiInterface {
     getGasPrice(
         requestParameters: GetGasPriceRequest
     ): Promise<RestApiResponse<GetGasPriceResponse>>;
+    /**
+     * Return the latest block height that the Binance Web3 node has synced to for the specified chain. Callers can use this to monitor node sync progress for risk control and detect when the node lags behind the canonical chain head.
+     *
+     * @summary Get Latest Block Height
+     * @param {GetLatestBlockHeightRequest} requestParameters Request parameters.
+     *
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TransactionApiInterface
+     */
+    getLatestBlockHeight(
+        requestParameters: GetLatestBlockHeightRequest
+    ): Promise<RestApiResponse<GetLatestBlockHeightResponse>>;
     /**
      * Return the blockchain networks supported by the Transaction service for gas estimation, simulation, and broadcasting. The list is dynamically configured server-side and may change over time.
      *
@@ -686,6 +744,33 @@ export interface GetGasPriceRequest {
 }
 
 /**
+ * Request parameters for getLatestBlockHeight operation in TransactionApi.
+ * @interface GetLatestBlockHeightRequest
+ */
+export interface GetLatestBlockHeightRequest {
+    /**
+     * Unique chain identifier (e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana, "CT_195"=Tron).
+     * @type {string}
+     * @memberof TransactionApiGetLatestBlockHeight
+     */
+    readonly binanceChainId: string;
+
+    /**
+     * Allowed time deviation in milliseconds (default: 5000, max: 60000).
+     * @type {number | bigint}
+     * @memberof TransactionApiGetLatestBlockHeight
+     */
+    readonly recvWindow?: number | bigint;
+
+    /**
+     * Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
+     * @type {string}
+     * @memberof TransactionApiGetLatestBlockHeight
+     */
+    readonly nonce?: string;
+}
+
+/**
  * Request parameters for getTransactionSupportedChains operation in TransactionApi.
  * @interface GetTransactionSupportedChainsRequest
  */
@@ -895,6 +980,36 @@ export class TransactionApi implements TransactionApiInterface {
             requestParameters?.nonce
         );
         return sendRequest<GetGasPriceResponse>(
+            this.configuration,
+            localVarAxiosArgs.endpoint,
+            localVarAxiosArgs.method,
+            localVarAxiosArgs.queryParams,
+            localVarAxiosArgs.bodyParams,
+            localVarAxiosArgs.headerParams,
+            localVarAxiosArgs?.timeUnit,
+            { isSigned: true }
+        );
+    }
+
+    /**
+     * Return the latest block height that the Binance Web3 node has synced to for the specified chain. Callers can use this to monitor node sync progress for risk control and detect when the node lags behind the canonical chain head.
+     *
+     * @summary Get Latest Block Height
+     * @param {GetLatestBlockHeightRequest} requestParameters Request parameters.
+     * @returns {Promise<RestApiResponse<GetLatestBlockHeightResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @memberof TransactionApi
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/transaction-api#get-latest-block-height Binance API Documentation}
+     */
+    public async getLatestBlockHeight(
+        requestParameters: GetLatestBlockHeightRequest
+    ): Promise<RestApiResponse<GetLatestBlockHeightResponse>> {
+        const localVarAxiosArgs = await this.localVarAxiosParamCreator.getLatestBlockHeight(
+            requestParameters?.binanceChainId,
+            requestParameters?.recvWindow,
+            requestParameters?.nonce
+        );
+        return sendRequest<GetLatestBlockHeightResponse>(
             this.configuration,
             localVarAxiosArgs.endpoint,
             localVarAxiosArgs.method,

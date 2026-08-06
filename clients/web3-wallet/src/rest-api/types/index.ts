@@ -74,6 +74,8 @@ export * from './get-holders-ranking-response-data-inner-funding-source-label';
 export * from './get-hot-token-list-response';
 export * from './get-hot-token-list-response-data';
 export * from './get-hot-token-list-response-data-items-inner';
+export * from './get-latest-block-height-response';
+export * from './get-latest-block-height-response-data';
 export * from './get-leaderboard-response';
 export * from './get-leaderboard-response-data';
 export * from './get-leaderboard-response-data-items-inner';

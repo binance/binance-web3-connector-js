@@ -67,6 +67,7 @@ import type {
     GetBroadcastOrdersRequest,
     GetGasLimitRequest,
     GetGasPriceRequest,
+    GetLatestBlockHeightRequest,
     GetTransactionSupportedChainsRequest,
     SimulateTransactionsRequest,
 } from './modules/transaction-api';
@@ -126,6 +127,7 @@ import type {
     GetBroadcastOrdersResponse,
     GetGasLimitResponse,
     GetGasPriceResponse,
+    GetLatestBlockHeightResponse,
     GetTransactionSupportedChainsResponse,
     SimulateTransactionsResponse,
 } from './types';
@@ -863,6 +865,22 @@ export class RestAPI {
         requestParameters: GetGasPriceRequest
     ): Promise<RestApiResponse<GetGasPriceResponse>> {
         return this.transactionApi.getGasPrice(requestParameters);
+    }
+
+    /**
+     * Return the latest block height that the Binance Web3 node has synced to for the specified chain. Callers can use this to monitor node sync progress for risk control and detect when the node lags behind the canonical chain head.
+     *
+     * @summary Get Latest Block Height
+     * @param {GetLatestBlockHeightRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetLatestBlockHeightResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/transaction-api#get-latest-block-height Binance API Documentation}
+     */
+    getLatestBlockHeight(
+        requestParameters: GetLatestBlockHeightRequest
+    ): Promise<RestApiResponse<GetLatestBlockHeightResponse>> {
+        return this.transactionApi.getLatestBlockHeight(requestParameters);
     }
 
     /**
