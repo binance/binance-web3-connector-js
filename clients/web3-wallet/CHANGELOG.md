@@ -1,5 +1,61 @@
 # Changelog
 
+## 12.0.0 - 2026-09-01
+
+### Changed (14)
+
+- Deleted parameter `disableRFQ`
+  - affected methods:
+    - `quoteAndBuildSwapTransaction()` (`GET /api/v1/dex/aggregator/quote-and-swap`)
+- Modified parameter `body`:
+  - allOf modified
+  - affected methods:
+    - `settleB402PaymentV1()` (`POST /api/v1/b402/settle`)
+- Modified parameter `body`:
+  - allOf modified
+  - affected methods:
+    - `settleB402PaymentV2()` (`POST /api/v2/b402/settle`)
+- Modified parameter `body`:
+  - `paymentPayload`.`accepted`.`extra`: allOf modified
+  - `paymentRequirements`.`extra`: allOf modified
+  - affected methods:
+    - `verifyB402PaymentV2()` (`POST /api/v2/b402/verify`)
+- Modified response field `accepted`:
+  - `extra`: allOf modified
+  - affected events:
+    - `B402PaymentPayloadV2`
+- Modified response field `paymentRequirements`:
+  - `extra`: allOf modified
+  - affected events:
+    - `B402SettleRequestV2`
+    - `B402VerifyRequestV2`
+- Modified response field `extra`:
+  - allOf modified
+  - affected events:
+    - `B402PaymentRequirementsV2`
+- Modified response field `body`:
+  - allOf modified
+  - affected events:
+    - `B402SettleEnvelopeV1`
+    - `B402SettleEnvelopeV2`
+    - `settleB402PaymentV1Request`
+    - `settleB402PaymentV2Request`
+- Modified response field `paymentPayload`:
+  - `accepted`.`extra`: allOf modified
+  - affected events:
+    - `B402SettleRequestV2`
+    - `B402VerifyRequestV2`
+- Modified response field `body`:
+  - `paymentPayload`.`accepted`.`extra`: allOf modified
+  - `paymentRequirements`.`extra`: allOf modified
+  - affected events:
+    - `B402VerifyEnvelopeV2`
+    - `verifyB402PaymentV2Request`
+- Modified response schema `B402PaymentRequirementsExtraV2`:
+  - allOf modified
+- Modified response schema `B402SettleRequestV1`:
+  - allOf modified
+
 ## 11.1.1 - 2026-08-25
 
 ### Changed (1)

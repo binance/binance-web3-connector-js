@@ -1,7 +1,7 @@
 /**
  * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
+ * Cross-chain wallet, market, trading, transaction, and B402 payment APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -13,6 +13,9 @@
 
 import { ConfigurationRestAPI, RestApiResponse, sendRequest } from '@binance/common';
 import { AddressPortfolioApi } from './modules/address-portfolio-api';
+import { B402PaymentsApi } from './modules/b402-payments-api';
+import { DefiDataApi } from './modules/defi-data-api';
+import { DefiTransactionApi } from './modules/defi-transaction-api';
 import { GeneralDataApi } from './modules/general-data-api';
 import { RWADataApi } from './modules/rwadata-api';
 import { TradingApi } from './modules/trading-api';
@@ -28,6 +31,29 @@ import type {
     GetPortfolioSupportedChainsRequest,
     GetTrackedTradesRequest,
 } from './modules/address-portfolio-api';
+import type {
+    GetB402SupportedConfigurationsV1Request,
+    GetB402SupportedConfigurationsV2Request,
+    SettleB402PaymentV1Request,
+    SettleB402PaymentV2Request,
+    VerifyB402PaymentV1Request,
+    VerifyB402PaymentV2Request,
+} from './modules/b402-payments-api';
+import type {
+    GetDeFiPositionsRequest,
+    GetInvestmentDetailRequest,
+    GetProtocolDetailRequest,
+    ListDeFiInvestmentsRequest,
+    ListDeFiProtocolsRequest,
+} from './modules/defi-data-api';
+import type {
+    BuildDeFiClaimTransactionRequest,
+    BuildDeFiDepositTransactionRequest,
+    BuildDeFiRedeemTransactionRequest,
+    BuildLpAddTransactionRequest,
+    BuildLpRemoveTransactionRequest,
+    CalculateLpAddPairedAmountsRequest,
+} from './modules/defi-transaction-api';
 import type {
     GetCandlesRequest,
     GetHoldersRankingRequest,
@@ -89,6 +115,29 @@ import type {
     GetTrackedTradesResponse,
 } from './types';
 import type {
+    GetB402SupportedConfigurationsV1Response,
+    GetB402SupportedConfigurationsV2Response,
+    SettleB402PaymentV1Response,
+    SettleB402PaymentV2Response,
+    VerifyB402PaymentV1Response,
+    VerifyB402PaymentV2Response,
+} from './types';
+import type {
+    GetDeFiPositionsResponse,
+    GetInvestmentDetailResponse,
+    GetProtocolDetailResponse,
+    ListDeFiInvestmentsResponse,
+    ListDeFiProtocolsResponse,
+} from './types';
+import type {
+    BuildDeFiClaimTransactionResponse,
+    BuildDeFiDepositTransactionResponse,
+    BuildDeFiRedeemTransactionResponse,
+    BuildLpAddTransactionResponse,
+    BuildLpRemoveTransactionResponse,
+    CalculateLpAddPairedAmountsResponse,
+} from './types';
+import type {
     GetCandlesResponse,
     GetHoldersRankingResponse,
     GetHotTokenListResponse,
@@ -142,6 +191,9 @@ import type {
 export class RestAPI {
     private configuration: ConfigurationRestAPI;
     private addressPortfolioApi: AddressPortfolioApi;
+    private b402PaymentsApi: B402PaymentsApi;
+    private defiDataApi: DefiDataApi;
+    private defiTransactionApi: DefiTransactionApi;
     private generalDataApi: GeneralDataApi;
     private rWADataApi: RWADataApi;
     private tradingApi: TradingApi;
@@ -151,6 +203,9 @@ export class RestAPI {
     constructor(configuration: ConfigurationRestAPI) {
         this.configuration = configuration;
         this.addressPortfolioApi = new AddressPortfolioApi(configuration);
+        this.b402PaymentsApi = new B402PaymentsApi(configuration);
+        this.defiDataApi = new DefiDataApi(configuration);
+        this.defiTransactionApi = new DefiTransactionApi(configuration);
         this.generalDataApi = new GeneralDataApi(configuration);
         this.rWADataApi = new RWADataApi(configuration);
         this.tradingApi = new TradingApi(configuration);
@@ -321,6 +376,321 @@ export class RestAPI {
         requestParameters: GetTrackedTradesRequest
     ): Promise<RestApiResponse<GetTrackedTradesResponse>> {
         return this.addressPortfolioApi.getTrackedTrades(requestParameters);
+    }
+
+    /**
+     * Legacy V1 compatibility endpoint. New integrations should use V2. V1 returns `x402Version=1`, method-specific `facilitatorAddress`, and V1 signer-map semantics.
+     *
+     * @summary Get B402 Supported Configurations V1
+     * @param {GetB402SupportedConfigurationsV1Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetB402SupportedConfigurationsV1Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#get-b402-supported-configurations-v1 Binance API Documentation}
+     */
+    getB402SupportedConfigurationsV1(
+        requestParameters: GetB402SupportedConfigurationsV1Request
+    ): Promise<RestApiResponse<GetB402SupportedConfigurationsV1Response>> {
+        return this.b402PaymentsApi.getB402SupportedConfigurationsV1(requestParameters);
+    }
+
+    /**
+     * Return the live x402 V2 payment kinds available to the authenticated Developer Portal project. Use the result to construct HTTP 402 payment requirements. Copy the selected `extra` object verbatim and refresh cached configuration periodically.
+     *
+     * @summary Get B402 Supported Configurations V2
+     * @param {GetB402SupportedConfigurationsV2Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetB402SupportedConfigurationsV2Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#get-b402-supported-configurations-v2 Binance API Documentation}
+     */
+    getB402SupportedConfigurationsV2(
+        requestParameters: GetB402SupportedConfigurationsV2Request
+    ): Promise<RestApiResponse<GetB402SupportedConfigurationsV2Response>> {
+        return this.b402PaymentsApi.getB402SupportedConfigurationsV2(requestParameters);
+    }
+
+    /**
+     * Legacy V1 on-chain settlement endpoint. New integrations should use V2. This operation can move real funds and is irreversible. V1 additionally returns `confirmations` in the settlement result.
+     *
+     * @summary Settle B402 Payment V1
+     * @param {SettleB402PaymentV1Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<SettleB402PaymentV1Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#settle-b402-payment-v1 Binance API Documentation}
+     */
+    settleB402PaymentV1(
+        requestParameters: SettleB402PaymentV1Request
+    ): Promise<RestApiResponse<SettleB402PaymentV1Response>> {
+        return this.b402PaymentsApi.settleB402PaymentV1(requestParameters);
+    }
+
+    /**
+     * Submit a verified x402 V2 authorization on-chain. This operation can move real funds and is irreversible. For `permit2-upto`, provide `settleAmount` in atomic units. Business failure is returned as HTTP 200 with `data.success=false`; reconcile any non-empty transaction hash before retrying.
+     *
+     * @summary Settle B402 Payment V2
+     * @param {SettleB402PaymentV2Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<SettleB402PaymentV2Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#settle-b402-payment-v2 Binance API Documentation}
+     */
+    settleB402PaymentV2(
+        requestParameters: SettleB402PaymentV2Request
+    ): Promise<RestApiResponse<SettleB402PaymentV2Response>> {
+        return this.b402PaymentsApi.settleB402PaymentV2(requestParameters);
+    }
+
+    /**
+     * Legacy V1 off-chain verification endpoint. New integrations should use V2. Portal identity is resolved from the API Key project, so `merchantId` is omitted from the external request.
+     *
+     * @summary Verify B402 Payment V1
+     * @param {VerifyB402PaymentV1Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<VerifyB402PaymentV1Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#verify-b402-payment-v1 Binance API Documentation}
+     */
+    verifyB402PaymentV1(
+        requestParameters: VerifyB402PaymentV1Request
+    ): Promise<RestApiResponse<VerifyB402PaymentV1Response>> {
+        return this.b402PaymentsApi.verifyB402PaymentV1(requestParameters);
+    }
+
+    /**
+     * Validate an x402 V2 payment authorization off-chain without spending funds or broadcasting a transaction. Portal identity is resolved from the authenticated API Key project; omit `merchantId`. A validation failure is returned as HTTP 200 with `data.isValid=false`.
+     *
+     * @summary Verify B402 Payment V2
+     * @param {VerifyB402PaymentV2Request} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<VerifyB402PaymentV2Response>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/b402-payments#verify-b402-payment-v2 Binance API Documentation}
+     */
+    verifyB402PaymentV2(
+        requestParameters: VerifyB402PaymentV2Request
+    ): Promise<RestApiResponse<VerifyB402PaymentV2Response>> {
+        return this.b402PaymentsApi.verifyB402PaymentV2(requestParameters);
+    }
+
+    /**
+     * Query DeFi positions for one or more wallet addresses on BSC. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`.
+     * Position coverage is wider than the protocol list used by data queries and transaction building — see [Supported Chains & Protocols](../supported-chains) for the difference.
+     *
+     * @summary Get DeFi Positions
+     * @param {GetDeFiPositionsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetDeFiPositionsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-data#get-de-fi-positions Binance API Documentation}
+     */
+    getDeFiPositions(
+        requestParameters: GetDeFiPositionsRequest
+    ): Promise<RestApiResponse<GetDeFiPositionsResponse>> {
+        return this.defiDataApi.getDeFiPositions(requestParameters);
+    }
+
+    /**
+     * Get detailed information for a specific DeFi investment product, including APY, TVL, supported tokens (asset / reward / LP / borrow), pool address, fee rate, and investability.
+     *
+     * @summary Get Investment Detail
+     * @param {GetInvestmentDetailRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetInvestmentDetailResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-data#get-investment-detail Binance API Documentation}
+     */
+    getInvestmentDetail(
+        requestParameters: GetInvestmentDetailRequest
+    ): Promise<RestApiResponse<GetInvestmentDetailResponse>> {
+        return this.defiDataApi.getInvestmentDetail(requestParameters);
+    }
+
+    /**
+     * Get detailed information for a specific DeFi protocol, including description, highlights, CertiK security scores, team, fundraising, social links, and FAQ.
+     *
+     * @summary Get Protocol Detail
+     * @param {GetProtocolDetailRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetProtocolDetailResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-data#get-protocol-detail Binance API Documentation}
+     */
+    getProtocolDetail(
+        requestParameters: GetProtocolDetailRequest
+    ): Promise<RestApiResponse<GetProtocolDetailResponse>> {
+        return this.defiDataApi.getProtocolDetail(requestParameters);
+    }
+
+    /**
+     * List available DeFi investment products. Filter by protocol, chain, investment type, or contract address. Results are paginated and sortable.
+     *
+     * @summary List DeFi Investments
+     * @param {ListDeFiInvestmentsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<ListDeFiInvestmentsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-data#list-de-fi-investments Binance API Documentation}
+     */
+    listDeFiInvestments(
+        requestParameters: ListDeFiInvestmentsRequest
+    ): Promise<RestApiResponse<ListDeFiInvestmentsResponse>> {
+        return this.defiDataApi.listDeFiInvestments(requestParameters);
+    }
+
+    /**
+     * List supported DeFi protocols with optional filtering by chain and investment type. Results are paginated and sortable.
+     *
+     * @summary List DeFi Protocols
+     * @param {ListDeFiProtocolsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<ListDeFiProtocolsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-data#list-de-fi-protocols Binance API Documentation}
+     */
+    listDeFiProtocols(
+        requestParameters: ListDeFiProtocolsRequest = {}
+    ): Promise<RestApiResponse<ListDeFiProtocolsResponse>> {
+        return this.defiDataApi.listDeFiProtocols(requestParameters);
+    }
+
+    /**
+     * Build the unsigned claim calldata for one of four claim types — see `DefiClaimType` for which companion fields each type requires **and which protocol constraints apply** (e.g. `REWARD_PROTOCOL` is not supported for LP protocols; PancakeSwap V3 farming uses `LP_FEE`, not `REWARD_INVESTMENT`). Returns an ordered `dataList` (typically `[CLAIM]`).
+     **`binanceChainId` resolution rules**:
+     * - Normally resolved from `investmentId`; the call always executes on that chain.
+     * - For claim types other than `REWARD_PROTOCOL`, any client-supplied `binanceChainId` is
+     **silently ignored** — passing a different chainId will not redirect the claim.
+     *
+     * - **Exception**: `REWARD_PROTOCOL` with no `investmentId` — the client MUST pass
+     * `binanceChainId` (it is the only chain signal).
+     *
+     * `tokenAddressList` optionally narrows the claim scope. Set `simulate=true` to also receive `preview`.
+     *
+     * @summary Build DeFi Claim Transaction
+     * @param {BuildDeFiClaimTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildDeFiClaimTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#build-de-fi-claim-transaction Binance API Documentation}
+     */
+    buildDeFiClaimTransaction(
+        requestParameters: BuildDeFiClaimTransactionRequest
+    ): Promise<RestApiResponse<BuildDeFiClaimTransactionResponse>> {
+        return this.defiTransactionApi.buildDeFiClaimTransaction(requestParameters);
+    }
+
+    /**
+     * Build the unsigned transaction calldata for a DeFi deposit / stake. Returns an ordered `dataList` (typically `[APPROVE, DEPOSIT]`, or `[DEPOSIT]` when the allowance is already sufficient) for the caller to sign and broadcast.
+     * The caller does NOT pass `binanceChainId` — the service resolves it from `investmentId`. Set `simulate=true` to also receive a `preview` (projected balance change, estimated gas, and lending health-factor change) without broadcasting.
+     *
+     * @summary Build DeFi Deposit Transaction
+     * @param {BuildDeFiDepositTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildDeFiDepositTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#build-de-fi-deposit-transaction Binance API Documentation}
+     */
+    buildDeFiDepositTransaction(
+        requestParameters: BuildDeFiDepositTransactionRequest
+    ): Promise<RestApiResponse<BuildDeFiDepositTransactionResponse>> {
+        return this.defiTransactionApi.buildDeFiDepositTransaction(requestParameters);
+    }
+
+    /**
+     * Build the unsigned transaction calldata for a DeFi redeem / withdraw. Returns an ordered `dataList` (typically `[REDEEM]` or `[APPROVE, REDEEM]`).
+     **Redeem amount is decided by exactly one of `ratio` or `token`** (mutually exclusive): - `ratio` omitted / blank → **exact-amount redeem**: the amount comes from
+     * `token` (`tokenAddress` + `amount`); the position is *not* queried. `token` is required
+     * in this mode (omitting `token`, or leaving `amount` blank, is rejected with `40001`,
+     * `Parameter error`; both `ratio` and `token` absent is also rejected with `40001`).
+     * - `ratio` present → **proportional redeem**: must parse as a decimal in `(0, 1]`. The
+     * service queries the user's on-chain position under `investmentId` and scales each
+     * token's amount by `ratio` (floored to the token's decimals). `ratio="1"` is a full (max)
+     * redeem. In this mode `token` is **ignored** — the output tokens and amounts are derived
+     * from the position.
+     *
+     * `slippageBps` is the slippage tolerance in basis points (e.g. `300` = 3%). The caller does NOT pass `binanceChainId` — resolved from `investmentId`. Set `simulate=true` to also receive `preview`.
+     * The response also carries `redeemDelayDays` — the redeem waiting period as a `[min, max]` day pair (e.g. `["7","10"]` = 7–10 days, `[]` = instant). The wait starts after the redeem tx is confirmed on-chain. See the `redeemDelayDays` field on `DefiTxResponse`.
+     *
+     * @summary Build DeFi Redeem Transaction
+     * @param {BuildDeFiRedeemTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildDeFiRedeemTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#build-de-fi-redeem-transaction Binance API Documentation}
+     */
+    buildDeFiRedeemTransaction(
+        requestParameters: BuildDeFiRedeemTransactionRequest
+    ): Promise<RestApiResponse<BuildDeFiRedeemTransactionResponse>> {
+        return this.defiTransactionApi.buildDeFiRedeemTransaction(requestParameters);
+    }
+
+    /**
+     * Build the unsigned transaction calldata for adding liquidity. `tokenList` supports multiple tokens. Returns an ordered `dataList` (typically `[APPROVE, LP_ADD]`).
+     **Tick range source (provide exactly one group)**:
+     * 1. `nftId` — append to an existing LP position (reuses its range).
+     * 2. `priceRange` — percentage band (e.g. `"5"` = ±5%) for a new position.
+     * 3. `tickLower` + `tickUpper` — explicit raw `int24` pair for a new position.
+     **Rules**:
+     * - If more than one group is supplied, only the highest-priority one above is used and the
+     * others are silently ignored (priority: `nftId` > `priceRange` > explicit tick pair).
+     *
+     * - If none is supplied, the request is rejected (`40453`).
+     * - `tickLower` / `tickUpper` are raw `int24` values and MUST be aligned to the pool's
+     * `tickSpacing`, otherwise the request is rejected (`40453`).
+     *
+     * - The caller does NOT pass `binanceChainId` — resolved from `investmentId`.
+     *
+     * @summary Build LP Add Transaction
+     * @param {BuildLpAddTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildLpAddTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#build-lp-add-transaction Binance API Documentation}
+     */
+    buildLpAddTransaction(
+        requestParameters: BuildLpAddTransactionRequest
+    ): Promise<RestApiResponse<BuildLpAddTransactionResponse>> {
+        return this.defiTransactionApi.buildLpAddTransaction(requestParameters);
+    }
+
+    /**
+     * Build the unsigned transaction calldata for removing liquidity. Removal is by `nftId` + `ratio` (range `(0, 1]`) — no `tokenList` is needed; the per-token amounts are derived from the on-chain position. Returns an ordered `dataList` (typically `[LP_REMOVE]`).
+     * `slippageBps` is the LP-leg slippage tolerance in basis points. The caller does NOT pass `binanceChainId` — resolved from `investmentId`.
+     *
+     * @summary Build LP Remove Transaction
+     * @param {BuildLpRemoveTransactionRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<BuildLpRemoveTransactionResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#build-lp-remove-transaction Binance API Documentation}
+     */
+    buildLpRemoveTransaction(
+        requestParameters: BuildLpRemoveTransactionRequest
+    ): Promise<RestApiResponse<BuildLpRemoveTransactionResponse>> {
+        return this.defiTransactionApi.buildLpRemoveTransaction(requestParameters);
+    }
+
+    /**
+     * Given a single input token, calculate the paired token amount needed for an LP add. This is a **pure computation endpoint** — it does not touch the chain and does not deduct any fee. Use it before `/transaction/lp-add` to size the paired token when only one side is supplied.
+     * Tick range source rules are the same as `/lp-add` — provide exactly one group: `nftId` (existing position), `priceRange`, or `tickLower`+`tickUpper`.
+     * - If more than one group is supplied, only the highest-priority one is used and the others
+     * are silently ignored (priority: `nftId` > `priceRange` > explicit tick pair).
+     *
+     * - If none is supplied, the request is rejected.
+     * - The caller does NOT pass `binanceChainId` — resolved from `investmentId`.
+     *
+     * @summary Calculate LP Add Paired Amounts
+     * @param {CalculateLpAddPairedAmountsRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<CalculateLpAddPairedAmountsResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/defi-transaction#calculate-lp-add-paired-amounts Binance API Documentation}
+     */
+    calculateLpAddPairedAmounts(
+        requestParameters: CalculateLpAddPairedAmountsRequest
+    ): Promise<RestApiResponse<CalculateLpAddPairedAmountsResponse>> {
+        return this.defiTransactionApi.calculateLpAddPairedAmounts(requestParameters);
     }
 
     /**
@@ -918,7 +1288,7 @@ export class RestAPI {
     }
 
     /**
-     * Return all token balances held by an address across one or more chains, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
+     * Return all token balances held by an address on a single chain, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
      *
      * @summary Get All Token Balances by Address
      * @param {GetAllTokenBalancesByAddressRequest} requestParameters Request parameters.

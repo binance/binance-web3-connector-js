@@ -1,7 +1,7 @@
 /**
  * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
+ * Cross-chain wallet, market, trading, transaction, and B402 payment APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -33,13 +33,13 @@ import type {
 const WalletApiAxiosParamCreator = function (configuration: ConfigurationRestAPI) {
     return {
         /**
-         * Return all token balances held by an address across one or more chains, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
+         * Return all token balances held by an address on a single chain, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
          *
          * @summary Get All Token Balances by Address
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          * @param {string} [address] Wallet address to query.
-         * @param {string} [chains] Comma-separated list of chain identifiers.
+         * @param {string} [chains] Currently only a single chain is supported. Passing multiple comma-separated chain IDs returns an error; multi-chain support may be added in the future.
          * @param {boolean} [excludeRiskToken] Whether to exclude risk-flagged tokens.
          * @param {number | bigint} [page] Page number. Defaults to 1.
          * @param {number} [pageSize] Page size. Range 1–100. Defaults to 20.
@@ -337,7 +337,7 @@ const WalletApiAxiosParamCreator = function (configuration: ConfigurationRestAPI
  */
 export interface WalletApiInterface {
     /**
-     * Return all token balances held by an address across one or more chains, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
+     * Return all token balances held by an address on a single chain, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
      *
      * @summary Get All Token Balances by Address
      * @param {GetAllTokenBalancesByAddressRequest} requestParameters Request parameters.
@@ -425,7 +425,7 @@ export interface GetAllTokenBalancesByAddressRequest {
     readonly address?: string;
 
     /**
-     * Comma-separated list of chain identifiers.
+     * Currently only a single chain is supported. Passing multiple comma-separated chain IDs returns an error; multi-chain support may be added in the future.
      * @type {string}
      * @memberof WalletApiGetAllTokenBalancesByAddress
      */
@@ -645,7 +645,7 @@ export class WalletApi implements WalletApiInterface {
     }
 
     /**
-     * Return all token balances held by an address across one or more chains, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
+     * Return all token balances held by an address on a single chain, with pagination support. Set `excludeRiskToken=true` to filter out airdrop-risk and honeypot tokens (honeypot detection currently applies only to ETH / BSC / SOL / BASE).
      *
      * @summary Get All Token Balances by Address
      * @param {GetAllTokenBalancesByAddressRequest} requestParameters Request parameters.

@@ -1,7 +1,7 @@
 /**
  * Binance Web3 API
  *
- * Cross-chain wallet, market, trading, and transaction APIs for the Binance Web3 API platform.
+ * Cross-chain wallet, market, trading, transaction, and B402 payment APIs for the Binance Web3 API platform.
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -94,7 +94,7 @@ describe('WalletApi', () => {
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
                 address: '0xed0c6079229e2d407672a117c22b62064f4a4312',
-                chains: '1,56',
+                chains: '1',
                 excludeRiskToken: true,
                 page: 1,
                 pageSize: 20,
