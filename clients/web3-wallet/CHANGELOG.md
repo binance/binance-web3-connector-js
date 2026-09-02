@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.1.0 - 2026-09-02
+
+### Added (1)
+
+- `getWebSocketAuthToken()` (`GET /api/v1/dex/market/wss/auth/token`)
+
+### Changed (1)
+
+- Added response schema `getWebSocketAuthTokenResponse`
+
 ## 12.0.0 - 2026-09-01
 
 ### Changed (14)

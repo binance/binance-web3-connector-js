@@ -21,6 +21,7 @@ import { RWADataApi } from './modules/rwadata-api';
 import { TradingApi } from './modules/trading-api';
 import { TransactionApi } from './modules/transaction-api';
 import { WalletApi } from './modules/wallet-api';
+import { WebSocketApi } from './modules/web-socket-api';
 
 import type {
     GetAddressPnLForSpecificTokenRequest,
@@ -104,6 +105,7 @@ import type {
     GetTransactionsByAddressRequest,
     GetWalletSupportedChainsRequest,
 } from './modules/wallet-api';
+import type { GetWebSocketAuthTokenRequest } from './modules/web-socket-api';
 
 import type {
     GetAddressPnLForSpecificTokenResponse,
@@ -187,6 +189,7 @@ import type {
     GetTransactionsByAddressResponse,
     GetWalletSupportedChainsResponse,
 } from './types';
+import type { GetWebSocketAuthTokenResponse } from './types';
 
 export class RestAPI {
     private configuration: ConfigurationRestAPI;
@@ -199,6 +202,7 @@ export class RestAPI {
     private tradingApi: TradingApi;
     private transactionApi: TransactionApi;
     private walletApi: WalletApi;
+    private webSocketApi: WebSocketApi;
 
     constructor(configuration: ConfigurationRestAPI) {
         this.configuration = configuration;
@@ -211,6 +215,7 @@ export class RestAPI {
         this.tradingApi = new TradingApi(configuration);
         this.transactionApi = new TransactionApi(configuration);
         this.walletApi = new WalletApi(configuration);
+        this.webSocketApi = new WebSocketApi(configuration);
     }
 
     /**
@@ -1365,5 +1370,22 @@ export class RestAPI {
         requestParameters: GetWalletSupportedChainsRequest = {}
     ): Promise<RestApiResponse<GetWalletSupportedChainsResponse>> {
         return this.walletApi.getWalletSupportedChains(requestParameters);
+    }
+
+    /**
+     * Get a WebSocket auth token before connecting to the WebSocket stream service.
+     *
+     *
+     * @summary Get WebSocket Auth Token
+     * @param {GetWebSocketAuthTokenRequest} requestParameters Request parameters.
+     *
+     * @returns {Promise<RestApiResponse<GetWebSocketAuthTokenResponse>>}
+     * @throws {RequiredError | ConnectorClientError | UnauthorizedError | ForbiddenError | TooManyRequestsError | RateLimitBanError | ServerError | NotFoundError | NetworkError | BadRequestError}
+     * @see {@link https://web3.binance.com/en/dev-docs/catalog/web3-wallet/api/rest-api/web-socket-api#get-web-socket-auth-token Binance API Documentation}
+     */
+    getWebSocketAuthToken(
+        requestParameters: GetWebSocketAuthTokenRequest = {}
+    ): Promise<RestApiResponse<GetWebSocketAuthTokenResponse>> {
+        return this.webSocketApi.getWebSocketAuthToken(requestParameters);
     }
 }

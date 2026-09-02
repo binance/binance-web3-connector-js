@@ -297,6 +297,8 @@ export * from './get-transactions-by-address-response-data-inner-transaction-lis
 export * from './get-transactions-by-address-response-data-inner-transaction-list-inner-to-inner';
 export * from './get-wallet-supported-chains-response';
 export * from './get-wallet-supported-chains-response-data-inner';
+export * from './get-web-socket-auth-token-response';
+export * from './get-web-socket-auth-token-response-data';
 export * from './investment-page-result';
 export * from './investment-page-result-list-inner';
 export * from './list-de-fi-investments-response';

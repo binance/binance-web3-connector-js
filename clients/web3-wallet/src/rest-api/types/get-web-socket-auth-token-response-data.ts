@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * Binance Web3 API
  *
@@ -11,13 +13,16 @@
  * Do not edit the class manually.
  */
 
-export * from './address-portfolio-api';
-export * from './b402-payments-api';
-export * from './defi-data-api';
-export * from './defi-transaction-api';
-export * from './general-data-api';
-export * from './rwadata-api';
-export * from './trading-api';
-export * from './transaction-api';
-export * from './wallet-api';
-export * from './web-socket-api';
+/**
+ *
+ * @export
+ * @interface GetWebSocketAuthTokenResponseData
+ */
+export interface GetWebSocketAuthTokenResponseData {
+    /**
+     * WebSocket auth token (JWT).
+     * @type {string}
+     * @memberof GetWebSocketAuthTokenResponseData
+     */
+    token?: string;
+}
