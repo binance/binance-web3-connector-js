@@ -1,7 +1,7 @@
 {
   "name": "@binance-web3/wallet",
   "description": "Official Binance Web3 Wallet Connector - A lightweight library that provides a convenient interface to Binance's Web3 Wallet REST API.",
-  "version": "12.1.0",
+  "version": "12.1.1",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -57,7 +57,7 @@
     "typescript-eslint": "^8.24.0"
   },
   "dependencies": {
-    "@binance/common": "npm:@binance-web3/common@1.0.2",
+    "@binance/common": "npm:@binance-web3/common@1.0.3",
     "axios": "^1.7.4"
   }
 }

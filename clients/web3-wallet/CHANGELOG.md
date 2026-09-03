@@ -1,5 +1,11 @@
 # Changelog
 
+## 12.1.1 - 2026-09-03
+
+### Changed (1)
+
+- Update `@binance-web3/common` library to version `1.0.3`.
+
 ## 12.1.0 - 2026-09-02
 
 ### Added (1)
