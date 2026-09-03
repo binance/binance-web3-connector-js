@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4 - 2026-09-03
+
+### Changed (1)
+
+- Resolve security vulnerabilities.
+
 ## 1.0.3 - 2026-09-03
 
 ### Changed (1)
