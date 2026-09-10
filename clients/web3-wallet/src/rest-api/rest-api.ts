@@ -1373,7 +1373,7 @@ export class RestAPI {
     }
 
     /**
-     * Get a WebSocket auth token before connecting to the WebSocket stream service.
+     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the [WebSocket documentation](/products/websocket-api/introduction).
      *
      *
      * @summary Get WebSocket Auth Token

@@ -711,6 +711,8 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          * - Solana (`CT_501`): `0` to less than `100` (i.e. `< 100`)
          *
          * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
+         * @param {string} [excludeDexes] Comma-separated list of DEXes to exclude from routing (block specific protocols). Only effective when `vendor=LiquidMesh`. **Use the `dexName` values returned in the response `routerResult.dexRouterList` as-is --- the response format is the source of truth** (e.g. `"Pancakeswap V4,Pancakeswap V3"`). On EVM/Sui/Tron chains these are normalized (lowercased, spaces to underscores) into gateway identifiers automatically; on Solana the value is passed through as-is and is **case-sensitive**, so it must match the response value exactly (e.g. `BisonFi`). Raw gateway identifiers (e.g. `pancakeswap_v4`) are also accepted. Note: URL-encode spaces when sending the query (e.g. `Pancakeswap%20V4`). Omit or leave empty to exclude nothing (behavior unchanged). The server only enforces a length cap (2000 chars); invalid values are rejected by the gateway.
+         * @param {QuoteAndBuildSwapTransactionEnableRFQEnum} [enableRFQ] Whether to enable RFQ liquidity sources for routing. Default depends on the token pair: **BStock pairs default to `"true"` (RFQ enabled)**; all other tokens default to `"false"` (RFQ disabled, AMM-only routing, deadline-safe --- suitable for slow signing such as hardware wallets). An explicit value always overrides the default. `"true"` enables RFQ liquidity for potentially better pricing, but the returned calldata may embed RFQ settlements with a short deadline (~30s); slow signing would trigger a `DeadlinePassed` revert. Only effective when `vendor=LiquidMesh`.
          * @param {QuoteAndBuildSwapTransactionApproveTransactionEnum} [approveTransaction] When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
          * @param {string} [approveAmount] Override approve amount (smallest unit, positive integer string). Defaults to the swap amount.
          * @param {string} [gasLimit] Gas limit override (positive integer string). EVM only.
@@ -741,6 +743,8 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             recvWindow?: number | bigint,
             nonce?: string,
             slippagePercent?: string,
+            excludeDexes?: string,
+            enableRFQ?: QuoteAndBuildSwapTransactionEnableRFQEnum,
             approveTransaction?: QuoteAndBuildSwapTransactionApproveTransactionEnum,
             approveAmount?: string,
             gasLimit?: string,
@@ -796,6 +800,12 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (vendor !== undefined && vendor !== null) {
                 localVarQueryParameter['vendor'] = vendor;
+            }
+            if (excludeDexes !== undefined && excludeDexes !== null) {
+                localVarQueryParameter['excludeDexes'] = excludeDexes;
+            }
+            if (enableRFQ !== undefined && enableRFQ !== null) {
+                localVarQueryParameter['enableRFQ'] = enableRFQ;
             }
             if (approveTransaction !== undefined && approveTransaction !== null) {
                 localVarQueryParameter['approveTransaction'] = approveTransaction;
@@ -1701,6 +1711,20 @@ export interface QuoteAndBuildSwapTransactionRequest {
     readonly slippagePercent?: string;
 
     /**
+     * Comma-separated list of DEXes to exclude from routing (block specific protocols). Only effective when `vendor=LiquidMesh`. **Use the `dexName` values returned in the response `routerResult.dexRouterList` as-is --- the response format is the source of truth** (e.g. `"Pancakeswap V4,Pancakeswap V3"`). On EVM/Sui/Tron chains these are normalized (lowercased, spaces to underscores) into gateway identifiers automatically; on Solana the value is passed through as-is and is **case-sensitive**, so it must match the response value exactly (e.g. `BisonFi`). Raw gateway identifiers (e.g. `pancakeswap_v4`) are also accepted. Note: URL-encode spaces when sending the query (e.g. `Pancakeswap%20V4`). Omit or leave empty to exclude nothing (behavior unchanged). The server only enforces a length cap (2000 chars); invalid values are rejected by the gateway.
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly excludeDexes?: string;
+
+    /**
+     * Whether to enable RFQ liquidity sources for routing. Default depends on the token pair: **BStock pairs default to `"true"` (RFQ enabled)**; all other tokens default to `"false"` (RFQ disabled, AMM-only routing, deadline-safe --- suitable for slow signing such as hardware wallets). An explicit value always overrides the default. `"true"` enables RFQ liquidity for potentially better pricing, but the returned calldata may embed RFQ settlements with a short deadline (~30s); slow signing would trigger a `DeadlinePassed` revert. Only effective when `vendor=LiquidMesh`.
+     * @type {'true' | 'false'}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly enableRFQ?: QuoteAndBuildSwapTransactionEnableRFQEnum;
+
+    /**
      * When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
      * @type {'true' | 'false'}
      * @memberof TradingApiQuoteAndBuildSwapTransaction
@@ -2164,6 +2188,8 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.recvWindow,
             requestParameters?.nonce,
             requestParameters?.slippagePercent,
+            requestParameters?.excludeDexes,
+            requestParameters?.enableRFQ,
             requestParameters?.approveTransaction,
             requestParameters?.approveAmount,
             requestParameters?.gasLimit,
@@ -2273,6 +2299,11 @@ export enum GetAggregatedQuoteFeeSourceEnum {
 
 export enum QuoteAndBuildSwapTransactionVendorEnum {
     LiquidMesh = 'LiquidMesh',
+}
+
+export enum QuoteAndBuildSwapTransactionEnableRFQEnum {
+    TRUE = 'true',
+    FALSE = 'false',
 }
 
 export enum QuoteAndBuildSwapTransactionApproveTransactionEnum {
