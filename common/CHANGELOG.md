@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 - 2026-09-17
+
+### Added (1)
+
+- Add support for WS Streams.
+
 ## 1.0.5 - 2026-09-11
 
 ### Changed (1)

@@ -14,7 +14,6 @@ export type {
 
 export {
     ConfigurationWebsocketAPI,
-    ConfigurationWebsocketStreams,
     TimeUnit,
     LogLevel,
     Logger,
@@ -33,6 +32,7 @@ export {
     buildUserAgent,
     buildWebsocketAPIMessage,
     clearSignerCache,
+    createStreamHandler,
     delay,
     getTimestamp,
     normalizeScientificNumbers,
@@ -50,9 +50,11 @@ export {
     toPathString,
     validateTLSUrl,
     validateTimeUnit,
+    WebsocketCommon,
 } from '@binance/common';
 
 export * from './configuration';
 export * from './constants';
 export * from './types';
 export * from './utils';
+export * from './websocket';
