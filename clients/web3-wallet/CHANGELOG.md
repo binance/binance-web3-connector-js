@@ -1,5 +1,15 @@
 # Changelog
 
+## 12.3.0 - 2026-09-17
+
+### Added (1)
+
+- Support WS Streams.
+
+### Changed (1)
+
+- Update `@binance-web3/common` library to version `1.1.0`.
+
 ## 12.2.1 - 2026-09-11
 
 ### Changed (1)

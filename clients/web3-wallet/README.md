@@ -19,8 +19,8 @@ This is a client library for the Binance Web3 Wallet API, enabling developers to
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [REST APIs](#rest-apis)
+- [Websocket Streams](#websocket-streams)
 - [Testing](#testing)
-- [Migration Guide](#migration-guide)
 - [Contributing](#contributing)
 - [Licence](#licence)
 
@@ -140,6 +140,105 @@ The REST API provides detailed error types to help you handle issues effectively
 See the [Error Handling example](./docs/rest-api/error-handling.md) for detailed usage.
 
 If `basePath` is not provided, it defaults to `https://web3.binance.com/build`.
+
+### Websocket Streams
+
+WebSocket Streams provide real-time data feeds for market trades, candlesticks, and more. Use the [websocket-streams](./src/websocket-streams/websocket-streams.ts) module to subscribe to these streams.
+
+```typescript
+import { Web3Wallet, Web3WalletWebsocketStreams, WEB3_WALLET_WS_STREAMS_PROD_URL } from '@binance-web3/wallet';
+
+const configurationWebsocketStreams = {
+    apiKey: 'your-api-key',
+    apiSecret: 'your-api-secret',
+    wsURL: WEB3_WALLET_WS_STREAMS_PROD_URL,
+};
+const client = new Web3Wallet({ configurationWebsocketStreams });
+
+client.websocketStreams
+    .connect()
+    .then((connection: Web3WalletWebsocketStreams.WebsocketStreamsConnection) => {
+        const stream = connection.priceStream({
+            chainId: 'CT_501',
+            contractAddress: 'C3DwDjT17gDvvCYC2nsdGHxDHVmQRdhKfpAdqQ29pump',
+        });
+        stream.on('message', (data: Web3WalletWebsocketStreams.PriceStreamResponse) => console.info(data));
+    })
+    .catch((err) => console.error(err));
+```
+
+More examples are available in the [`examples/websocket-streams`](./examples/websocket-streams/) folder.
+
+#### Configuration Options
+
+The WebSocket Streams API supports the following advanced configuration options:
+
+- `reconnectDelay`: Specify the delay between reconnection attempts (default: 5000 ms).
+- `compression`: Enable or disable compression for WebSocket messages (default: true).
+- `agent`: Customize the WebSocket agent for advanced configurations.
+- `mode`: Choose between `single` and `pool` connection modes.
+  - `single`: A single WebSocket connection.
+  - `pool`: A pool of WebSocket connections.
+- `poolSize`: Define the number of WebSocket connections in pool mode.
+- `wsTokenEndpoint`: Endpoint to retrieve a WebSocket token for authentication (default: /api/v1/dex/market/wss/auth/token).
+- `wsToken`: Provide a WebSocket token for authentication if needed (default: token retrieved from `wsTokenEndpoint` automatically).
+
+##### Reconnect Delay
+
+Specify the delay in milliseconds between WebSocket reconnection attempts for streams. See the [Reconnect Delay example](./docs/websocket-streams/reconnect-delay.md) for detailed usage.
+
+##### Compression
+
+Enable or disable compression for WebSocket Streams messages. See the [Compression example](./docs/websocket-streams/compression.md) for detailed usage.
+
+##### WebSocket Agent
+
+Customize the agent for advanced configurations. See the [WebSocket Agent example](./docs/websocket-streams/agent.md) for detailed usage.
+
+##### Connection Mode
+
+Choose between `single` and `pool` connection modes for WebSocket Streams. The `single` mode uses a single WebSocket connection, while the `pool` mode uses a pool of WebSocket connections. See the [Connection Mode example](./docs/websocket-streams/connection-mode.md) for detailed usage.
+
+##### Certificate Pinning
+
+To enhance security, you can use certificate pinning with the `agent` option in the configuration. This ensures the client only communicates with servers using specific certificates. See the [Certificate Pinning example](./docs/websocket-streams/certificate-pinning.md) for detailed usage.
+
+#### Unsubscribing from Streams
+
+You can unsubscribe from specific WebSocket streams using the `unsubscribe` method. This is useful for managing active subscriptions without closing the connection.
+
+```typescript
+import { Web3Wallet, Web3WalletWebsocketStreams, WEB3_WALLET_WS_STREAMS_PROD_URL } from '@binance-web3/wallet';
+
+const configurationWebsocketStreams = {
+    apiKey: 'your-api-key',
+    apiSecret: 'your-api-secret',
+    wsURL: WEB3_WALLET_WS_STREAMS_PROD_URL,
+};
+const client = new Web3Wallet({ configurationWebsocketStreams });
+
+client.websocketStreams
+    .connect()
+    .then((connection: Web3WalletWebsocketStreams.WebsocketStreamsConnection) => {
+        const stream = connection.priceStream({
+            chainId: 'CT_501',
+            contractAddress: 'C3DwDjT17gDvvCYC2nsdGHxDHVmQRdhKfpAdqQ29pump',
+        });
+        stream.on('message', (data: Web3WalletWebsocketStreams.PriceStreamResponse) => console.info(data));
+
+        setTimeout(() => {
+            stream.unsubscribe();
+            console.log('Unsubscribed from CT_501 price stream');
+        }, 10000);
+    })
+    .catch((err) => console.error(err));
+```
+
+If `wsURL` is not provided, it defaults to `wss://web3-stream.binance.com/w3w`.
+
+### Automatic Connection Renewal
+
+The WebSocket connection is automatically renewed for WebSocket Streams connections, before the 24 hours expiration of the API key. This ensures continuous connectivity.
 
 ## Testing
 
