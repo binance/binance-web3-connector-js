@@ -32,6 +32,31 @@ import {
 import type { RestApiRateLimit, RestApiResponse } from './types';
 
 /**
+ * Maps generated Web3 parameter names to the HTTP header names expected by the API.
+ */
+const normalizeWeb3HeaderParams = function (
+    headerParams: Record<string, unknown>
+): Record<string, unknown> {
+    const normalizedHeaderParams = { ...headerParams };
+
+    if (Object.prototype.hasOwnProperty.call(normalizedHeaderParams, 'recvWindow')) {
+        if (!Object.prototype.hasOwnProperty.call(normalizedHeaderParams, 'X-OC-RECV-WINDOW')) {
+            normalizedHeaderParams['X-OC-RECV-WINDOW'] = normalizedHeaderParams.recvWindow;
+        }
+        delete normalizedHeaderParams.recvWindow;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(normalizedHeaderParams, 'nonce')) {
+        if (!Object.prototype.hasOwnProperty.call(normalizedHeaderParams, 'X-OC-NONCE')) {
+            normalizedHeaderParams['X-OC-NONCE'] = normalizedHeaderParams.nonce;
+        }
+        delete normalizedHeaderParams.nonce;
+    }
+
+    return normalizedHeaderParams;
+};
+
+/**
  * Wraps every successful Binance Web3 response. The `data` field
  * carries the typed payload that callers actually want; `httpRequestFunction`
  * unwraps it before returning.
@@ -311,7 +336,7 @@ export const sendRequest = function <T>(
     };
     const headers: Record<string, unknown> = {
         ...((requestOptions.headers as Record<string, unknown> | undefined) || {}),
-        ...headerParams,
+        ...normalizeWeb3HeaderParams(headerParams),
     };
     requestOptions.headers = headers as RawAxiosRequestConfig['headers'];
 

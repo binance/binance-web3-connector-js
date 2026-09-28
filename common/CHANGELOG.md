@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 - 2026-09-28
+
+### Changed (1)
+
+- Handle properly `nonce` and `recvWindow` headers by prefixing them with `X-OC-`.
+
 ## 1.1.0 - 2026-09-17
 
 ### Added (1)

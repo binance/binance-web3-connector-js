@@ -302,6 +302,27 @@ describe('@binance-web3/common', () => {
             expect(headers['X-OC-APIKEY']).toBe('test-api-key');
         });
 
+        it('maps generated recvWindow and nonce header params to X-OC headers', async () => {
+            mockAxios.request.mockResolvedValue({ data: '{}', status: 200, headers: {} });
+
+            await sendRequest(
+                restConfiguration,
+                '/api/v1/dex/market/wss/auth/token',
+                'GET',
+                {},
+                {},
+                { recvWindow: 5000, nonce: 'unique-nonce-string' },
+                undefined,
+                { isSigned: true }
+            );
+
+            const { headers } = getLastAxiosCall();
+            expect(headers['X-OC-RECV-WINDOW']).toBe(5000);
+            expect(headers['X-OC-NONCE']).toBe('unique-nonce-string');
+            expect(headers.recvWindow).toBeUndefined();
+            expect(headers.nonce).toBeUndefined();
+        });
+
         it('lets headerParams override matching keys baked into baseOptions.headers', async () => {
             mockAxios.request.mockResolvedValue({ data: '{}', status: 200, headers: {} });
 
