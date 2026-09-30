@@ -14,7 +14,7 @@
  */
 
 /**
- * A single unsigned transaction to sign and broadcast. The `dataList` is ordered: APPROVE items precede the main action. EVM chains return `to`/`value` (hex) and hex calldata in `data`. **Number-format conventions for this object** — `value` is a `0x`-prefixed hex string; `gasLimit`, `gasPrice`, `maxPriorityFeePerGas`, and `maxFeePerGas` are decimal strings. Mixed hex/decimal within the same object is by design (it mirrors the on-chain transaction fields); always parse gas fields with base-10 and `value` with base-16. **BSC and EIP-1559**: this release is BSC only. BSC is an EIP-1559 chain, so build responses populate `maxFeePerGas` and `maxPriorityFeePerGas`; `gasPrice` is `null` (legacy-only). The nullable markers below are retained so the schema also describes non-1559 chains in later releases — on BSC the 1559 fields are present and the legacy `gasPrice` is `null`. `to` and `value` are non-null for every action item on BSC.
+ * A single unsigned transaction to sign and broadcast. The `dataList` is ordered: APPROVE items precede the main action. EVM chains return `to`/`value` (hex) and hex calldata in `data`. **Number-format conventions for this object** — `value` is a `0x`-prefixed hex string; `gasLimit`, `gasPrice`, `maxPriorityFeePerGas`, and `maxFeePerGas` are decimal strings. Mixed hex/decimal within the same object is by design (it mirrors the on-chain transaction fields); always parse gas fields with base-10 and `value` with base-16. **EIP-1559 and legacy gas fields**: all currently supported chains are EVM. On BSC build responses populate `maxFeePerGas` and `maxPriorityFeePerGas`; `gasPrice` is `null`. Other supported chains may populate either set — use the 1559 fields when present and fall back to `gasPrice` when it carries a value. The nullable markers below are retained so the schema also describes legacy-only chains. `to` and `value` are non-null for currently supported protocols.
  * @export
  * @interface DefiCallDataItem
  */
@@ -32,13 +32,13 @@ export interface DefiCallDataItem {
      */
     from?: string;
     /**
-     * Target contract address. EIP-55 checksummed, same format as `from`. Non-null on BSC for every action item.
+     * Target contract address. EIP-55 checksummed, same format as `from`. Non-null for currently supported protocols.
      * @type {string}
      * @memberof DefiCallDataItem
      */
     to?: string | null;
     /**
-     * Native-asset value as a `0x`-prefixed hex string. Non-null on BSC for action items.
+     * Native-asset value as a `0x`-prefixed hex string. Non-null for currently supported protocols.
      * @type {string}
      * @memberof DefiCallDataItem
      */

@@ -63,22 +63,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        kinds: [
-                            {
-                                scheme: 'exact',
-                                network: 'eip155:56',
-                                extra: {
-                                    name: 'Token Name',
-                                    version: '1',
-                                    facilitatorAddress:
-                                        '0x3333333333333333333333333333333333333333',
-                                },
-                            },
-                        ],
-                        extensions: [],
-                        signers: { 'eip155:56': ['0x3333333333333333333333333333333333333333'] },
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -111,22 +96,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        kinds: [
-                            {
-                                scheme: 'exact',
-                                network: 'eip155:56',
-                                extra: {
-                                    name: 'Token Name',
-                                    version: '1',
-                                    facilitatorAddress:
-                                        '0x3333333333333333333333333333333333333333',
-                                },
-                            },
-                        ],
-                        extensions: [],
-                        signers: { 'eip155:56': ['0x3333333333333333333333333333333333333333'] },
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -194,21 +164,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        kinds: [
-                            {
-                                network: 'eip155:56',
-                                extra: {
-                                    name: 'Token Name',
-                                    version: '1',
-                                    signerAddress: '0x3333333333333333333333333333333333333333',
-                                    spenderAddress: '0x4444444444444444444444444444444444444444',
-                                },
-                            },
-                        ],
-                        extensions: [],
-                        signers: { 'eip155:*': ['0x3333333333333333333333333333333333333333'] },
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -241,21 +197,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        kinds: [
-                            {
-                                network: 'eip155:56',
-                                extra: {
-                                    name: 'Token Name',
-                                    version: '1',
-                                    signerAddress: '0x3333333333333333333333333333333333333333',
-                                    spenderAddress: '0x4444444444444444444444444444444444444444',
-                                },
-                            },
-                        ],
-                        extensions: [],
-                        signers: { 'eip155:*': ['0x3333333333333333333333333333333333333333'] },
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -323,17 +265,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        success: true,
-                        transaction:
-                            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                        payer: '0x5555555555555555555555555555555555555555',
-                        network: 'eip155:56',
-                        amount: '1000000',
-                        confirmations: 1,
-                        errorReason: 'errorReason',
-                        errorMessage: 'errorMessage',
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -366,17 +298,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        success: true,
-                        transaction:
-                            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                        payer: '0x5555555555555555555555555555555555555555',
-                        network: 'eip155:56',
-                        amount: '1000000',
-                        confirmations: 1,
-                        errorReason: 'errorReason',
-                        errorMessage: 'errorMessage',
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -440,17 +362,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        success: true,
-                        transaction:
-                            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                        payer: '0x5555555555555555555555555555555555555555',
-                        network: 'eip155:56',
-                        amount: '1000000',
-                        errorReason: 'errorReason',
-                        errorMessage: 'errorMessage',
-                        extensions: {},
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -483,17 +395,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        success: true,
-                        transaction:
-                            '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                        payer: '0x5555555555555555555555555555555555555555',
-                        network: 'eip155:56',
-                        amount: '1000000',
-                        errorReason: 'errorReason',
-                        errorMessage: 'errorMessage',
-                        extensions: {},
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -654,12 +556,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        isValid: true,
-                        payer: '0x5555555555555555555555555555555555555555',
-                        invalidReason: 'invalid_payload',
-                        invalidMessage: 'invalidMessage',
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })
@@ -692,12 +589,7 @@ describe('B402PaymentsApi', () => {
                     type: 'GENERAL',
                     code: '000000000',
                     errorData: 'errorData',
-                    data: {
-                        isValid: true,
-                        payer: '0x5555555555555555555555555555555555555555',
-                        invalidReason: 'invalid_payload',
-                        invalidMessage: 'invalidMessage',
-                    },
+                    data: {},
                     subData: {},
                     params: {},
                 })

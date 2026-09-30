@@ -16,31 +16,31 @@
 /**
  *
  * @export
- * @interface VerifyB402PaymentV2Response1Data
+ * @interface VerifyB402PaymentV2ResponseData
  */
-export interface VerifyB402PaymentV2Response1Data {
+export interface VerifyB402PaymentV2ResponseData {
     /**
      *
      * @type {boolean}
-     * @memberof VerifyB402PaymentV2Response1Data
+     * @memberof VerifyB402PaymentV2ResponseData
      */
     isValid: boolean;
     /**
      *
      * @type {string}
-     * @memberof VerifyB402PaymentV2Response1Data
+     * @memberof VerifyB402PaymentV2ResponseData
      */
     payer?: string | null;
     /**
      *
      * @type {string}
-     * @memberof VerifyB402PaymentV2Response1Data
+     * @memberof VerifyB402PaymentV2ResponseData
      */
     invalidReason?: string | null;
     /**
      *
      * @type {string}
-     * @memberof VerifyB402PaymentV2Response1Data
+     * @memberof VerifyB402PaymentV2ResponseData
      */
     invalidMessage?: string | null;
 }

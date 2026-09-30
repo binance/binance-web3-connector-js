@@ -16,37 +16,37 @@
 /**
  *
  * @export
- * @interface GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+ * @interface GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
  */
-export interface GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra {
+export interface GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra {
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
      */
     name: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
      */
     version: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
      */
     assetTransferMethod: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
      */
     signerAddress: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV2Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV2ResponseDataKindsInnerExtra
      */
     spenderAddress?: string | null;
 }

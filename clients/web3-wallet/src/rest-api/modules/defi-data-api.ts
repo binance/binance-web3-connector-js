@@ -32,14 +32,14 @@ import type {
 const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestAPI) {
     return {
         /**
-         * Query DeFi positions for one or more wallet addresses on BSC. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`.
-         * Position coverage is wider than the protocol list used by data queries and transaction building — see [Supported Chains & Protocols](../supported-chains) for the difference.
+         * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+         * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
          *
          * @summary Get DeFi Positions
-         * @param {Array<string>} addresses Wallet addresses to query positions for. Up to 3 addresses per request (server-side configured and subject to change).
+         * @param {Array<string>} addresses Wallet addresses to query positions for. Up to 3 addresses per request (server-side configured and subject to change); the limit is shared across chains — a multi-chain query consumes the same 3-address budget.
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {Array<string>} [binanceChainIds] Optional chain filter. When set, only positions on the specified chains are returned. This release supports BSC (\"56\") only.
+         * @param {Array<string>} [binanceChainIds] Optional chain filter. When set, only positions on the specified chains are returned; when omitted, positions across all supported chains are returned. See Supported Chains & Protocols for the supported chain ID values — unsupported values are rejected with 40001.
          *
          * @throws {RequiredError}
          */
@@ -181,8 +181,8 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          * @param {string} [defiProtocolId] Filter by DeFi protocol ID.
-         * @param {Array<string>} [tokenAddressList] Filter by token addresses.
-         * @param {string} [binanceChainId] Filter by Binance chain ID (e.g. \"56\"=BSC).
+         * @param {Array<string>} [tokenAddressList] Filter by token addresses. When this field is provided, `binanceChainId` is required — the same address can be a different token on different chains; omitting the chain returns 40001.
+         * @param {string} [binanceChainId] One of the supported chains — see Supported Chains & Protocols for the supported chain ID values. Chains outside this whitelist are rejected with 40001. When omitted (or blank), results span all supported chains.
          * @param {string} [sortField] Field to sort by. Only two values are accepted: `tvl`, `apy`. Note: sorting by APY uses `apy` (the server-side field name), even though the response exposes `apyBps` / `apyDisplay`. Other values are not supported.
          * @param {ListDeFiInvestmentsSortDirectionEnum} [sortDirection] Sort direction.
          * @param {number} [page] Page number (1-based).
@@ -266,7 +266,7 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
          * @summary List DeFi Protocols
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
-         * @param {string} [binanceChainId] Filter by Binance chain ID (e.g. \"56\"=BSC).
+         * @param {string} [binanceChainId] One of the supported chains — see Supported Chains & Protocols for the supported chain ID values. Chains outside this whitelist are rejected with 40001. When omitted (or blank), results span all supported chains.
          * @param {ListDeFiProtocolsInvestTypeEnum} [investType] Filter by investment type. Known values: `Earn`, `LiquidityPool`.
          * @param {string} [sortField] Field to sort by. Only two values are accepted: `tvl`, `apy`. Note: sorting by APY uses `apy` (the server-side field name), even though the response exposes `apyBps` / `apyDisplay`. Other values are not supported.
          * @param {ListDeFiProtocolsSortDirectionEnum} [sortDirection] Sort direction.
@@ -341,8 +341,8 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
  */
 export interface DefiDataApiInterface {
     /**
-     * Query DeFi positions for one or more wallet addresses on BSC. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`.
-     * Position coverage is wider than the protocol list used by data queries and transaction building — see [Supported Chains & Protocols](../supported-chains) for the difference.
+     * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+     * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
      *
      * @summary Get DeFi Positions
      * @param {GetDeFiPositionsRequest} requestParameters Request parameters.
@@ -409,7 +409,7 @@ export interface DefiDataApiInterface {
  */
 export interface GetDeFiPositionsRequest {
     /**
-     * Wallet addresses to query positions for. Up to 3 addresses per request (server-side configured and subject to change).
+     * Wallet addresses to query positions for. Up to 3 addresses per request (server-side configured and subject to change); the limit is shared across chains — a multi-chain query consumes the same 3-address budget.
      * @type {Array<string>}
      * @memberof DefiDataApiGetDeFiPositions
      */
@@ -430,7 +430,7 @@ export interface GetDeFiPositionsRequest {
     readonly nonce?: string;
 
     /**
-     * Optional chain filter. When set, only positions on the specified chains are returned. This release supports BSC (\"56\") only.
+     * Optional chain filter. When set, only positions on the specified chains are returned; when omitted, positions across all supported chains are returned. See Supported Chains & Protocols for the supported chain ID values — unsupported values are rejected with 40001.
      * @type {Array<string>}
      * @memberof DefiDataApiGetDeFiPositions
      */
@@ -525,14 +525,14 @@ export interface ListDeFiInvestmentsRequest {
     readonly defiProtocolId?: string;
 
     /**
-     * Filter by token addresses.
+     * Filter by token addresses. When this field is provided, `binanceChainId` is required — the same address can be a different token on different chains; omitting the chain returns 40001.
      * @type {Array<string>}
      * @memberof DefiDataApiListDeFiInvestments
      */
     readonly tokenAddressList?: Array<string>;
 
     /**
-     * Filter by Binance chain ID (e.g. \"56\"=BSC).
+     * One of the supported chains — see Supported Chains & Protocols for the supported chain ID values. Chains outside this whitelist are rejected with 40001. When omitted (or blank), results span all supported chains.
      * @type {string}
      * @memberof DefiDataApiListDeFiInvestments
      */
@@ -587,7 +587,7 @@ export interface ListDeFiProtocolsRequest {
     readonly nonce?: string;
 
     /**
-     * Filter by Binance chain ID (e.g. \"56\"=BSC).
+     * One of the supported chains — see Supported Chains & Protocols for the supported chain ID values. Chains outside this whitelist are rejected with 40001. When omitted (or blank), results span all supported chains.
      * @type {string}
      * @memberof DefiDataApiListDeFiProtocols
      */
@@ -643,8 +643,8 @@ export class DefiDataApi implements DefiDataApiInterface {
     }
 
     /**
-     * Query DeFi positions for one or more wallet addresses on BSC. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`.
-     * Position coverage is wider than the protocol list used by data queries and transaction building — see [Supported Chains & Protocols](../supported-chains) for the difference.
+     * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+     * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
      *
      * @summary Get DeFi Positions
      * @param {GetDeFiPositionsRequest} requestParameters Request parameters.

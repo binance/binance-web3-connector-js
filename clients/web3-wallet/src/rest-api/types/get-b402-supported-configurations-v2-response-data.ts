@@ -16,30 +16,30 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetB402SupportedConfigurationsV2Response1DataKindsInner } from './get-b402-supported-configurations-v2-response1-data-kinds-inner';
+import type { GetB402SupportedConfigurationsV2ResponseDataKindsInner } from './get-b402-supported-configurations-v2-response-data-kinds-inner';
 
 /**
  *
  * @export
- * @interface GetB402SupportedConfigurationsV2Response1Data
+ * @interface GetB402SupportedConfigurationsV2ResponseData
  */
-export interface GetB402SupportedConfigurationsV2Response1Data {
+export interface GetB402SupportedConfigurationsV2ResponseData {
     /**
      *
-     * @type {Array<GetB402SupportedConfigurationsV2Response1DataKindsInner>}
-     * @memberof GetB402SupportedConfigurationsV2Response1Data
+     * @type {Array<GetB402SupportedConfigurationsV2ResponseDataKindsInner>}
+     * @memberof GetB402SupportedConfigurationsV2ResponseData
      */
-    kinds: Array<GetB402SupportedConfigurationsV2Response1DataKindsInner>;
+    kinds: Array<GetB402SupportedConfigurationsV2ResponseDataKindsInner>;
     /**
      *
      * @type {Array<string>}
-     * @memberof GetB402SupportedConfigurationsV2Response1Data
+     * @memberof GetB402SupportedConfigurationsV2ResponseData
      */
     extensions: Array<string>;
     /**
      *
      * @type {{ [key: string]: Array<string> | undefined; }}
-     * @memberof GetB402SupportedConfigurationsV2Response1Data
+     * @memberof GetB402SupportedConfigurationsV2ResponseData
      */
     signers: { [key: string]: Array<string> | undefined };
 }

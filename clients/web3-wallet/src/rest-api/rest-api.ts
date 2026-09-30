@@ -480,8 +480,8 @@ export class RestAPI {
     }
 
     /**
-     * Query DeFi positions for one or more wallet addresses on BSC. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`.
-     * Position coverage is wider than the protocol list used by data queries and transaction building — see [Supported Chains & Protocols](../supported-chains) for the difference.
+     * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+     * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
      *
      * @summary Get DeFi Positions
      * @param {GetDeFiPositionsRequest} requestParameters Request parameters.
@@ -1373,8 +1373,7 @@ export class RestAPI {
     }
 
     /**
-     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the [WebSocket documentation](/products/websocket-api/introduction).
-     *
+     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the WebSocket documentation.
      *
      * @summary Get WebSocket Auth Token
      * @param {GetWebSocketAuthTokenRequest} requestParameters Request parameters.

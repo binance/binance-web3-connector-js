@@ -16,31 +16,31 @@
 /**
  *
  * @export
- * @interface GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra
+ * @interface GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra
  */
-export interface GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra {
+export interface GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra {
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra
      */
     name?: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra
      */
     version?: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra
      */
     assetTransferMethod?: string;
     /**
      *
      * @type {string}
-     * @memberof GetB402SupportedConfigurationsV1Response1DataKindsInnerExtra
+     * @memberof GetB402SupportedConfigurationsV1ResponseDataKindsInnerExtra
      */
     facilitatorAddress?: string;
 }

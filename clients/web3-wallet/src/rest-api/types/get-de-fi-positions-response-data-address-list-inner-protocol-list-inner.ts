@@ -25,7 +25,7 @@ import type { GetDeFiPositionsResponseDataAddressListInnerProtocolListInnerPoolL
  */
 export interface GetDeFiPositionsResponseDataAddressListInnerProtocolListInner {
     /**
-     * Binance chain ID (e.g. \"56\"=BSC).
+     * Binance chain ID. Plain numeric string for EVM chains — see Supported Chains & Protocols for the supported values.
      * @type {string}
      * @memberof GetDeFiPositionsResponseDataAddressListInnerProtocolListInner
      */

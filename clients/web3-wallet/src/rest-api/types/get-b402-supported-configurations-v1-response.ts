@@ -16,14 +16,54 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { GetB402SupportedConfigurationsV1Response1 } from './get-b402-supported-configurations-v1-response1';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { GetB402SupportedConfigurationsV1Response2 } from './get-b402-supported-configurations-v1-response2';
+import type { GetB402SupportedConfigurationsV1ResponseData } from './get-b402-supported-configurations-v1-response-data';
 
 /**
- * @type GetB402SupportedConfigurationsV1Response
+ *
+ * @export
+ * @interface GetB402SupportedConfigurationsV1Response
  */
-export type GetB402SupportedConfigurationsV1Response =
-    | GetB402SupportedConfigurationsV1Response1
-    | GetB402SupportedConfigurationsV1Response2;
+export interface GetB402SupportedConfigurationsV1Response {
+    /**
+     *
+     * @type {string}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    status?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    type?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    code?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    errorData?: string | null;
+    /**
+     *
+     * @type {GetB402SupportedConfigurationsV1ResponseData}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    data?: GetB402SupportedConfigurationsV1ResponseData | null;
+    /**
+     *
+     * @type {object}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    subData?: object | null;
+    /**
+     *
+     * @type {object}
+     * @memberof GetB402SupportedConfigurationsV1Response
+     */
+    params?: object | null;
+}

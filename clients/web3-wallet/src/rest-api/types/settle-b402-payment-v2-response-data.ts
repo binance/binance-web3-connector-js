@@ -17,55 +17,55 @@
 /**
  *
  * @export
- * @interface SettleB402PaymentV2Response1Data
+ * @interface SettleB402PaymentV2ResponseData
  */
-export interface SettleB402PaymentV2Response1Data {
+export interface SettleB402PaymentV2ResponseData {
     /**
      *
      * @type {boolean}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     success: boolean;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     transaction: string;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     payer?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     network: string;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     amount?: string;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     errorReason?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     errorMessage?: string | null;
     /**
      *
      * @type {{ [key: string]: any | undefined; }}
-     * @memberof SettleB402PaymentV2Response1Data
+     * @memberof SettleB402PaymentV2ResponseData
      */
     extensions?: { [key: string]: any | undefined };
 }

@@ -16,55 +16,55 @@
 /**
  *
  * @export
- * @interface SettleB402PaymentV1Response1Data
+ * @interface SettleB402PaymentV1ResponseData
  */
-export interface SettleB402PaymentV1Response1Data {
+export interface SettleB402PaymentV1ResponseData {
     /**
      *
      * @type {boolean}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     success: boolean;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     transaction?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     payer?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     network?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     amount?: string | null;
     /**
      *
      * @type {number}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     confirmations?: number | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     errorReason?: string | null;
     /**
      *
      * @type {string}
-     * @memberof SettleB402PaymentV1Response1Data
+     * @memberof SettleB402PaymentV1ResponseData
      */
     errorMessage?: string | null;
 }

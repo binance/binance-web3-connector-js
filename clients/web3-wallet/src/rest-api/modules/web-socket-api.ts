@@ -25,8 +25,7 @@ import type { GetWebSocketAuthTokenResponse } from '../types';
 const WebSocketApiAxiosParamCreator = function (configuration: ConfigurationRestAPI) {
     return {
         /**
-         * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the [WebSocket documentation](/products/websocket-api/introduction).
-         *
+         * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the WebSocket documentation.
          *
          * @summary Get WebSocket Auth Token
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
@@ -70,8 +69,7 @@ const WebSocketApiAxiosParamCreator = function (configuration: ConfigurationRest
  */
 export interface WebSocketApiInterface {
     /**
-     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the [WebSocket documentation](/products/websocket-api/introduction).
-     *
+     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the WebSocket documentation.
      *
      * @summary Get WebSocket Auth Token
      * @param {GetWebSocketAuthTokenRequest} requestParameters Request parameters.
@@ -118,8 +116,7 @@ export class WebSocketApi implements WebSocketApiInterface {
     }
 
     /**
-     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the [WebSocket documentation](/products/websocket-api/introduction).
-     *
+     * Get a WebSocket auth token before connecting to the WebSocket stream service. For details on WebSocket usage, please refer to the WebSocket documentation.
      *
      * @summary Get WebSocket Auth Token
      * @param {GetWebSocketAuthTokenRequest} requestParameters Request parameters.

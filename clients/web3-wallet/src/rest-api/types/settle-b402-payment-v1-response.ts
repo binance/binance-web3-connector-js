@@ -16,14 +16,54 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { SettleB402PaymentV1Response1 } from './settle-b402-payment-v1-response1';
-// May contain unused imports in some cases
-// @ts-ignore
-import type { SettleB402PaymentV1Response2 } from './settle-b402-payment-v1-response2';
+import type { SettleB402PaymentV1ResponseData } from './settle-b402-payment-v1-response-data';
 
 /**
- * @type SettleB402PaymentV1Response
+ *
+ * @export
+ * @interface SettleB402PaymentV1Response
  */
-export type SettleB402PaymentV1Response =
-    | SettleB402PaymentV1Response1
-    | SettleB402PaymentV1Response2;
+export interface SettleB402PaymentV1Response {
+    /**
+     *
+     * @type {string}
+     * @memberof SettleB402PaymentV1Response
+     */
+    status?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof SettleB402PaymentV1Response
+     */
+    type?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof SettleB402PaymentV1Response
+     */
+    code?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof SettleB402PaymentV1Response
+     */
+    errorData?: string | null;
+    /**
+     *
+     * @type {SettleB402PaymentV1ResponseData}
+     * @memberof SettleB402PaymentV1Response
+     */
+    data?: SettleB402PaymentV1ResponseData | null;
+    /**
+     *
+     * @type {object}
+     * @memberof SettleB402PaymentV1Response
+     */
+    subData?: object | null;
+    /**
+     *
+     * @type {object}
+     * @memberof SettleB402PaymentV1Response
+     */
+    params?: object | null;
+}
