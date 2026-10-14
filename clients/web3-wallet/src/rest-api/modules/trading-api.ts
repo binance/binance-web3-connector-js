@@ -712,6 +712,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
          *
          * `"0.5"` means 0.5% maximum slippage. When `autoSlippage=true` this field is overridden by the auto-computed value.
          * @param {string} [excludeDexes] Comma-separated list of DEXes to exclude from routing. Pass the `dexName` values returned in the response `routerResult.dexRouterList` as-is (e.g. `"Pancakeswap V4,Pancakeswap V3"`). On EVM/Sui/Tron chains they are normalized automatically; on Solana the value is case-sensitive and must match the response exactly. Omit or leave empty to exclude nothing.
+         * @param {string} [excludePools] Comma-separated list of liquidity pool identifiers to exclude from routing (block specific pools). Only effective when `vendor=LiquidMesh` — passed through to the LiquidMesh Flash API `excludePools` parameter. Pool identifier format: V2/V3 pools use the `0x` + 40-hex contract address, V4/Infinity pools use the `0x` + 64-hex poolId (`0x` prefix optional, case-insensitive). Values are trimmed, deduped and passed through as-is; the server only enforces a length cap (2000 chars), invalid values are rejected by the gateway. Omit or leave empty to exclude nothing (behavior unchanged).
          * @param {QuoteAndBuildSwapTransactionEnableRFQEnum} [enableRFQ] Whether to enable RFQ liquidity sources for routing. Default depends on the token pair: **BStock pairs default to `"true"` (RFQ enabled)**; all other tokens default to `"false"` (RFQ disabled, AMM-only routing). An explicit value always overrides the default. `"true"` may return better pricing, but the returned calldata may embed RFQ settlements with a short (~30s) deadline.
          * @param {QuoteAndBuildSwapTransactionApproveTransactionEnum} [approveTransaction] When "true", `signatureData` includes the spender address and approve calldata so the client can submit it before the swap. Defaults to false.
          * @param {string} [approveAmount] Override approve amount (smallest unit, positive integer string). Defaults to the swap amount.
@@ -744,6 +745,7 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             nonce?: string,
             slippagePercent?: string,
             excludeDexes?: string,
+            excludePools?: string,
             enableRFQ?: QuoteAndBuildSwapTransactionEnableRFQEnum,
             approveTransaction?: QuoteAndBuildSwapTransactionApproveTransactionEnum,
             approveAmount?: string,
@@ -803,6 +805,9 @@ const TradingApiAxiosParamCreator = function (configuration: ConfigurationRestAP
             }
             if (excludeDexes !== undefined && excludeDexes !== null) {
                 localVarQueryParameter['excludeDexes'] = excludeDexes;
+            }
+            if (excludePools !== undefined && excludePools !== null) {
+                localVarQueryParameter['excludePools'] = excludePools;
             }
             if (enableRFQ !== undefined && enableRFQ !== null) {
                 localVarQueryParameter['enableRFQ'] = enableRFQ;
@@ -1718,6 +1723,13 @@ export interface QuoteAndBuildSwapTransactionRequest {
     readonly excludeDexes?: string;
 
     /**
+     * Comma-separated list of liquidity pool identifiers to exclude from routing (block specific pools). Only effective when `vendor=LiquidMesh` — passed through to the LiquidMesh Flash API `excludePools` parameter. Pool identifier format: V2/V3 pools use the `0x` + 40-hex contract address, V4/Infinity pools use the `0x` + 64-hex poolId (`0x` prefix optional, case-insensitive). Values are trimmed, deduped and passed through as-is; the server only enforces a length cap (2000 chars), invalid values are rejected by the gateway. Omit or leave empty to exclude nothing (behavior unchanged).
+     * @type {string}
+     * @memberof TradingApiQuoteAndBuildSwapTransaction
+     */
+    readonly excludePools?: string;
+
+    /**
      * Whether to enable RFQ liquidity sources for routing. Default depends on the token pair: **BStock pairs default to `"true"` (RFQ enabled)**; all other tokens default to `"false"` (RFQ disabled, AMM-only routing). An explicit value always overrides the default. `"true"` may return better pricing, but the returned calldata may embed RFQ settlements with a short (~30s) deadline.
      * @type {'true' | 'false'}
      * @memberof TradingApiQuoteAndBuildSwapTransaction
@@ -2189,6 +2201,7 @@ export class TradingApi implements TradingApiInterface {
             requestParameters?.nonce,
             requestParameters?.slippagePercent,
             requestParameters?.excludeDexes,
+            requestParameters?.excludePools,
             requestParameters?.enableRFQ,
             requestParameters?.approveTransaction,
             requestParameters?.approveAmount,

@@ -323,6 +323,8 @@ export * from './protocol-resp-pool-list-inner';
 export * from './quote-and-build-swap-transaction-response';
 export * from './quote-and-build-swap-transaction-response-data';
 export * from './quote-and-build-swap-transaction-response-data-rfq';
+export * from './quote-and-build-swap-transaction-response-data-router-result';
+export * from './quote-and-build-swap-transaction-response-data-router-result-dex-router-list-inner';
 export * from './search-rwa-token-response';
 export * from './search-rwa-token-response-data-inner';
 export * from './search-rwa-token-response-data-inner-assets-inner';

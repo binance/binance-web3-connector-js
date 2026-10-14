@@ -1598,6 +1598,7 @@ describe('TradingApi', () => {
                                         tokenSymbol: 'BTCB',
                                     },
                                     toTokenIndex: '1',
+                                    poolAddress: '0x1fb9d973a8381752611a4e17d0de21ff95a1dbd5',
                                 },
                             ],
                             fromToken: {
@@ -1676,6 +1677,7 @@ describe('TradingApi', () => {
                 nonce: 'unique-nonce-string',
                 slippagePercent: '0.5',
                 excludeDexes: 'Pancakeswap V4,Pancakeswap V3',
+                excludePools: '0x1fb9d973a8381752611a4e17d0de21ff95a1dbd5',
                 enableRFQ: QuoteAndBuildSwapTransactionEnableRFQEnum.TRUE,
                 approveTransaction: QuoteAndBuildSwapTransactionApproveTransactionEnum.TRUE,
                 approveAmount: '1000000',
@@ -1721,6 +1723,7 @@ describe('TradingApi', () => {
                                         tokenSymbol: 'BTCB',
                                     },
                                     toTokenIndex: '1',
+                                    poolAddress: '0x1fb9d973a8381752611a4e17d0de21ff95a1dbd5',
                                 },
                             ],
                             fromToken: {

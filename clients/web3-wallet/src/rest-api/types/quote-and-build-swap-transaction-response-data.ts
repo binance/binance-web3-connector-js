@@ -16,13 +16,13 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { BuildSwapTransactionResponseDataRouterResult } from './build-swap-transaction-response-data-router-result';
-// May contain unused imports in some cases
-// @ts-ignore
 import type { BuildSwapTransactionResponseDataTx } from './build-swap-transaction-response-data-tx';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { QuoteAndBuildSwapTransactionResponseDataRfq } from './quote-and-build-swap-transaction-response-data-rfq';
+// May contain unused imports in some cases
+// @ts-ignore
+import type { QuoteAndBuildSwapTransactionResponseDataRouterResult } from './quote-and-build-swap-transaction-response-data-router-result';
 
 /**
  *
@@ -32,10 +32,10 @@ import type { QuoteAndBuildSwapTransactionResponseDataRfq } from './quote-and-bu
 export interface QuoteAndBuildSwapTransactionResponseData {
     /**
      *
-     * @type {BuildSwapTransactionResponseDataRouterResult}
+     * @type {QuoteAndBuildSwapTransactionResponseDataRouterResult}
      * @memberof QuoteAndBuildSwapTransactionResponseData
      */
-    routerResult?: BuildSwapTransactionResponseDataRouterResult;
+    routerResult?: QuoteAndBuildSwapTransactionResponseDataRouterResult;
     /**
      *
      * @type {BuildSwapTransactionResponseDataTx}
