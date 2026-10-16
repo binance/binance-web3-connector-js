@@ -32,10 +32,6 @@ export class ConfigurationRestAPI extends ConfigurationRestAPIBase {
 /**
  * Represents the configuration options for the WebSocket Streams.
  *
- * @property {string} [apiKey] - The API key used for authentication (optional).
- * @property {string} [apiSecret] - The API secret used for authentication (optional).
- * @property {string | Buffer} [privateKey] - The private key used for authentication (optional).
- * @property {string} [privateKeyPassphrase] - The passphrase for the private key (optional).
  * @property {string} [basePath] - The base URL of the REST API (optional).
  * @property {string} [wsTokenEndpoint] - The endpoint to fetch the WebSocket token (optional).
  * @property {string} [wsToken] - The WebSocket token provided by the user (optional).
@@ -46,30 +42,18 @@ export class ConfigurationRestAPI extends ConfigurationRestAPIBase {
  * - If neither `wsToken` nor `apiKey` is provided, an error will be thrown when attempting to connect.
  */
 export class ConfigurationWebsocketStreams extends ConfigurationWebsocketStreamsBase {
-    apiKey?: string;
-    apiSecret?: string;
-    privateKey?: string | Buffer;
-    privateKeyPassphrase?: string;
     basePath?: string;
     wsTokenEndpoint?: string;
     wsToken?: string;
 
     constructor(
         param: ConstructorParameters<typeof ConfigurationWebsocketStreamsBase>[0] & {
-            apiKey?: string;
-            apiSecret?: string;
-            privateKey?: string | Buffer;
-            privateKeyPassphrase?: string;
             basePath?: string;
             wsTokenEndpoint?: string;
             wsToken?: string;
         }
     ) {
         super(param);
-        this.apiKey = param.apiKey;
-        this.apiSecret = param.apiSecret;
-        this.privateKey = param.privateKey;
-        this.privateKeyPassphrase = param.privateKeyPassphrase;
         this.basePath = param.basePath;
         this.wsTokenEndpoint = param.wsTokenEndpoint;
         this.wsToken = param.wsToken;
