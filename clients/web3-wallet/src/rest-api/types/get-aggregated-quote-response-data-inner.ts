@@ -61,13 +61,13 @@ export interface GetAggregatedQuoteResponseDataInner {
      */
     toTokenAmount?: string;
     /**
-     * Estimated network fee for this route in USD. Null when the vendor does not return one.
+     * Estimated network fee for this route in USD. Null when the vendor does not return one. Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof GetAggregatedQuoteResponseDataInner
      */
     tradeFee?: string | null;
     /**
-     * Estimated gas in the chain\'s smallest unit (e.g. wei). May be null on Solana.
+     * Estimated gas in the chain\'s smallest unit (e.g. wei). May be null on Solana. Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof GetAggregatedQuoteResponseDataInner
      */

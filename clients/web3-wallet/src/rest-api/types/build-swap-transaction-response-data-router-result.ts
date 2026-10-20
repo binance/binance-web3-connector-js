@@ -55,13 +55,13 @@ export interface BuildSwapTransactionResponseDataRouterResult {
      */
     toTokenAmount?: string;
     /**
-     * Estimated network fee in USD.
+     * Estimated network fee in USD. Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataRouterResult
      */
     tradeFee?: string | null;
     /**
-     * Estimated gas in the chain\'s smallest unit (e.g. wei).
+     * Estimated gas in the chain\'s smallest unit (e.g. wei). Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataRouterResult
      */

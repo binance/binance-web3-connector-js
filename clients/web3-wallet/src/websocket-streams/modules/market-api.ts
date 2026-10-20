@@ -34,7 +34,7 @@ const MarketApiParamCreator = function () {
          *
          * @summary Candlestick Stream
          * @param {string} bar K-line interval. Enum: 1s, 5s, 30s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M.
-         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
          * @param {string} contractAddress Token contract address.
          * @param {string} [id] Unique WebSocket request ID.
          *
@@ -64,7 +64,7 @@ const MarketApiParamCreator = function () {
          * Update Speed: Real-time
          *
          * @summary Market Stats Stream
-         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
          * @param {string} contractAddress Token contract address.
          * @param {string} [id] Unique WebSocket request ID.
          *
@@ -87,7 +87,7 @@ const MarketApiParamCreator = function () {
          * Update Speed: Real-time
          *
          * @summary Price Stream
-         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
          * @param {string} contractAddress Token contract address.
          * @param {string} [id] Unique WebSocket request ID.
          *
@@ -110,7 +110,7 @@ const MarketApiParamCreator = function () {
          * Update Speed: Real-time
          *
          * @summary Real-Time Trades Stream
-         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+         * @param {string} chainId Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
          * @param {string} contractAddress Token contract address.
          * @param {string} [id] Unique WebSocket request ID.
          *
@@ -211,7 +211,7 @@ export interface CandlestickStreamRequest {
     readonly bar: string;
 
     /**
-     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
      * @type {string}
      * @memberof MarketApiCandlestickStream
      */
@@ -238,7 +238,7 @@ export interface CandlestickStreamRequest {
  */
 export interface MarketStatsStreamRequest {
     /**
-     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
      * @type {string}
      * @memberof MarketApiMarketStatsStream
      */
@@ -265,7 +265,7 @@ export interface MarketStatsStreamRequest {
  */
 export interface PriceStreamRequest {
     /**
-     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
      * @type {string}
      * @memberof MarketApiPriceStream
      */
@@ -292,7 +292,7 @@ export interface PriceStreamRequest {
  */
 export interface RealTimeTradesStreamRequest {
     /**
-     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the ["supported/chain"](/catalog/web3-wallet/api/rest-api/general-data#get-supported-chains) endpoint.
+     * Chain identifier, e.g. "1"=Ethereum, "56"=BSC, "CT_501"=Solana. Full supported-chain list: same as the "supported/chain" endpoint.
      * @type {string}
      * @memberof MarketApiRealTimeTradesStream
      */

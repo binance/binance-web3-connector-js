@@ -44,19 +44,19 @@ export interface BuildSwapTransactionResponseDataTx {
      */
     value?: string;
     /**
-     * Gas limit estimate.
+     * Gas limit estimate. Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataTx
      */
     gas?: string;
     /**
-     * Gas price (wei).
+     * Gas price (wei). Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataTx
      */
     gasPrice?: string;
     /**
-     * EIP-1559 max priority fee per gas (wei).
+     * EIP-1559 max priority fee per gas (wei). Note: this is an estimate for reference only and may be inaccurate. For accurate gas values, use the Transaction API `GET /api/v1/dex/pre-transaction/gas-price` and `POST /api/v1/dex/pre-transaction/gas-limit`.
      * @type {string}
      * @memberof BuildSwapTransactionResponseDataTx
      */
