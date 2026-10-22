@@ -14,61 +14,61 @@
  */
 
 /**
- * A single unsigned transaction to sign and broadcast. The `dataList` is ordered: APPROVE items precede the main action. EVM chains return `to`/`value` (hex) and hex calldata in `data`. **Number-format conventions for this object** — `value` is a `0x`-prefixed hex string; `gasLimit`, `gasPrice`, `maxPriorityFeePerGas`, and `maxFeePerGas` are decimal strings. Mixed hex/decimal within the same object is by design (it mirrors the on-chain transaction fields); always parse gas fields with base-10 and `value` with base-16. **EIP-1559 and legacy gas fields**: all currently supported chains are EVM. On BSC build responses populate `maxFeePerGas` and `maxPriorityFeePerGas`; `gasPrice` is `null`. Other supported chains may populate either set — use the 1559 fields when present and fall back to `gasPrice` when it carries a value. The nullable markers below are retained so the schema also describes legacy-only chains. `to` and `value` are non-null for currently supported protocols.
+ * A single unsigned transaction to sign and broadcast. The dataList is ordered: APPROVE items precede the main action. The shape depends on the chain family. EVM chains: return to / value (hex) and hex calldata in data. The list may contain an ERC-20 APPROVE item followed by the main action — sign and broadcast each in order. Solana (binanceChainId = \"CT_501\"): returns a base64-serialized wire transaction in data. The compute-budget fee is injected server-side for every action, so do not add ComputeBudget or priority-fee instructions yourself (see Integration Flow). to and value are null (Solana has no EVM to / value concept). The list is always exactly one item and never contains APPROVE (Solana has no ERC-20 allowance concept). Sign it as a Solana VersionedTransaction. Number-format conventions for this object: on EVM chains value is a 0x-prefixed hex string; gasLimit, gasPrice, maxPriorityFeePerGas, and maxFeePerGas are decimal strings. Mixed hex/decimal within the same object is by design (it mirrors the on-chain transaction fields); always parse gas fields with base-10 and value with base-16. On Solana value is null; gasLimit is the compute-unit limit and gasPrice is the per-compute-unit micro-lamport fee (both decimal strings). EIP-1559 and legacy gas fields (EVM): on BSC build responses populate maxFeePerGas and maxPriorityFeePerGas; gasPrice is null. Other supported EVM chains may populate either set — use the 1559 fields when present and fall back to gasPrice when it carries a value. The nullable markers below are retained so the schema also describes legacy-only chains. maxPriorityFeePerGas and maxFeePerGas are null on Solana.
  * @export
  * @interface DefiCallDataItem
  */
 export interface DefiCallDataItem {
     /**
-     * Action kind of this item: - `APPROVE` — ERC-20 approval, must be signed/broadcast and confirmed before the main action - `DEPOSIT` / `REDEEM` / `LP_ADD` / `LP_REMOVE` / `CLAIM` — the main action.   `LP_ADD` / `LP_REMOVE` are the LP add / remove legs (the same build path as   deposit / redeem for liquidity-pool investments; the kind reflects the on-chain action,   not the entry endpoint).
+     * Action kind of this item: - `APPROVE` — ERC-20 approval (EVM only), must be signed/broadcast and confirmed before the   main action. Never returned for Solana. - `DEPOSIT` / `REDEEM` / `LP_ADD` / `LP_REMOVE` / `CLAIM` — the main action.   `LP_ADD` / `LP_REMOVE` are the LP add / remove legs (the same build path as   deposit / redeem for liquidity-pool investments; the kind reflects the on-chain action,   not the entry endpoint).
      * @type {string}
      * @memberof DefiCallDataItem
      */
     callDataType?: DefiCallDataItemCallDataTypeEnum;
     /**
-     * User wallet address (the signer / sender). EIP-55 checksummed — normalize with `to_checksum_address` before signing if your signer requires it.
+     * User wallet address (the signer / sender). EIP-55 checksummed on EVM chains — normalize with `to_checksum_address` before signing if your signer requires it. On Solana this is the base58 fee-payer public key.
      * @type {string}
      * @memberof DefiCallDataItem
      */
     from?: string;
     /**
-     * Target contract address. EIP-55 checksummed, same format as `from`. Non-null for currently supported protocols.
+     * Target contract address. EIP-55 checksummed on EVM chains, same format as `from`. Non-null on EVM; `null` on Solana (Solana expresses the target program inside the serialized transaction in `data`, not here).
      * @type {string}
      * @memberof DefiCallDataItem
      */
     to?: string | null;
     /**
-     * Native-asset value as a `0x`-prefixed hex string. Non-null for currently supported protocols.
+     * Native-asset value as a `0x`-prefixed hex string. Non-null on EVM; `null` on Solana.
      * @type {string}
      * @memberof DefiCallDataItem
      */
     value?: string | null;
     /**
-     * Serialized transaction data, as a `0x`-prefixed hex calldata string.
+     * Serialized transaction data. On EVM chains a `0x`-prefixed hex calldata string. On Solana a base64-serialized wire transaction (compute-budget fee injected server-side for every action).
      * @type {string}
      * @memberof DefiCallDataItem
      */
     data?: string;
     /**
-     * Suggested gas limit (decimal string). `null` when estimation fails.
+     * Suggested gas limit on EVM (decimal string, gas units). On Solana it is the estimated compute-unit **consumption**; the transaction\'s actual compute-unit limit set on-chain is roughly 1.2× this value. `null` when estimation fails.
      * @type {string}
      * @memberof DefiCallDataItem
      */
     gasLimit?: string | null;
     /**
-     * Legacy gas price, decimal string. `null` on EIP-1559 chains such as BSC (use `maxFeePerGas` / `maxPriorityFeePerGas` instead).
+     * Legacy gas price on EVM, decimal string. `null` on EIP-1559 chains such as BSC (use `maxFeePerGas` / `maxPriorityFeePerGas` instead). On Solana this is the per-compute-unit fee in micro-lamports (decimal string).
      * @type {string}
      * @memberof DefiCallDataItem
      */
     gasPrice?: string | null;
     /**
-     * EIP-1559 priority fee in wei (decimal string). `null` on non-1559 chains.
+     * EIP-1559 priority fee in wei (decimal string). `null` on non-1559 EVM chains and on Solana.
      * @type {string}
      * @memberof DefiCallDataItem
      */
     maxPriorityFeePerGas?: string | null;
     /**
-     * EIP-1559 max fee per gas in wei (decimal string). `null` on non-1559 chains.
+     * EIP-1559 max fee per gas in wei (decimal string). `null` on non-1559 EVM chains and on Solana.
      * @type {string}
      * @memberof DefiCallDataItem
      */

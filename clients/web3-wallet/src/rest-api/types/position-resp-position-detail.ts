@@ -20,7 +20,7 @@
  */
 export interface PositionRespPositionDetail {
     /**
-     * Position index (e.g. the Uniswap-V3-style position number).
+     * Position index / handle. For EVM concentrated-liquidity positions this is the Uniswap-V3-style position number. For Solana protocols whose redeem mints a withdrawal ticket (e.g. `renzo`, `marinadefinance` liquid, `jito`), this is the ticket / record PDA and is what `claim` `REDEMPTION` takes as `redemptionId` once the cooldown ends. For Jupiter Lend Borrow (`jupiter`, surface `lend_borrow_supply`), this is the position PDA passed to `redeem` as `positionAddress`.
      * @type {string}
      * @memberof PositionRespPositionDetail
      */
@@ -80,11 +80,17 @@ export interface PositionRespPositionDetail {
      */
     claimTypes?: Array<PositionRespPositionDetailClaimTypesEnum> | null;
     /**
-     * Redemption record ID (for pending redemptions). Null when not a pending redemption.
+     * Redemption record ID (the withdrawal ticket / record handle) for pending redemptions. For Solana protocols whose redeem mints a ticket (`renzo`, `marinadefinance` liquid, `jito`, `jupiter` Stake JUP), this mirrors `positionIndex` and is populated only after the cooldown ends (`unlockTimeReached = true`); `null` while cooling down — poll the position list until it appears, then pass it to `claim` `REDEMPTION`. Null when not a pending redemption.
      * @type {string}
      * @memberof PositionRespPositionDetail
      */
     redemptionId?: string | null;
+    /**
+     * Base58 stake account address for Solana native staking (`sol_staking`), or the native stake account a Jupiter jupSOL redeem created (which also surfaces under `sol_staking` in the position list — its `redemptionId` equals this address). Pass it to `redeem` / `claim` `REDEMPTION` as the single element of `stakeAccounts`; for jupSOL either the `sol_staking` or the jupSOL `investmentId` works. Null for non-staking positions.
+     * @type {string}
+     * @memberof PositionRespPositionDetail
+     */
+    userStakeAccount?: string | null;
 }
 
 export const PositionRespPositionDetailClaimTypesEnum = {

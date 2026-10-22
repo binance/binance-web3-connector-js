@@ -122,6 +122,8 @@ describe('DefiDataApi', () => {
                                                                         'REWARD_INVESTMENT',
                                                                     ],
                                                                     redemptionId: 'redem-abc123',
+                                                                    userStakeAccount:
+                                                                        '5vUt9pxBK9KaaHm19okrwSuP2vUU71Nm7ScsBiSqsW1s',
                                                                 },
                                                                 positionValue: '10.51121227',
                                                                 tokenList: {
@@ -197,6 +199,7 @@ describe('DefiDataApi', () => {
                 recvWindow: 5000,
                 nonce: 'unique-nonce-string',
                 binanceChainIds: ['null'],
+                forceRefresh: true,
             };
 
             mockResponse = JSONParse(
@@ -264,6 +267,8 @@ describe('DefiDataApi', () => {
                                                                         'REWARD_INVESTMENT',
                                                                     ],
                                                                     redemptionId: 'redem-abc123',
+                                                                    userStakeAccount:
+                                                                        '5vUt9pxBK9KaaHm19okrwSuP2vUU71Nm7ScsBiSqsW1s',
                                                                 },
                                                                 positionValue: '10.51121227',
                                                                 tokenList: {
@@ -567,7 +572,7 @@ describe('DefiDataApi', () => {
                             'PancakeSwap is a decentralized exchange (DEX) built on BNB Chain that utilizes an automated market making (AMM) system.',
                         websiteUrl: 'https://pancakeswap.finance/',
                         investType: ['LiquidityPool'],
-                        supportedChains: ['56', '1'],
+                        supportedChains: ['56', '1', 'CT_501'],
                         tvl: '290233074',
                         tags: ['DeFi', 'DEX'],
                         founded: '2020',
@@ -658,7 +663,7 @@ describe('DefiDataApi', () => {
                             'PancakeSwap is a decentralized exchange (DEX) built on BNB Chain that utilizes an automated market making (AMM) system.',
                         websiteUrl: 'https://pancakeswap.finance/',
                         investType: ['LiquidityPool'],
-                        supportedChains: ['56', '1'],
+                        supportedChains: ['56', '1', 'CT_501'],
                         tvl: '290233074',
                         tags: ['DeFi', 'DEX'],
                         founded: '2020',
@@ -919,7 +924,7 @@ describe('DefiDataApi', () => {
                                 apyBps: 1235,
                                 apyDisplay: '12.35%',
                                 investType: ['Earn', 'LiquidityPool'],
-                                supportedChains: ['56', '1'],
+                                supportedChains: ['56', '1', 'CT_501'],
                             },
                         ],
                     },
@@ -972,7 +977,7 @@ describe('DefiDataApi', () => {
                                 apyBps: 1235,
                                 apyDisplay: '12.35%',
                                 investType: ['Earn', 'LiquidityPool'],
-                                supportedChains: ['56', '1'],
+                                supportedChains: ['56', '1', 'CT_501'],
                             },
                         ],
                     },

@@ -20,7 +20,7 @@
  */
 export interface DefiPreviewFeeAndContractEstimatedNetworkFee {
     /**
-     * Estimated gas fee in the gas-paying token (human-readable).
+     * Estimated gas fee in the fee-paying native coin (human-readable). On Solana this may be `null` even when fee estimation succeeded — use `valueUsd` as the reliable figure when `amount` is absent.
      * @type {string}
      * @memberof DefiPreviewFeeAndContractEstimatedNetworkFee
      */
@@ -38,19 +38,19 @@ export interface DefiPreviewFeeAndContractEstimatedNetworkFee {
      */
     valueUsd?: string | null;
     /**
-     * Storage / rent fee portion (human-readable), if applicable.
+     * Solana storage / rent fee portion (human-readable). `null` on EVM chains; only populated on Solana when the action creates an account (e.g. a first-time ATA).
      * @type {string}
      * @memberof DefiPreviewFeeAndContractEstimatedNetworkFee
      */
     rentFeeAmount?: string | null;
     /**
-     * USD value of the storage / rent fee, if applicable.
+     * USD value of the Solana rent fee. `null` on EVM chains; Solana-only.
      * @type {string}
      * @memberof DefiPreviewFeeAndContractEstimatedNetworkFee
      */
     rentFeeValueUsd?: string | null;
     /**
-     * Priority fee portion (human-readable), if broken out.
+     * Solana priority fee portion (human-readable). `null` on EVM chains; Solana-only.
      * @type {string}
      * @memberof DefiPreviewFeeAndContractEstimatedNetworkFee
      */

@@ -25,7 +25,7 @@ import type { ProtocolRespPoolListInner } from './protocol-resp-pool-list-inner'
  */
 export interface AddressRespProtocolListInner {
     /**
-     * Binance chain ID. Plain numeric string for EVM chains — see Supported Chains & Protocols for the supported values.
+     * Binance chain ID. Plain numeric string for EVM chains (e.g. `\"56\"` = BNB Smart Chain); non-EVM chains use a `CT_`-prefixed string (e.g. `\"CT_501\"` = Solana), consistent with the Trading / Transaction APIs. See Supported Chains & Protocols for the supported values.
      * @type {string}
      * @memberof AddressRespProtocolListInner
      */

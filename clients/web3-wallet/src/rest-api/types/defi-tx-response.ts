@@ -40,7 +40,7 @@ export interface DefiTxResponse {
      */
     preview?: DefiTxResponsePreview;
     /**
-     * Redeem waiting period as a `[min, max]` day pair of decimal strings. Populated **only** by `/transaction/redeem`; `null` on the other build endpoints or when unavailable. Interpretation: `[]` (empty) = instant, no waiting period; `[\"7\",\"7\"]` = fixed 7 days; `[\"7\",\"10\"]` = 7–10 days. The wait starts after the redeem transaction is confirmed on-chain.
+     * Redeem waiting period as a `[min, max]` day pair of decimal strings. Populated **only** by `/transaction/redeem`; `null` on the other build endpoints or when unavailable. Interpretation: `[]` (empty) = instant, no waiting period; `[\"7\",\"7\"]` = fixed 7 days; `[\"7\",\"10\"]` = 7–10 days. The wait starts after the redeem transaction is confirmed on-chain. Protocols with a waiting period include Lista (`helio`), Aster (`astherus`), and the Solana staking protocols (`sol_staking`, `marinadefinance`, `renzo`, `solayer`, `jito`, `jupiter`, `fragmetric`), which range from 2 to 30 days. Delays are configured in seconds server-side and rounded up to whole days.
      * @type {Array<string>}
      * @memberof DefiTxResponse
      */

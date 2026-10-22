@@ -32,7 +32,7 @@ import type {
 const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestAPI) {
     return {
         /**
-         * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+         * Query DeFi positions for one or more wallet addresses across the supported chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
          * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
          *
          * @summary Get DeFi Positions
@@ -40,6 +40,7 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
          * @param {number | bigint} [recvWindow] Allowed time deviation in milliseconds (default: 5000, max: 60000).
          * @param {string} [nonce] Unique request identifier for anti-replay; falls back to X-OC-SIGN if omitted.
          * @param {Array<string>} [binanceChainIds] Optional chain filter. When set, only positions on the specified chains are returned; when omitted, positions across all supported chains are returned. See Supported Chains & Protocols for the supported chain ID values — unsupported values are rejected with 40001.
+         * @param {boolean} [forceRefresh] Force a cache bypass and re-read the latest on-chain state. Defaults to `false` (serves cached data). Set to `true` right after a redeem / claim to see the updated position immediately — the cache otherwise lags by a short window.
          *
          * @throws {RequiredError}
          */
@@ -47,7 +48,8 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
             addresses: Array<string>,
             recvWindow?: number | bigint,
             nonce?: string,
-            binanceChainIds?: Array<string>
+            binanceChainIds?: Array<string>,
+            forceRefresh?: boolean
         ): Promise<RequestArgs> => {
             // verify required parameter 'addresses' is not null or undefined
             assertParamExists('getDeFiPositions', 'addresses', addresses);
@@ -69,6 +71,10 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
 
             if (binanceChainIds) {
                 localVarBodyParameter['binanceChainIds'] = binanceChainIds;
+            }
+
+            if (forceRefresh !== undefined && forceRefresh !== null) {
+                localVarBodyParameter['forceRefresh'] = forceRefresh;
             }
 
             let _timeUnit: TimeUnit | undefined;
@@ -341,7 +347,7 @@ const DefiDataApiAxiosParamCreator = function (configuration: ConfigurationRestA
  */
 export interface DefiDataApiInterface {
     /**
-     * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+     * Query DeFi positions for one or more wallet addresses across the supported chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
      * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
      *
      * @summary Get DeFi Positions
@@ -435,6 +441,13 @@ export interface GetDeFiPositionsRequest {
      * @memberof DefiDataApiGetDeFiPositions
      */
     readonly binanceChainIds?: Array<string>;
+
+    /**
+     * Force a cache bypass and re-read the latest on-chain state. Defaults to `false` (serves cached data). Set to `true` right after a redeem / claim to see the updated position immediately — the cache otherwise lags by a short window.
+     * @type {boolean}
+     * @memberof DefiDataApiGetDeFiPositions
+     */
+    readonly forceRefresh?: boolean;
 }
 
 /**
@@ -643,7 +656,7 @@ export class DefiDataApi implements DefiDataApiInterface {
     }
 
     /**
-     * Query DeFi positions for one or more wallet addresses across the supported EVM chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
+     * Query DeFi positions for one or more wallet addresses across the supported chains. Returns protocol-level position summaries with token breakdowns. Optionally filter by specific chains via `binanceChainIds`; when omitted, positions across all supported chains are returned.
      * Position coverage is wider than the protocol list used by data queries and transaction building — see Supported Chains & Protocols for the difference.
      *
      * @summary Get DeFi Positions
@@ -660,7 +673,8 @@ export class DefiDataApi implements DefiDataApiInterface {
             requestParameters?.addresses,
             requestParameters?.recvWindow,
             requestParameters?.nonce,
-            requestParameters?.binanceChainIds
+            requestParameters?.binanceChainIds,
+            requestParameters?.forceRefresh
         );
         return sendRequest<GetDeFiPositionsResponse>(
             this.configuration,
